@@ -1,0 +1,42 @@
+<section class="box">
+  <h2>Memoization</h2>
+  <article>
+    <h3>Memoization</h3>
+    <p>Memoization is a technique used in programming to optimize the performance of functions by caching the results of expensive function calls. This helps avoid redundant calculations and improves performance, especially in recursive algorithms.</p>
+    <p>An optimization technique that stores the results of expensive function calls and returns the cached result when the same inputs occur again.</p>
+    
+    <h4>Example: Simple Memoization Function</h4>
+    <pre><code class="language-javascript">
+    function memoizedAdd() {
+      let cache = {};
+
+      return function(num) {
+        if (num in cache) {
+          console.log('Fetching from cache:', num);
+          return cache[num];
+        } else {
+          console.log('Calculating result:', num);
+          let result = num + 10; // Example of an expensive calculation
+          cache[num] = result;
+          return result;
+        }
+      };
+    }
+
+    const add = memoizedAdd();
+    console.log(add(5)); // Calculating result: 15
+    console.log(add(5)); // Fetching from cache: 15
+    console.log(add(6)); // Calculating result: 16
+    </code></pre>
+    <p>In this example, the result for the input <code>5</code> is stored in the cache. When <code>5</code> is passed again, the function returns the cached result instead of recalculating it.</p>
+  </article>
+
+  <!-- Links -->
+  <div class="links">
+    <a href="https://www.youtube.com/watch?v=mKNtUsGrV0w" target="_blank">Memoization YouTube</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Glossary/Memoization" target="_blank">MDN: Memoization</a>
+    <a href="https://www.freecodecamp.org/news/understanding-memoization-in-javascript-51d07d19430e/" target="_blank">FreeCodeCamp: Understanding Memoization</a>
+    <a href="https://www.youtube.com/watch?v=N0fr5UU0kU8" target="_blank">YouTube: Memoization Explained (Codevolution)</a>
+    <a href="https://www.geeksforgeeks.org/javascript-memoization/" target="_blank">GeeksforGeeks: JavaScript Memoization</a>
+  </div>
+</section>

@@ -1,0 +1,66 @@
+<section  class="box">
+  <h2>Hoisting</h2>
+  <article>
+      <h3>Hoisted definition</h3>
+      <p>Hoisting means that variable and function declarations are moved to the top of their execution context before the code is run.</p>
+      <p>When the function executes, the compiler looks for variable declarations, and if the variable is declared, it hoists it to the top.</p>
+      <p>JavaScript engine makes multiple passes through the code. In the first pass, it stores function declarations and variables in memory before executing any code.</p>
+      <p>For variables, only the declarations are hoisted, not the initializations. This means that if you declare a variable after using it, JavaScript won’t throw an error; instead, the variable will be undefined until it is initialized.</p>
+      
+      <pre><code class="language-javascript">
+        console.log(x); // undefined
+        var x = 5;
+        console.log(x); // 5
+      </code></pre>
+      
+      <p>For functions, both the function declaration and the function expression are hoisted. This means you can call a function before it is declared in the code.</p>
+      
+      <pre><code class="language-javascript">
+        hello(); // "Hello, world!"
+
+        function hello() {
+          console.log("Hello, world!");
+        }
+      </code></pre>
+      
+      <p>In this case, the code works because the entire function declaration `hello` is hoisted to the beginning of the execution context.</p>
+      
+      <h3>Two examples</h3>
+      <pre><code class="language-javascript">
+        console.log(greeting);
+        hello();
+        function hello(){
+            console.log('hello');
+        }
+        var greeting = "Hi there";
+        console.log(greeting);
+
+        // Output:
+        // undefined
+        // hello
+        // Hi there
+      </code></pre>
+
+      <pre><code class="language-javascript">
+        function hello(){
+          console.log('hello');
+        }
+        var greeting;
+        console.log(greeting);
+        hello();
+        greeting = "Hi there";
+        console.log(greeting);
+
+        // Output:
+        // undefined
+        // hello
+        // Hi there
+      </code></pre>
+  </article>
+
+  <!-- Bloque de enlaces -->
+  <div class="links">
+      <a href="https://www.programiz.com/javascript/hoisting" target="_blank">Hoisting</a>
+      <a href="https://dev.to/lydiahallie/javascript-visualized-hoisting-478h" target="_blank">Hoisting2</a>
+  </div>
+</section>

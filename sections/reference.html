@@ -1,0 +1,115 @@
+<!-- REFERENCE AND VALUE -->
+<section  class="box">
+  <h2>Reference and Value</h2>
+  <p>Value doesn't change when we reassign and reference if we change one object it changes the other.</p>
+  <article>
+    <h3>Value</h3>
+    <p>In JavaScript, if we assign a variable to a primitive type, the value is copied. But if it is not a primitive, we copy the reference to the value.</p>
+    <p>And what happens if we copy the reference instead of the value? Both objects point to the same location, so if we modify one, the other will also be affected.</p>
+    <p>These include types like string, number, boolean, null, undefined, symbol, and bigint.</p>
+    <p>When you assign a primitive value to a variable, JavaScript copies the value itself. This means that if you create a new variable and assign it the value of an existing primitive variable, they are completely independent of each other.</p>
+    <pre><code class="language-javascript">
+let a = 10;
+let b = a; // b is a copy of the value in a
+b = 20;
+console.log(a); // Output: 10
+console.log(b); // Output: 20
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Reference</h3>
+    <p>However, when you assign a reference type (such as an object or an array) to a variable, JavaScript copies the reference to the value. If you assign this reference to another variable, both variables point to the same memory location. Changing the object via either variable will affect the other.</p>
+    <p>Let's understand this with an example:</p>
+    <pre><code class="language-javascript">
+let obj1 = { name: 'Alice' };
+let obj2 = obj1; // obj2 now holds a reference to the same object
+obj2.name = 'Bob';
+console.log(obj1.name); // Output: Bob
+console.log(obj2.name); // Output: Bob
+    </code></pre>
+    
+    <h3>Conclusion</h3>
+    <ul>
+      <li>Primitive types are copied by value.</li>
+      <li>Reference types are copied by reference.</li>
+    </ul>
+  </article>
+
+  <!-- Links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#primitive_values" target="_blank">MDN: JavaScript Primitive Values</a>
+    <a href="https://www.javascripttutorial.net/javascript-pass-by-value-vs-pass-by-reference/" target="_blank">JS Tutorial: Pass by Value vs Pass by Reference</a>
+    <a href="https://chatgpt.com/c/1b78f610-0558-467f-8e6e-24f8f8a36008" target="_blank">Video: Reference vs Value</a>
+  </div>
+</section>
+
+<!-- SCOPE -->
+<section id="scope" class="box">
+  <h2>Scope</h2>
+  <article>
+    <h3>Scope in JavaScript</h3>
+    <p>Scope in JavaScript refers to the current context of code, which determines the accessibility of variables to JavaScript. There are three main types of scope:</p>
+    
+    <h4>1. Global Scope</h4>
+    <ul>
+      <li>Variables declared outside of any function or block have global scope.</li>
+      <li>They can be accessed from anywhere in the JavaScript program.</li>
+      <li>In a browser, the global scope is usually the window object.</li>
+    </ul>
+    <pre><code class="language-javascript">
+var globalVar = "I'm global";
+
+function someFunction() {
+    console.log(globalVar); // Accessible
+}
+
+console.log(globalVar); // Also accessible
+    </code></pre>
+    
+    <h4>2. Local Scope (Function Scope)</h4>
+    <ul>
+      <li>Variables declared inside a function have local scope.</li>
+      <li>They can only be accessed within that function.</li>
+      <li>Each function creates its own scope.</li>
+    </ul>
+    <pre><code class="language-javascript">
+function someFunction() {
+    var localVar = "I'm local";
+    console.log(localVar); // Accessible
+}
+
+console.log(localVar); // Error: localVar is not defined
+    </code></pre>
+    
+    <h4>3. Block Scope (introduced with ES6)</h4>
+    <ul>
+      <li>Variables declared inside a block (denoted by curly braces {}) using let or const have block scope.</li>
+      <li>They can only be accessed within that block.</li>
+      <li>This includes blocks in if statements, for loops, etc.</li>
+    </ul>
+    <pre><code class="language-javascript">
+if (true) {
+    let blockVar = "I'm block-scoped";
+    console.log(blockVar); // Accessible
+}
+
+console.log(blockVar); // Error: blockVar is not defined
+    </code></pre>
+    
+    <h4>Key Points</h4>
+    <ul>
+      <li>Variables with global scope can be accessed from anywhere, but this can lead to naming conflicts and is generally considered bad practice if overused.</li>
+      <li>Local scope provides encapsulation and helps avoid naming conflicts.</li>
+      <li>Block scope allows for more precise control over variable visibility and lifetime.</li>
+      <li>The let and const keywords respect block scope, while var does not (it only respects function scope).</li>
+    </ul>
+  </article>
+
+  <!-- Links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Glossary/Scope" target="_blank">MDN Web Docs: Scope</a>
+    <a href="https://www.w3schools.com/js/js_scope.asp" target="_blank">W3Schools: JavaScript Scope</a>
+    <a href="https://javascript.info/closure" target="_blank">JavaScript.info: Variable scope, closure</a>
+  </div>
+</section>

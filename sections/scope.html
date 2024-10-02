@@ -1,0 +1,71 @@
+<!-- SPREAD AND REST OPERATORS -->
+<section iclass="box">
+  <h2>Spread and Rest Operators</h2>
+  
+  <article>
+    <h3>Spread Operator</h3>
+    <p>The JavaScript spread operator (<code>...</code>) allows us to quickly copy all or part of an existing array or object into another array or object.</p>
+    <p>It expands elements of an array, object, or iterable into individual elements and is often used to copy arrays, merge objects, or pass arrays as function arguments.</p>
+
+    <h4>Example: Spreading Arrays</h4>
+    <pre><code>
+const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+
+const combinedArray = [...arr1, ...arr2]; 
+console.log(combinedArray); // Output: [1, 2, 3, 4, 5, 6]
+    </code></pre>
+
+    <h4>Example: Spreading Objects</h4>
+    <pre><code>
+const person = { name: 'Alice', age: 25 };
+const additionalInfo = { country: 'UK', job: 'Developer' };
+
+const mergedPerson = { ...person, ...additionalInfo };
+console.log(mergedPerson);
+// Output: { name: 'Alice', age: 25, country: 'UK', job: 'Developer' }
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Rest Operator</h3>
+    <p>The rest operator (<code>...</code>) allows you to collect multiple elements into a single array. It's often used in function arguments to handle an indefinite number of parameters or to extract remaining properties from an object.</p>
+
+    <h4>Example: Using Rest in Function Arguments</h4>
+    <pre><code>
+function sum(...numbers) {
+  return numbers.reduce((acc, curr) => acc + curr, 0);
+}
+
+console.log(sum(1, 2, 3, 4)); // Output: 10
+    </code></pre>
+
+    <h4>Example: Rest in Object Destructuring</h4>
+    <pre><code>
+const person = { name: 'Alice', age: 25, country: 'UK', job: 'Developer' };
+
+const { name, ...rest } = person;
+console.log(name); // Output: Alice
+console.log(rest); // Output: { age: 25, country: 'UK', job: 'Developer' }
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Difference Between Spread and Rest Operators</h3>
+    <p>The key difference is how they are used:</p>
+    <ul>
+      <li><b>Spread:</b> Expands an array or object into individual elements or properties. Used in function calls, array literals, and object literals.</li>
+      <li><b>Rest:</b> Collects multiple elements into an array. Used in function parameters or destructuring assignments.</li>
+    </ul>
+    <h4>Summary:</h4>
+    <p>The same <code>...</code> syntax is used for both, but the spread operator is used to split things apart, while the rest operator is used to gather things together.</p>
+  </article>
+
+  <!-- Links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax" target="_blank">MDN Web Docs on the Spread Operator</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters" target="_blank">MDN Web Docs on Rest Parameters</a>
+    <a href="https://javascript.info/rest-parameters-spread" target="_blank">JavaScript.info on Rest and Spread</a>
+    <a href="https://www.youtube.com/watch?v=iLx4ma8ZqvQ" target="_blank">YouTube: Rest & Spread Operators Explained (Web Dev Simplified)</a>
+  </div>
+</section>

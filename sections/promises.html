@@ -1,0 +1,72 @@
+<section class="box">
+  <h2>Promises</h2>
+  <article>
+    <h3>Promises</h3>
+    <p>A Promise in JavaScript represents an eventual completion (or failure) of an asynchronous operation and its resulting value. It allows you to handle asynchronous tasks in a more manageable way than callbacks.</p>
+    
+    <h4>States of a Promise:</h4>
+    <ul>
+      <li><b>Pending:</b> Initial state, neither fulfilled nor rejected.</li>
+      <li><b>Fulfilled:</b> The operation completed successfully.</li>
+      <li><b>Rejected:</b> The operation failed.</li>
+    </ul>
+    
+    <p>You can attach handlers to a Promise to perform actions when the promise is fulfilled or rejected, using <code>.then()</code> and <code>.catch()</code>.</p>
+    
+    <h3>Example for Kids</h3>
+    <p>You ask your mom if you can have a cookie after dinner. She tells you:</p>
+    <p>"If you eat all your dinner, I promise you'll get a cookie!" So now you have to wait and see what happens:</p>
+    
+    <p>If you eat all your dinner, your mom says, "Yay! You get a cookie!" That's like the promise being kept.</p>
+    
+    <p>If you don't eat your dinner, your mom says, "No cookie for you!" That's like the promise being broken.</p>
+    
+    <p>A promise in JavaScript is just like that! It says, "I'll do something later," and you wait to see if it works or not.</p>
+    
+    <pre><code class="language-javascript">
+// Creating a Promise
+const myPromise = new Promise((resolve, reject) => {
+  const success = true;
+
+  if (success) {
+    resolve("Promise was successful!");
+  } else {
+    reject("Promise failed.");
+  }
+});
+
+// Using the Promise
+myPromise
+  .then(result => {
+    console.log(result); // Output: Promise was successful!
+  })
+  .catch(error => {
+    console.log(error); // If rejected, output: Promise failed.
+  });
+    </code></pre>
+    
+    <h4>Chaining Promises:</h4>
+    <p>Promises can be chained to handle multiple asynchronous operations sequentially.</p>
+    
+    <pre><code class="language-javascript">
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    return data;
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+    </code></pre>
+  </article>
+  
+  <!-- Links -->
+  <div class="links">
+    <a href="https://chatgpt.com/c/66f09b63-af4c-8008-9d01-d670c5593726" target="_blank">Chat GPT</a>
+    <a href="https://stackblitz.com/edit/stackblitz-starters-na8xwn?file=index.html" target="_blank">Example Promises</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank">MDN: Promises</a>
+    <a href="https://javascript.info/promise-basics" target="_blank">JavaScript.info: Promises</a>
+    <a href="https://www.youtube.com/watch?v=DHvZLI7Db8E" target="_blank">YouTube: Promises Explained</a>
+  </div>
+</section>
