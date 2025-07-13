@@ -471,34 +471,3 @@ console.log(inspectType(null));         // object (but null), primitive
   </div>
 </section>
 
-<script>
-// Interactive functionality for tabs and expandables
-function showTab(tabId) {
-  // Hide all tab contents
-  document.querySelectorAll('.tab-content').forEach(content => {
-    content.classList.remove('active');
-  });
-  
-  // Remove active from all tabs
-  document.querySelectorAll('.nav-tab').forEach(tab => {
-    tab.classList.remove('active');
-  });
-  
-  // Show selected tab and mark as active
-  document.getElementById(tabId).classList.add('active');
-  event.target.classList.add('active');
-}
-
-function toggleExpand(header) {
-  const content = header.nextElementSibling;
-  const isExpanded = content.classList.contains('show');
-  
-  if (isExpanded) {
-    content.classList.remove('show');
-    header.classList.add('collapsed');
-  } else {
-    content.classList.add('show');
-    header.classList.remove('collapsed');
-  }
-}
-</script>

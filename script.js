@@ -90,4 +90,63 @@ document.addEventListener("DOMContentLoaded", () => {
     // Add current-section class to clicked link
     clickedLink.classList.add('current-section');
   }
+
+  // Global functions for interactive elements in loaded content
+  window.showTab = function(tabId, clickedElement) {
+    // Hide all tab contents in the current content area
+    document.querySelectorAll('#content .tab-content').forEach(content => {
+      content.classList.remove('active');
+    });
+    
+    // Remove active from all tabs in the current content area
+    document.querySelectorAll('#content .nav-tab').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    
+    // Show selected tab and mark as active
+    const selectedTab = document.getElementById(tabId);
+    if (selectedTab) {
+      selectedTab.classList.add('active');
+    }
+    
+    // Mark the clicked tab as active if element is provided
+    if (clickedElement) {
+      clickedElement.classList.add('active');
+    }
+  };
+
+  window.toggleExpand = function(header) {
+    const content = header.nextElementSibling;
+    const isExpanded = content.classList.contains('show');
+    
+    if (isExpanded) {
+      content.classList.remove('show');
+      header.classList.add('collapsed');
+    } else {
+      content.classList.add('show');
+      header.classList.remove('collapsed');
+    }
+  };
+
+  // Event delegation for dynamically loaded content
+  document.addEventListener('click', function(e) {
+    // Handle expandable headers
+    if (e.target.classList.contains('expandable-header')) {
+      e.preventDefault();
+      window.toggleExpand(e.target);
+    }
+    
+    // Handle nav tabs (look for onclick attribute with showTab)
+    if (e.target.classList.contains('nav-tab')) {
+      e.preventDefault();
+      const onclickAttr = e.target.getAttribute('onclick');
+      if (onclickAttr && onclickAttr.includes('showTab')) {
+        // Extract tab ID from onclick attribute
+        const match = onclickAttr.match(/showTab\('([^']+)'\)/);
+        if (match) {
+          window.showTab(match[1], e.target);
+        }
+      }
+    }
+  });
 });
