@@ -1,49 +1,108 @@
 <section class="box">
   <h2>Asynchronous, Callbacks, Promises, Async</h2>
+
   <article>
     <h3>Asynchronous Nature of JavaScript</h3>
     <p>
-      JavaScript is inherently asynchronous, especially when dealing when
-      dealing with input/output operations such as reading/writing files,
-      database access, and making HTTP requests (AJAX).
+      JavaScript is single-threaded and executes code synchronously by default.
+      However, it can handle asynchronous operations through the browser's Web
+      APIs and the event loop, especially when dealing with input/output
+      operations such as reading/writing files, database access, and making HTTP
+      requests (AJAX).
     </p>
 
     <p>
       This asynchronous behavior allows JavaScript to perform other tasks while
       waiting for these potentially time-consuming operations to complete.
     </p>
+
+    <div class="analogy-box">
+      <h4>🍕 Restaurant Analogy</h4>
+      <p>
+        <strong>Synchronous:</strong> The waiter takes your order, goes to the
+        kitchen, waits for your food to be prepared, brings it back, then takes
+        the next customer's order. Everyone waits in line!
+      </p>
+      <p>
+        <strong>Asynchronous:</strong> The waiter takes your order, gives it to
+        the kitchen, immediately takes other customers' orders, and brings food
+        out as it becomes ready. Much more efficient!
+      </p>
+    </div>
   </article>
+
   <article>
     <h3>Callbacks</h3>
     <p>
       Callbacks are the most traditional way of handling asynchronous operations
       in JavaScript. A callback is a function passed as an argument to another
-      function, which is then invoked once the asynchronous operation completes
+      function, which is then invoked once the asynchronous operation completes.
     </p>
 
     <pre><code class="language-javascript">
-      function addToArray(data, array, callback) {
-        if (!array) {
-            callback(new Error("Array does not exist"));
-            return;
-        }
-        
-        setTimeout(() => {
-            array.push(data);
-            callback(null, array);
-        }, 1000);
-    }
-    
-    const myArray = [1, 2, 3];
-    
-    addToArray(4, myArray, (error, result) => {
-        if (error) {
-            console.error("Error:", error.message);
+function fetchUserData(userId, callback) {
+    // Simulate API call delay
+    setTimeout(() => {
+        if (userId > 0) {
+            const userData = { 
+                id: userId, 
+                name: 'John Doe', 
+                email: 'john@example.com' 
+            };
+            callback(null, userData); // Success: no error, return data
         } else {
-            console.log("Updated array:", result);
+            callback(new Error('Invalid user ID'), null); // Error case
         }
+    }, 1000);
+}
+
+// Using the callback
+fetchUserData(123, (error, user) => {
+    if (error) {
+        console.error('Failed to fetch user:', error.message);
+    } else {
+        console.log('User data:', user);
+    }
+});
+
+console.log('This runs immediately!'); // Doesn't wait for the callback
+                </code></pre>
+
+    <div class="concept-box">
+      <h4>Problems with Callbacks</h4>
+      <ul>
+        <li>
+          <strong>Callback Hell:</strong> Nested callbacks become hard to read
+          and maintain
+        </li>
+        <li>
+          <strong>Error Handling:</strong> Must remember to handle errors in
+          every callback
+        </li>
+        <li>
+          <strong>Inversion of Control:</strong> You give up control to the
+          callback function
+        </li>
+      </ul>
+    </div>
+
+    <pre><code class="language-javascript">
+// Callback Hell Example
+fetchUser(userId, (userError, user) => {
+    if (userError) return handleError(userError);
+    
+    fetchUserPosts(user.id, (postsError, posts) => {
+        if (postsError) return handleError(postsError);
+        
+        fetchPostComments(posts[0].id, (commentsError, comments) => {
+            if (commentsError) return handleError(commentsError);
+            
+            // Finally do something with the data
+            console.log('User, posts, and comments loaded!');
+        });
     });
-          </code></pre>
+});
+                </code></pre>
   </article>
 
   <article>
@@ -55,11 +114,17 @@
     </p>
 
     <h4>States of a Promise:</h4>
-    <ul>
-      <li><b>Pending:</b> Initial state, neither fulfilled nor rejected.</li>
-      <li><b>Fulfilled:</b> The operation completed successfully.</li>
-      <li><b>Rejected:</b> The operation failed.</li>
-    </ul>
+    <div class="promise-states">
+      <div class="state-item state-pending">
+        <strong>Pending:</strong> Initial state, neither fulfilled nor rejected.
+      </div>
+      <div class="state-item state-fulfilled">
+        <strong>Fulfilled:</strong> The operation completed successfully.
+      </div>
+      <div class="state-item state-rejected">
+        <strong>Rejected:</strong> The operation failed.
+      </div>
+    </div>
 
     <p>
       You can attach handlers to a Promise to perform actions when the promise
@@ -67,51 +132,48 @@
       <code>.catch()</code>.
     </p>
 
-    <h3>Example for Kids</h3>
-    <p>
-      You ask your mom if you can have a cookie after dinner. She tells you:
-    </p>
-    <p>
-      "If you eat all your dinner, I promise you'll get a cookie!" So now you
-      have to wait and see what happens:
-    </p>
-
-    <p>
-      If you eat all your dinner, your mom says, "Yay! You get a cookie!" That's
-      like the promise being kept.
-    </p>
-
-    <p>
-      If you don't eat your dinner, your mom says, "No cookie for you!" That's
-      like the promise being broken.
-    </p>
-
-    <p>
-      A promise in JavaScript is just like that! It says, "I'll do something
-      later," and you wait to see if it works or not.
-    </p>
+    <div class="analogy-box">
+      <h4>🎁 Promise Analogy</h4>
+      <p>A Promise is like ordering something online:</p>
+      <p>
+        <strong>Pending:</strong> "Your order is being processed" - you're
+        waiting
+      </p>
+      <p>
+        <strong>Fulfilled:</strong> "Your package has arrived!" - you got what
+        you wanted
+      </p>
+      <p>
+        <strong>Rejected:</strong> "Sorry, this item is out of stock" -
+        something went wrong
+      </p>
+      <p>
+        While waiting for your package, you can still do other things like
+        homework or play games!
+      </p>
+    </div>
 
     <pre><code class="language-javascript">
-    // Creating a Promise
-    const myPromise = new Promise((resolve, reject) => {
-      const success = true;
-    
-      if (success) {
+// Creating a Promise
+const myPromise = new Promise((resolve, reject) => {
+    const success = true;
+
+    if (success) {
         resolve("Promise was successful!");
-      } else {
+    } else {
         reject("Promise failed.");
-      }
-    });
-    
-    // Using the Promise
-    myPromise
-      .then(result => {
+    }
+});
+
+// Using the Promise
+myPromise
+    .then(result => {
         console.log(result); // Output: Promise was successful!
-      })
-      .catch(error => {
+    })
+    .catch(error => {
         console.log(error); // If rejected, output: Promise failed.
-      });
-        </code></pre>
+    });
+                </code></pre>
 
     <h4>Chaining Promises:</h4>
     <p>
@@ -120,41 +182,75 @@
     </p>
 
     <pre><code class="language-javascript">
-    fetch('https://api.example.com/data')
-      .then(response => response.json())
-      .then(data => {
+fetch('https://api.example.com/data')
+    .then(response => response.json())
+    .then(data => {
         console.log(data);
         return data;
-      })
-      .catch(error => {
+    })
+    .catch(error => {
         console.error('Error:', error);
-      });
-        </code></pre>
+    });
+                </code></pre>
+
+    <h4>React Example with Promises</h4>
+
+    <pre><code class="language-javascript">
+const UserProfile = ({ userId }) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        setLoading(true);
+        
+        fetchUserData(userId)
+            .then(userData => {
+                setUser(userData);
+                setError(null);
+            })
+            .catch(err => {
+                setError(err.message);
+                setUser(null);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [userId]);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+    if (!user) return <div>No user found</div>;
+
+    return <div>Welcome, {user.name}!</div>;
+};
+                </code></pre>
 
     <h4>Another example Promises</h4>
 
     <pre><code class="language-javascript">
-      function addToArray(data, array) {
-        return new Promise((resolve, reject) => {
-            if (!array) {
-                reject(new Error("Array does not exist"));
-                return;
-            }
-            
-            setTimeout(() => {
-                array.push(data);
-                resolve(array);
-            }, 1000);
-        });
-    }
-    
-    const myArray = [1, 2, 3];
-    
-    addToArray(4, myArray)
-        .then(result => console.log("Updated array:", result))
-        .catch(error => console.error("Error:", error.message));
-              </code></pre>
+function addToArray(data, array) {
+    return new Promise((resolve, reject) => {
+        if (!array) {
+            reject(new Error("Array does not exist"));
+            return;
+        }
+        
+        setTimeout(() => {
+            array.push(data);
+            resolve(array);
+        }, 1000);
+    });
+}
+
+const myArray = [1, 2, 3];
+
+addToArray(4, myArray)
+    .then(result => console.log("Updated array:", result))
+    .catch(error => console.error("Error:", error.message));
+                </code></pre>
   </article>
+
   <article>
     <h2>Async Await</h2>
     <p>
@@ -188,58 +284,129 @@
         blocking the main thread.
       </li>
     </ul>
+
     <pre><code class="language-javascript">
-      async function processData(data, array) {
-        try {
-            const result = await addToArray(data, array);
-            console.log("Updated array:", result);
-        } catch (error) {
-            console.error("Error:", error.message);
-        }
+async function processData(data, array) {
+    try {
+        const result = await addToArray(data, array);
+        console.log("Updated array:", result);
+    } catch (error) {
+        console.error("Error:", error.message);
     }
-    
-    const myArray = [1, 2, 3];
-    
-    processData(4, myArray);
-    
-    // The addToArray function remains the same as in the Promise example
-     
-              </code></pre>
+}
+
+const myArray = [1, 2, 3];
+
+processData(4, myArray);
+
+// The addToArray function remains the same as in the Promise example
+                </code></pre>
+
+    <h4>React Hook with Async/Await</h4>
+
+    <pre><code class="language-javascript">
+const useUserData = (userId) => {
+    const [state, setState] = useState({
+        user: null,
+        loading: false,
+        error: null
+    });
+
+    useEffect(() => {
+        // Can't make useEffect callback async directly
+        const loadData = async () => {
+            setState(prev => ({ ...prev, loading: true, error: null }));
+            
+            try {
+                const userData = await fetchUserData(userId);
+                setState(prev => ({ 
+                    ...prev, 
+                    user: userData, 
+                    loading: false 
+                }));
+            } catch (err) {
+                setState(prev => ({ 
+                    ...prev, 
+                    error: err.message, 
+                    loading: false 
+                }));
+            }
+        };
+
+        if (userId) {
+            loadData();
+        }
+    }, [userId]);
+
+    return state;
+};
+
+// Using the custom hook
+const UserProfile = ({ userId }) => {
+    const { user, loading, error } = useUserData(userId);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+    return user ? <div>Welcome, {user.name}!</div> : null;
+};
+                </code></pre>
+
+    <h4>Parallel Execution with Promise.all</h4>
+
+    <pre><code class="language-javascript">
+// Sequential (slower) - waits for each one
+async function loadDataSequential(userId) {
+    const user = await fetchUser(userId);        // Wait 1 second
+    const posts = await fetchUserPosts(userId);  // Wait another 1 second
+    const friends = await fetchUserFriends(userId); // Wait another 1 second
+    // Total: ~3 seconds
+    return { user, posts, friends };
+}
+
+// Parallel (faster) - starts all at once
+async function loadDataParallel(userId) {
+    const [user, posts, friends] = await Promise.all([
+        fetchUser(userId),
+        fetchUserPosts(userId),
+        fetchUserFriends(userId)
+    ]);
+    // Total: ~1 second (whatever the slowest request takes)
+    return { user, posts, friends };
+}
+                </code></pre>
   </article>
+
   <!-- Links -->
   <div class="links">
-    <a
-      href="https://chatgpt.com/c/66f09b63-af4c-8008-9d01-d670c5593726"
-      target="_blank"
-      >Chat GPT Promises</a
-    >
-    <a
-      href="https://claude.ai/chat/cbcb7f02-fcd3-41e6-bb86-be70f116a1db"
-      target="_blank"
-      >Claude Asynchrony
-    </a>
-
-    <a
-      href="https://stackblitz.com/edit/stackblitz-starters-na8xwn?file=index.html"
-      target="_blank"
-      >Example Promises Live code</a
-    >
     <a
       href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"
       target="_blank"
       >MDN: Promises</a
     >
+    <a
+      href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function"
+      target="_blank"
+      >MDN: Async Functions</a
+    >
     <a href="https://javascript.info/promise-basics" target="_blank"
       >JavaScript.info: Promises</a
+    >
+    <a href="https://react.dev/learn/synchronizing-with-effects" target="_blank"
+      >React: Effects</a
+    >
+    <a href="https://web.dev/javascript-async/" target="_blank"
+      >Web.dev: Async JS</a
     >
     <a href="https://www.youtube.com/watch?v=DHvZLI7Db8E" target="_blank"
       >YouTube: Promises Explained</a
     >
     <a href="https://www.youtube.com/watch?v=KD2AjDAwhJs" target="_blank"
-      >You tube video Asynchrony
-    </a>
-    <a href="https://summarize.ing/video-209981-Asincron%C3%ADa-en-JavaScript-Todo-lo-que-necesitas-saber#Transcripts target="_blank"
-      >Summary You tube video Asynchrony
-    </a>
+      >YouTube video Asynchrony</a
+    >
+    <a
+      href="https://stackblitz.com/edit/stackblitz-starters-na8xwn?file=index.html"
+      target="_blank"
+      >Example Promises Live code</a
+    >
   </div>
 </section>
