@@ -7,6 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
       const section = e.target.getAttribute("data-section");
+      
+      // Update active link styling
+      updateActiveLink(e.target);
+      
+      // Load content
       loadContent(section);
     });
   });
@@ -20,6 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function loadContent(section) {
+    // Add loading state
+    content.classList.add('loading');
+    
     fetch(`sections/${section}.html`)
       .then((response) => {
         if (!response.ok) {
@@ -29,7 +37,13 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then((html) => {
         content.innerHTML = html;
+        content.classList.remove('loading'); // Remove loading state
         Prism.highlightAll(); // Apply syntax highlighting
+        
+        // Small delay to ensure content is rendered before scrolling
+        setTimeout(() => {
+          scrollToContent();
+        }, 100);
       })
       .catch((error) => {
         console.error("Error loading content:", error);
@@ -40,6 +54,40 @@ document.addEventListener("DOMContentLoaded", () => {
             <p>Error: ${error.message}</p>
           </div>
         `;
+        content.classList.remove('loading'); // Remove loading state
+        
+        // Still scroll to show the error message
+        setTimeout(() => {
+          scrollToContent();
+        }, 100);
       });
+  }
+
+  function scrollToContent() {
+    // Get the content element
+    const contentElement = document.getElementById("content");
+    
+    if (contentElement) {
+      // Calculate offset for better positioning (accounting for any fixed headers)
+      const offset = 20; // 20px from top for some breathing room
+      const elementPosition = contentElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      // Smooth scroll to the content
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
+  }
+
+  function updateActiveLink(clickedLink) {
+    // Remove current-section class from all links
+    document.querySelectorAll('nav a').forEach(link => {
+      link.classList.remove('current-section');
+    });
+    
+    // Add current-section class to clicked link
+    clickedLink.classList.add('current-section');
   }
 });

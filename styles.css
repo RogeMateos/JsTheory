@@ -5,6 +5,7 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth; /* Native smooth scrolling for supported browsers */
 }
 
 /* General body styling */
@@ -647,4 +648,39 @@ code:not(pre code) {
 .expandable-header:focus {
   outline: 2px solid #4299e1;
   outline-offset: 2px;
+}
+
+/* Loading animation for content transitions */
+#content {
+  transition: opacity 0.3s ease-in-out;
+}
+
+#content.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Smooth scroll offset for better positioning */
+.content-anchor {
+  scroll-margin-top: 20px;
+}
+
+/* Visual feedback for active navigation links */
+nav a.active {
+  background: #007bff;
+  color: white !important;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-weight: bold;
+}
+
+/* Highlight current section in navigation */
+.categories ul li a.current-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white !important;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-weight: bold;
+  transform: translateX(5px);
+  transition: all 0.3s ease;
 }
