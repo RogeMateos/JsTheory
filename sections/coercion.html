@@ -1,0 +1,38 @@
+<section  class="box">
+  <h2>Coercion Truthy and Falsy Values </h2>
+  <article>
+      <h3>Truthy and Falsy Values for Existence Checks</h3>
+      <p>In JavaScript, dynamic typing and type coercion allow for automatic conversion of values in certain contexts, such as in conditional statements. Understanding how the JavaScript engine treats <em>truthy</em> and <em>falsy</em> values can be used to simplify existence checks and write more efficient code. Key falsy values include <code>undefined</code>, <code>null</code>, <code>0</code>, <code>""</code> (empty string), and <code>false</code>.</p>
+      
+      <pre><code class="language-javascript">
+  // Example: Simple existence check with falsy values
+  var a;
+  if (a) {
+      console.log('Something is there');
+  } else {
+      console.log('Nothing is there');
+  }
+  // Output: "Nothing is there" because 'a' is undefined (a falsy value)
+      </code></pre>
+  
+      <pre><code class="language-javascript">
+  // Example: Handling 0 as a valid value
+  var a = 0;
+  if (a || a === 0) {
+      console.log('Something is there, including 0');
+  } else {
+      console.log('Nothing is there');
+  }
+  // Output: "Something is there, including 0" because 'a' is 0, which is considered valid here.
+      </code></pre>
+  </article>
+
+  <!-- Bloque de Dynamic Typing and Coercion -->
+  <div class="links">
+      <a href="https://www.udemy.com/course/understand-javascript/learn/lecture/2237498#overview" target="_blank">Udemy: Coercion Truthy and Falsy Values</a>
+      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof" target="_blank">MDN Web Docs: typeof Operator</a>
+      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness" target="_blank">MDN Web Docs: Equality Comparisons</a>
+      <a href="https://www.youtube.com/watch?v=boBnpK6WFOM" target="_blank">YouTube: JavaScript Truthy and Falsy Explained</a>
+      <a href="https://dev.to/alldanielscoding/understanding-truthy-and-falsy-values-in-javascript-49b2" target="_blank">Dev.to: Understanding Truthy and Falsy Values in JavaScript</a>
+  </div>
+</section>

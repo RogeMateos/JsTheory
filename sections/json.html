@@ -1,0 +1,42 @@
+<section class="box">
+  <h2>JSON vs Object Literals</h2>
+  <article>
+    <h3>JSON vs Object Literals</h3>
+    <p>
+      JSON (JavaScript Object Notation) is inspired by JavaScript object literals but is more strict and designed as a lightweight format for sending data over the internet. Although JSON looks like object literal syntax, they are not exactly the same, and understanding their differences helps prevent common mistakes.
+    </p>
+    <p>
+      The key difference is that JSON requires property names to be wrapped in quotes and does not support certain JavaScript-specific features like functions or undefined values.
+    </p>
+    <pre><code class="language-javascript">
+  // JavaScript Object Literal
+  const person = {
+      firstName: 'Mary',
+      isProgrammer: true
+  };
+  
+  // Convert to JSON string
+  const jsonString = JSON.stringify(person);
+  console.log(jsonString); 
+  // Output: {"firstName":"Mary","isProgrammer":true}
+  
+  // Convert JSON string back to object
+  const jsonValue = JSON.parse(jsonString);
+  console.log(jsonValue);
+  // Output: { firstName: 'Mary', isProgrammer: true }
+    </code></pre>
+    <p>
+      In contrast to XML, JSON is more compact and has become the standard format for exchanging data between servers and browsers, as well as in server environments like Node.js.
+    </p>
+  </article>
+
+  <!-- Bloque de JSON vs Object Literals -->
+  <div class="links">
+    <a href="https://claude.ai/chat/9e534f46-b0f1-4e46-a949-cb9309715dda" target="_blank">Claude</a>
+    <a href="https://chatgpt.com/c/66f35932-aa7c-8008-9510-0745bfd48617" target="_blank">Chat GPT</a>
+    <a href="https://chatgpt.com/c/66f3667e-1350-8008-b194-bc887e5a1108" target="_blank">Chat GPT2</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON" target="_blank">MDN Web Docs: JSON</a>
+    <a href="https://www.youtube.com/watch?v=ivfUjzy67KE" target="_blank">YouTube: JSON vs JavaScript Object Literals</a>
+    <a href="https://www.digitalocean.com/community/tutorials/json-stringify-json-parse-js" target="_blank">Digital Ocean: Working with JSON in JavaScript</a>
+  </div>
+</section>

@@ -1,0 +1,87 @@
+<!-- OBJECTS AND PRIMITIVE VALUES -->
+<section  class="box">
+  <h2>Objects and Primitive Values</h2>
+  <article>
+    <h3>Objects in JavaScript</h3>
+    <p>An object in JavaScript is a complex data type that allows you to store collections of data and more complex entities. Objects can contain properties and methods.</p>
+    <ul>
+      <li>They are mutable (can be changed after creation)</li>
+      <li>They are stored and copied by reference</li>
+      <li>They can contain multiple values as properties</li>
+      <li>They can have methods (functions as properties)</li>
+    </ul>
+    <pre><code class="language-javascript">
+      let person = {
+        name: "Alice",
+        age: 30,
+        greet: function() {
+          console.log("Hello, I'm " + this.name);
+        }
+      };
+      
+      person.greet(); // Output: Hello, I'm Alice
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Primitive Values</h3>
+    <p>Primitive values are the simplest data types in JavaScript. They include:</p>
+    <ul>
+      <li>String</li>
+      <li>Number</li>
+      <li>Boolean</li>
+      <li>Undefined</li>
+      <li>Null</li>
+      <li>Symbol</li>
+      <li>BigInt</li>
+    </ul>
+    <p>Key characteristics of primitives:</p>
+    <ul>
+      <li>They are immutable (cannot be changed after creation)</li>
+      <li>They are stored and copied by value</li>
+      <li>They represent a single value</li>
+    </ul>
+    <pre><code class="language-javascript">
+      let str = "Hello";
+      let num = 42;
+      let bool = true;
+      let undef = undefined;
+      let n = null;
+      let sym = Symbol("unique");
+      let bigInt = 1234567890123456789012345678901234567890n;
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Main Differences</h3>
+    <ol>
+      <li><strong>Complexity:</strong> Primitives are simple, single values; Objects can contain multiple values and have complex structures.</li>
+      <li><strong>Mutability:</strong> Primitives are immutable; Objects are mutable.</li>
+      <li><strong>Storage and copying:</strong> Primitives are copied by value; Objects are copied by reference.</li>
+      <li><strong>Comparison:</strong> Primitives are compared by value; Objects are compared by reference.</li>
+      <li><strong>Methods:</strong> Primitives don't have methods (although JavaScript temporarily wraps them in objects to allow method-like syntax); Objects can have methods.</li>
+    </ol>
+    <pre><code class="language-javascript">
+      // Primitives
+      let a = 5;
+      let b = a;
+      b = 10;
+      console.log(a); // 5
+      console.log(b); // 10
+
+      // Objects
+      let obj1 = {x: 5};
+      let obj2 = obj1;
+      obj2.x = 10;
+      console.log(obj1.x); // 10
+      console.log(obj2.x); // 10
+    </code></pre>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures" target="_blank">MDN: JavaScript data types and data structures</a>
+    <a href="https://javascript.info/object" target="_blank">javascript.info: Objects</a>
+    <a href="https://www.w3schools.com/js/js_object_definition.asp" target="_blank">W3Schools: JavaScript Objects</a>
+  </div>
+</section>

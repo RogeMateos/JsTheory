@@ -1,0 +1,85 @@
+<!-- DEFAULT VALUES -->
+<section id="default-values" class="box">
+    <h2>Setting Default Values</h2>
+    <article>
+      <h3>Logical OR (`||`) for Default Values</h3>
+      <p>JavaScript allows you to provide default values for function parameters, even if they aren't provided. By using the logical OR (`||`) operator, we can assign a fallback value when the argument passed to the function is `undefined`, `null`, or another falsy value.</p>
+  
+      <p>This is a useful technique to ensure that your function behaves predictably even when the caller does not provide all of the arguments.</p>
+  
+      <h4>Basic Example:</h4>
+      <pre><code class="language-javascript">
+        function greet(name) {
+          name = name || 'Your name here';
+          console.log('Hello ' + name);
+        }
+  
+        greet('Tony'); // Output: Hello Tony
+        greet();       // Output: Hello Your name here
+      </code></pre>
+  
+      <p>In this example, the `greet` function will output "Hello Tony" if the `name` parameter is provided. If not, it will use the default value "Your name here". This works because the OR operator returns the first "truthy" value it encounters.</p>
+  
+      <h4>How the OR Operator Works:</h4>
+      <p>The OR (`||`) operator in JavaScript is more than just a boolean operator. It evaluates the operands from left to right and returns the first operand that is "truthy". If none of the values are "truthy," it returns the last one.</p>
+  
+      <pre><code class="language-javascript">
+  // Example 1
+  console.log(true || false);  // Output: true
+  
+  // Example 2
+  console.log(undefined || 'hello'); // Output: hello
+  
+  // Example 3
+  console.log(0 || 'default');  // Output: default
+      </code></pre>
+  
+      <p>In the first example, `true || false` returns `true`, because `true` is a "truthy" value. In the second example, `undefined || 'hello'` returns `'hello'`, because `undefined` is falsy, and `'hello'` is truthy. In the third example, `0 || 'default'` returns `'default'` because `0` is falsy.</p>
+  
+      <h4>Default Value Assignment in Functions:</h4>
+      <p>When a function parameter is `undefined`, we can use the OR operator to provide a default value. This technique is commonly used in JavaScript libraries and frameworks. In this scenario, if the `name` parameter is missing or falsy, it will fall back to the default string 'Your name here'.</p>
+  
+      <pre><code class="language-javascript">
+        function greet(name) {
+          name = name || 'Your name here';
+          console.log('Hello ' + name);
+        }
+  
+        greet('Tony');       // Output: Hello Tony
+        greet(undefined);    // Output: Hello Your name here
+      </code></pre>
+  
+      <p>The OR operator evaluates `name`, and if it is `undefined`, `null`, or an empty string, the default value ('Your name here') will be used instead. This way, the function behaves gracefully even when arguments are missing.</p>
+  
+      <h4>Potential Pitfalls:</h4>
+      <p>While this pattern is useful, there are some cases where it might not work as expected. For example, `0`, `false`, or an empty string `''` are all falsy values, so they will trigger the default value:</p>
+  
+      <pre><code class="language-javascript">
+        greet(0);  // Output: Hello Your name here
+      </code></pre>
+  
+      <p>This happens because `0` is considered falsy, so it falls back to the default value. If you need to allow such values, you'll need to handle those cases more explicitly or use the nullish coalescing operator (`??`) introduced in ES2020, which only falls back when `undefined` or `null` is encountered:</p>
+  
+      <pre><code class="language-javascript">
+        function greet(name) {
+          name = name ?? 'Your name here';
+          console.log('Hello ' + name);
+        }
+  
+        greet(0);  // Output: Hello 0
+      </code></pre>
+  
+      <p>The nullish coalescing operator (`??`) only triggers the default value when the value is `null` or `undefined`, making it a more suitable alternative in some cases.</p>
+    </article>
+  
+    <!-- Links -->
+    <div class="links">
+      <a href="https://www.udemy.com/course/understand-javascript/learn/lecture/2237500#overview" target="_blank">Udemy: Setting Default Values</a>
+      <a href="https://chatgpt.com/c/66f1f476-5e98-8008-9942-97930f6d6b30" target="_blank">Chat GPT</a>
+      <a href="https://www.udemy.com/course/understand-javascript/learn/lecture/2237502#overview" target="_blank">Udemy: Setting Default Values framework</a>
+      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR" target="_blank">MDN: Logical OR (||) Operator</a>
+      <a href="https://javascript.info/logical-operators#or" target="_blank">JavaScript.info: Logical Operators</a>
+      <a href="https://www.youtube.com/watch?v=NIq3qLaHCIs" target="_blank">YouTube: Understanding OR Operator in JavaScript</a>
+    </div>
+  </section>
+  

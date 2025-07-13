@@ -1,0 +1,37 @@
+<section  class="box">
+  <h2>Data Types and Dynamic Typing</h2>
+  <article>
+      <h3>Data Types</h3>
+      <p>JavaScript has several data types, which are categorized into primitive and reference types:</p>
+      <ul>
+          <li><b>Primitive Types:</b> string, number, boolean, null, undefined, symbol, bigint.</li>
+          <li><b>Reference Types:</b> object, array, function.</li>
+      </ul>
+      <p>Primitive types hold their values directly, while reference types hold references to their values in memory.</p>
+      <pre><code class="language-javascript">
+          let str = 'Hello'; // Primitive type
+          let num = 42;      // Primitive type
+          let arr = [1, 2, 3]; // Reference type
+          let obj = { name: 'Alice' }; // Reference type
+      </code></pre>
+  </article>
+
+  <article>
+      <h3>Dynamic Typing</h3>
+      <p>JavaScript is a dynamically typed language, meaning that variables can hold values of any type and that type can change during runtime. This is different from statically typed languages, where a variable's type is fixed at compile time.</p>
+      <pre><code class="language-javascript">
+          let dynamicVar = 'This is a string';
+          console.log(typeof dynamicVar); // Output: string
+
+          dynamicVar = 100;
+          console.log(typeof dynamicVar); // Output: number
+      </code></pre>
+      <p>In the example above, the type of <code>dynamicVar</code> changes from string to number.</p>
+  </article>
+  <!-- Bloque de enlaces -->
+  <div class="links">
+      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures" target="_blank">MDN: Data Structures</a>
+      <a href="https://www.javascripttutorial.net/javascript-data-types/" target="_blank">JavaScript Data Types</a>
+      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/typeof" target="_blank">MDN: typeof Operator</a>
+  </div>
+</section>

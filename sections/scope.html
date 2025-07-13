@@ -1,0 +1,113 @@
+<section class="box">
+  <h2>Scope in JavaScript</h2>
+  
+  <p>Scope in JavaScript refers to the current context of code, which determines the accessibility of variables to JavaScript. There are three main types of scope: Global Scope, Function Scope, and Block Scope (introduced with ES6).</p>
+
+  <article>
+      <h3>Global Scope</h3>
+      <p>Variables declared outside of any function or block have global scope. They can be accessed from anywhere in the JavaScript program.</p>
+      <pre class="code-block"><code class="language-javascript">
+var globalVar = "I'm global";
+
+function someFunction() {
+console.log(globalVar); // Accessible
+}
+
+someFunction();
+console.log(globalVar); // Also accessible
+      </code></pre>
+  </article>
+
+  <article>
+      <h3>Function Scope</h3>
+      <p>Variables declared inside a function have function scope. They can only be accessed within that function.</p>
+      <pre class="code-block"><code class="language-javascript">
+function someFunction() {
+var localVar = "I'm local";
+console.log(localVar); // Accessible
+}
+
+someFunction();
+// Uncomment the next line to see the error:
+// console.log(localVar); // Error: localVar is not defined
+      </code></pre>
+  </article>
+
+  <article>
+      <h3>Block Scope</h3>
+      <p>Variables declared inside a block using let or const have block scope. They can only be accessed within that block.</p>
+      <pre class="code-block"><code class="language-javascript">
+if (true) {
+let blockVar = "I'm block-scoped";
+const alsoBlockScoped = "Me too";
+console.log(blockVar); // Accessible
+console.log(alsoBlockScoped); // Accessible
+}
+
+// Uncomment the next lines to see the errors:
+// console.log(blockVar); // Error: blockVar is not defined
+// console.log(alsoBlockScoped); // Error: alsoBlockScoped is not defined
+      </code></pre>
+  </article>
+
+  <article>
+      <h3>var vs let and const</h3>
+      <p>The var keyword creates function-scoped or globally-scoped variables, while let and const create block-scoped variables.</p>
+      <pre class="code-block"><code class="language-javascript">
+function varExample() {
+if (true) {
+  var x = 1; // Function scoped
+}
+console.log(x); // 1
+}
+
+function letExample() {
+if (true) {
+  let y = 1; // Block scoped
+}
+// Uncomment the next line to see the error:
+// console.log(y); // Error: y is not defined
+}
+
+varExample();
+letExample();
+      </code></pre>
+  </article>
+
+  <article>
+      <h3>Lexical Scope</h3>
+      <p>JavaScript uses lexical scoping, which means that functions are executed using the variable scope that was in effect when they were defined.</p>
+      <pre class="code-block"><code class="language-javascript">
+function outerFunction() {
+let outerVar = "I'm from outer";
+
+function innerFunction() {
+  console.log(outerVar); // Can access outerVar
+}
+
+innerFunction();
+}
+
+outerFunction();
+      </code></pre>
+  </article>
+
+  <article>
+      <h3>Best Practices</h3>
+      <ul>
+          <li>Minimize use of global variables to avoid naming conflicts and to make your code more modular.</li>
+          <li>Use <code>let</code> and <code>const</code> instead of <code>var</code> for more predictable scoping.</li>
+          <li>Declare variables at the top of their scope for better readability.</li>
+          <li>Use block scoping to your advantage to create more contained and maintainable code.</li>
+      </ul>
+  </article>
+
+  <article>
+      <h3>External Resources</h3>
+      <ul>
+          <li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Scope" target="_blank">MDN Web Docs: Scope</a></li>
+          <li><a href="https://www.w3schools.com/js/js_scope.asp" target="_blank">W3Schools: JavaScript Scope</a></li>
+          <li><a href="https://javascript.info/closure" target="_blank">JavaScript.info: Variable scope, closure</a></li>
+      </ul>
+  </article>
+</section>

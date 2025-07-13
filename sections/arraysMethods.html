@@ -1,0 +1,175 @@
+<section class="box">
+  <h2> Arrays Methods Map, Filter, Find, Reduce, Some, Every, Includes</h2>
+
+  <article>
+    <h3>Map</h3>
+    <p>The <strong>map</strong> method creates a new array by applying a function to each element of the original array.</p>
+    <pre><code class="language-javascript">
+const people = [
+{
+name: "Alice",
+age: 28,
+occupation: "Engineer"
+},
+{
+name: "Bob",
+age: 35,
+occupation: "Designer"
+},
+{
+name: "Charlie",
+age: 40,
+occupation: "Teacher"
+}
+];
+
+const names = people.map(function(person) {
+return person.name;
+});
+
+console.log(names);
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Filter</h3>
+    <p>The <strong>filter</strong> method takes an array and removes items that do not meet a specified criterion, likely resulting in an array with a length shorter than the original.</p>
+    <h4>First Example</h4>
+    <pre><code class="language-javascript">
+const overThirties = people.filter(function(person) {
+return person.age >= 30;
+});
+
+console.log(overThirties);
+    </code></pre>
+    <h4>Second Example</h4>
+    <pre><code class="language-javascript">
+const items = [
+  { name: 'Bike', price: 500 },
+  { name: 'TV', price: 800 },
+  { name: 'Laptop', price: 1200 },
+  { name: 'Phone', price: 700 },
+  { name: 'Headphones', price: 150 }
+];
+const affordableItems = items.filter(item => item.price <= 100);
+
+console.log(affordableItems);
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Find</h3>
+    <p>The <strong>find</strong> method returns the first element in the array that satisfies a specified condition. If no elements satisfy the condition, it returns <code>undefined</code>.</p>
+    <pre><code class="language-javascript">
+const people = [
+  { name: "Alice", age: 28, occupation: "Engineer" },
+  { name: "Bob", age: 35, occupation: "Designer" },
+  { name: "Charlie", age: 40, occupation: "Teacher" }
+];
+const firstEngineer = people.find(function(person) {
+return person.occupation === "Engineer";
+});
+
+console.log(firstEngineer); 
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Reduce</h3>
+    <p>The <strong>reduce</strong> method is used to reduce an array to a single value, which is typically not an array but could be a number, string, or any other data type.</p>
+    <pre><code class="language-javascript">
+const totalAge = people.reduce(function(accumulator, person) {
+return accumulator + person.age;
+}, 0);
+
+console.log(totalAge);
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Some</h3>
+    <p>The <strong>some</strong> method checks if at least one element in the array meets a specified condition. It returns <code>true</code> if any element satisfies the condition, and <code>false</code> otherwise.</p>
+    <pre><code class="language-javascript">
+const hasDesigner = people.some(function(person) {
+return person.occupation === "Designer";
+});
+
+console.log(hasDesigner); // Logs: true
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Every</h3>
+    <p>The <strong>every</strong> method checks if all elements in the array meet a specified condition. It returns <code>true</code> if all elements satisfy the condition, and <code>false</code> otherwise.</p>
+    <pre><code class="language-javascript">
+const allOverTwenty = people.every(function(person) {
+return person.age > 20;
+});
+
+console.log(allOverTwenty); // Logs: true
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Includes</h3>
+    <p>The <strong>includes</strong> method checks if an array contains a specified element. It returns <code>true</code> if the element is found, and <code>false</code> otherwise.</p>
+    <pre><code class="language-javascript">
+const occupations = people.map(person => person.occupation);
+const hasTeacher = occupations.includes("Teacher");
+
+console.log(hasTeacher); // Logs: true
+    </code></pre>
+  </article>
+
+  <div class="links">
+    <a href="https://www.youtube.com/watch?v=8MoElay6dWU" target="_blank">Video Map, Filter, Reduce</a>
+    <a href="https://summarize.ing/video-79466-Map-Filter-Reduce-EXPLAINED-in-JavaScript-It-s-EASY-" target="_blank">Summarize Map filter reduce</a>
+    <a href="https://www.youtube.com/watch?v=R8rmfD9Y5-c" target="_blank">Video Some, Every, Includes</a>
+    <a href="https://www.youtube.com/watch?v=RVxuGCWZ_8E" target="_blank">All Arrays Methods</a>
+    <a href="https://chatgpt.com/c/5ba003ae-7432-4511-9793-d17c8b26542a" target="_blank">ChatGPT</a>
+  </div>
+</section>
+
+<section class="box">
+  <h2>Arrays Methods Map and ForEach difference</h2>
+  <article>
+    <h3>Differences</h3>
+    <p>forEach does not return a new array; it returns undefined. map returns a new array with the results of the transformation.</p>
+    <div class="links">
+      <a href="https://chatgpt.com/c/f5507d04-6485-4ad1-a7e7-742676b929c6">Chat GPT</a>
+    </div>
+  </article>
+
+  <article>
+    <h3>ForEach</h3>
+    <p>Used for executing a function on each element of an array without returning a new array.</p>
+    <pre><code class="language-javascript">
+const numeros = [1, 2, 3, 4, 5];
+
+numeros.forEach(x => {
+console.log(x); // Logs: 1, 2, 3, 4, 5
+});
+
+const res01 = numeros.forEach(x => x * 5);
+console.log(res01); // Logs: undefined
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Map</h3>
+    <p>Creates a new array by applying a function to each element of the original array.</p>
+    <pre><code class="language-javascript">
+const numeros = [1, 2, 3, 4, 5];
+
+const res01 = numeros.map(x => x * 5);
+console.log(res01); // Logs: [5, 10, 15, 20, 25]
+    </code></pre>
+  </article>
+
+  <div class="links">
+    <a href="https://www.youtube.com/watch?v=HQCZBkwEWys" target="_blank">Video ForEach vs. map</a>
+    <a href="https://summarize.ing/video-79507-JavaScript-forEach-vs-map-%E2%80%94-When-To-Use-Each-and-Why" target="_blank">Summarize ForEach vs. map</a>
+    <a href="https://summarize.ing/video-80882-La-diferencia-de-usar-forEach-y-map-en-javascript-es6" target="_blank">Video ForEach vs. map, Spanish</a>
+    <a href="https://www.youtube.com/watch?v=1R3hlqUMmk8" target="_blank">Summarize ForEach vs. map, Spanish</a>
+  </div>
+</section>
