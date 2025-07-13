@@ -21,13 +21,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function loadContent(section) {
     fetch(`sections/${section}.html`)
-      .then((response) => response.text())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+      })
       .then((html) => {
         content.innerHTML = html;
         Prism.highlightAll(); // Apply syntax highlighting
       })
       .catch((error) => {
         console.error("Error loading content:", error);
+        content.innerHTML = `
+          <div class="box">
+            <h2>Error Loading Content</h2>
+            <p>Sorry, the content for "${section}" could not be loaded.</p>
+            <p>Error: ${error.message}</p>
+          </div>
+        `;
       });
   }
 });
