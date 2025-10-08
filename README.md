@@ -23,10 +23,13 @@ This repository contains a comprehensive collection of JavaScript theory and con
 - Spread Operator
 - Variables (var, let, const)
 
+- Asynchronism
+
 ## Project Structure
 
 ```
 ├── sections/           # Contains individual HTML files for each concept
+├── asynchronous/      # Contains Promises and async/await examples
 ├── script.js          # Main JavaScript file
 ├── styles.css         # Styling
 └── index.html         # Main entry point

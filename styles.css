@@ -379,11 +379,17 @@ code:not(pre code) {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .code-comparison .before,
 .code-comparison .after {
   padding: 15px;
+  overflow-x: auto;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .code-comparison .before {
@@ -608,10 +614,23 @@ code:not(pre code) {
   margin-right: 8px;
 }
 
+/* Tablet responsiveness for code comparison */
+@media (max-width: 1024px) {
+  .code-comparison {
+    gap: 15px;
+  }
+  
+  .code-comparison .before,
+  .code-comparison .after {
+    padding: 12px;
+  }
+}
+
 /* Mobile responsiveness for new elements */
 @media (max-width: 768px) {
   .code-comparison {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
   
   .code-comparison .before {
