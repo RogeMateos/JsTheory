@@ -1,0 +1,354 @@
+<section class="box">
+  <h2>Tutorial: Async/Await in JavaScript 🚀</h2>
+  <article>
+    <h3>Introduction</h3>
+    <p>
+      Let me explain clearly how asynchrony works in JavaScript, especially async/await,
+      which is the most modern and easy way to work with asynchronous code.
+    </p>
+
+    <h3>What Problem Are We Solving?</h3>
+    <p>
+      Imagine you have code that needs to wait (like calling an API, reading a file, or querying a database).
+      JavaScript normally executes everything line by line without waiting, but sometimes we need it to wait.
+    </p>
+
+    <h3>Basic Example: Synchronous Code</h3>
+    <p>Let's start with a normal function:</p>
+    <pre><code class="language-javascript">function process() {
+  console.log("Start of process");
+  console.log("End of process");
+}
+
+process();
+    </code></pre>
+
+    <p><strong>Result:</strong></p>
+    <pre><code>Start of process
+End of process
+    </code></pre>
+
+    <p>Everything executes in order, line by line. Simple, right?</p>
+
+    <h3>The Problem: We Need to Wait</h3>
+    <p>
+      But... what happens if we need to wait 5 seconds between the start and the end?
+      This is where async/await comes in.
+    </p>
+
+    <h3>The Solution: Async/Await</h3>
+
+    <h4>Step 1: Make the Function Asynchronous</h4>
+    <p>
+      To convert a normal function into an asynchronous one, you just need to add the word
+      <code>async</code> before <code>function</code>:
+    </p>
+    <pre><code class="language-javascript">async function process() {
+  console.log("Start of process");
+  console.log("End of process");
+}
+    </code></pre>
+
+    <p>It's already asynchronous! But it's not waiting for anything yet...</p>
+
+    <h4>Step 2: Create Something to Wait For</h4>
+    <p>
+      First, we need to simulate an operation that takes time. We create a helper function:
+    </p>
+    <pre><code class="language-javascript">function wait(milliseconds) {
+  return new Promise(resolve => {
+    setTimeout(resolve, milliseconds);
+  });
+}
+    </code></pre>
+
+    <p>
+      <strong>What does this do?</strong> It creates a "promise" that resolves after X milliseconds.
+      It's like saying "wait this amount of time and then continue."
+    </p>
+
+    <h4>Step 3: Use await to Wait</h4>
+    <p>Now yes, we use <code>await</code> to tell JavaScript: "Wait here!":</p>
+    <pre><code class="language-javascript">async function process() {
+  console.log("Start of process");
+
+  await wait(5000); // Wait 5 seconds!
+
+  console.log("End of process - after 5 seconds");
+}
+
+process();
+    </code></pre>
+
+    <p><strong>Result:</strong></p>
+    <pre><code>Start of process
+(waits 5 seconds...)
+End of process - after 5 seconds
+    </code></pre>
+
+    <h3>More Complex Example: Multiple Waits</h3>
+    <p>You can chain multiple operations with await:</p>
+    <pre><code class="language-javascript">async function process() {
+  console.log("Start of process");
+
+  await wait(5000);
+  console.log("After 5 seconds");
+
+  await wait(1000);
+  console.log("After 1 more second");
+
+  await wait(2000);
+  console.log("After 2 more seconds");
+
+  console.log("End of process");
+}
+    </code></pre>
+
+    <p><strong>Result:</strong></p>
+    <pre><code>Start of process
+(waits 5 seconds)
+After 5 seconds
+(waits 1 second)
+After 1 more second
+(waits 2 seconds)
+After 2 more seconds
+End of process
+    </code></pre>
+
+    <h3>Golden Rules 📝</h3>
+    <ol>
+      <li><code>async</code> converts a function into asynchronous</li>
+      <li><code>await</code> pauses execution until the promise completes</li>
+      <li>You can only use <code>await</code> inside <code>async</code> functions</li>
+      <li>Code with <code>await</code> looks and reads like normal code, but waits when needed!</li>
+    </ol>
+
+    <h3>Real Practical Example</h3>
+    <p>Imagine you're calling an API:</p>
+    <pre><code class="language-javascript">async function getData() {
+  console.log("Calling the API...");
+
+  const response = await fetch('https://api.example.com/data');
+  const data = await response.json();
+
+  console.log("Data received:", data);
+  return data;
+}
+    </code></pre>
+
+    <p>Without async/await, you would have to use callbacks or .then() which are more complicated to read.</p>
+
+    <h3>Why is async/await Better?</h3>
+
+    <h4>Before (with Promises):</h4>
+    <pre><code class="language-javascript">fetch('url')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+    </code></pre>
+
+    <h4>Now (with async/await):</h4>
+    <pre><code class="language-javascript">async function getData() {
+  try {
+    const response = await fetch('url');
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+    </code></pre>
+
+    <p>Much clearer and easier to understand! 🎉</p>
+
+    <h3>Error Handling with try/catch</h3>
+    <p>
+      With async/await, error handling becomes much more intuitive using try/catch blocks:
+    </p>
+    <pre><code class="language-javascript">async function loadUserData(userId) {
+  try {
+    console.log(`Loading user ${userId}...`);
+
+    const response = await fetch(`https://api.example.com/users/${userId}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const userData = await response.json();
+    console.log("User loaded:", userData);
+    return userData;
+
+  } catch (error) {
+    console.error("Error loading user:", error.message);
+    throw error; // Re-throw if needed
+  }
+}
+    </code></pre>
+
+    <h3>Multiple Parallel Requests</h3>
+    <p>
+      If you have multiple independent async operations, you can run them in parallel
+      using <code>Promise.all()</code>:
+    </p>
+    <pre><code class="language-javascript">async function loadMultipleUsers() {
+  try {
+    // These requests run in parallel, not sequentially
+    const [user1, user2, user3] = await Promise.all([
+      fetch('https://api.example.com/users/1').then(r => r.json()),
+      fetch('https://api.example.com/users/2').then(r => r.json()),
+      fetch('https://api.example.com/users/3').then(r => r.json())
+    ]);
+
+    console.log("All users loaded:", user1, user2, user3);
+  } catch (error) {
+    console.error("Error loading users:", error);
+  }
+}
+    </code></pre>
+
+    <h3>Sequential vs Parallel Execution</h3>
+
+    <h4>Sequential (one after another):</h4>
+    <pre><code class="language-javascript">async function sequential() {
+  const result1 = await fetch('url1'); // Wait for this
+  const result2 = await fetch('url2'); // Then wait for this
+  const result3 = await fetch('url3'); // Then wait for this
+  // Total time: time1 + time2 + time3
+}
+    </code></pre>
+
+    <h4>Parallel (all at once):</h4>
+    <pre><code class="language-javascript">async function parallel() {
+  const [result1, result2, result3] = await Promise.all([
+    fetch('url1'),
+    fetch('url2'),
+    fetch('url3')
+  ]);
+  // Total time: max(time1, time2, time3)
+}
+    </code></pre>
+
+    <h3>Async/Await with Loops</h3>
+    <p>You can use async/await inside loops:</p>
+    <pre><code class="language-javascript">async function processItems(items) {
+  for (const item of items) {
+    // Process each item sequentially
+    const result = await processItem(item);
+    console.log(`Processed ${item}:`, result);
+  }
+  console.log("All items processed!");
+}
+
+// Or process all items in parallel
+async function processItemsParallel(items) {
+  const results = await Promise.all(
+    items.map(item => processItem(item))
+  );
+  console.log("All results:", results);
+}
+    </code></pre>
+
+    <h3>Key Points to Remember 🎯</h3>
+    <ul>
+      <li><strong>async</strong> functions always return a Promise</li>
+      <li><strong>await</strong> can only be used inside async functions</li>
+      <li>async/await makes asynchronous code look synchronous</li>
+      <li>Use try/catch for error handling</li>
+      <li>Use Promise.all() for parallel operations</li>
+      <li>Be careful with loops - understand sequential vs parallel execution</li>
+    </ul>
+
+    <h3>Common Mistakes to Avoid ❌</h3>
+    <ol>
+      <li>
+        <strong>Using await outside async functions</strong>
+        <pre><code class="language-javascript">// ❌ Wrong
+function getData() {
+  const data = await fetch('url'); // Error!
+}
+
+// ✅ Correct
+async function getData() {
+  const data = await fetch('url');
+}
+        </code></pre>
+      </li>
+      <li>
+        <strong>Forgetting to use await</strong>
+        <pre><code class="language-javascript">// ❌ Wrong - returns a Promise, not the data
+async function getData() {
+  const data = fetch('url'); // Missing await!
+  console.log(data); // Promise object, not data
+}
+
+// ✅ Correct
+async function getData() {
+  const data = await fetch('url');
+  console.log(data); // Actual data
+}
+        </code></pre>
+      </li>
+      <li>
+        <strong>Not handling errors</strong>
+        <pre><code class="language-javascript">// ❌ Wrong - errors not handled
+async function getData() {
+  const data = await fetch('url');
+}
+
+// ✅ Correct
+async function getData() {
+  try {
+    const data = await fetch('url');
+  } catch (error) {
+    console.error(error);
+  }
+}
+        </code></pre>
+      </li>
+    </ol>
+
+    <h3>Final Summary</h3>
+    <p>
+      <strong>async/await is like giving your functions superpowers to wait without blocking the entire program.</strong>
+      It's the most modern, clean, and easy way to work with asynchronous code in JavaScript.
+    </p>
+
+    <h3>Related pages</h3>
+    <ul>
+      <li>
+        <a href="#" data-section="asynchronous/promises"
+          >Promises</a
+        >
+      </li>
+      <li>
+        <a href="#" data-section="asynchronous/callbacks-event-loop"
+          >Callbacks & Event Loop</a
+        >
+      </li>
+      <li>
+        <a href="#" data-section="asynchronous/event-loop"
+          >Event Loop (step by step)</a
+        >
+      </li>
+      <li>
+        <a href="#" data-section="asynchronous/asynchrony"
+          >Asynchronism Overview</a
+        >
+      </li>
+    </ul>
+
+    <h3>Additional Resources</h3>
+    <ul>
+      <li>
+        <a href="https://7z3n9j.csb.app/" target="_blank" rel="noopener noreferrer"
+          >Interactive Async/Await Demo</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>
