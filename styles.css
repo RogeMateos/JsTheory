@@ -220,6 +220,14 @@ code:not(pre code) {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  body {
+    font-size: 18px;
+  }
+
+  #title {
+    font-size: 32px;
+  }
+
   .container {
     padding: 10px;
   }
