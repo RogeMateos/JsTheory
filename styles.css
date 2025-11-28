@@ -49,6 +49,24 @@ nav a:hover {
 .container {
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+nav {
+  flex: 0 0 260px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 10px;
+}
+
+#content {
+  flex: 1;
 }
 
 /* Box styling */
@@ -230,6 +248,21 @@ code:not(pre code) {
 
   .container {
     padding: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  nav {
+    position: static;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .categories h3 {
+    justify-content: center;
   }
 
   .box {
@@ -267,6 +300,10 @@ code:not(pre code) {
   background-color: #f0f0f0;
   padding: 0.5rem;
   margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 6px;
 }
 
 .categories ul {
