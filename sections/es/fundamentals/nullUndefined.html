@@ -1,0 +1,40 @@
+<!-- NULL AND UNDEFINED ------------------------->
+<section class="box">
+  <h2>Null y Undefined</h2>
+  <article>
+    <h3>Entendiendo Null y Undefined</h3>
+    <p>Ambos representan ausencia de valor, pero con significados distintos:</p>
+    <p><b>undefined:</b> ausencia porque aún no se asignó nada (variable declarada sin inicializar).</p>
+    <p><b>null:</b> ausencia <em>intencional</em>. Se asigna explícitamente para indicar “vacío”.</p>
+    <pre><code class="language-javascript">
+let myVariable = null; // Vacío a propósito
+let myOtherVariable;   // Declarada sin asignar → undefined
+
+console.log(myVariable);       // null
+console.log(myOtherVariable);  // undefined
+    </code></pre>
+    <h3>Diferencias clave</h3>
+    <h4>Chequeo de tipo:</h4>
+    <p><b>typeof null</b> devuelve "object" (quirk histórico de JS).</p>
+    <p><b>typeof undefined</b> devuelve "undefined".</p>
+    <h4>Comparación:</h4>
+    <p><b>Igualdad débil (==):</b> <code>null == undefined</code> es true porque se consideran equivalentes en valor.</p>
+    <p><b>Igualdad estricta (===):</b> <code>null === undefined</code> es false porque son tipos distintos.</p>
+    <pre><code class="language-javascript">
+console.log(undefined == null);  // true
+console.log(undefined === null); // false
+    </code></pre>
+    <h3>Buenas prácticas</h3>
+    <ul>
+      <li>Usa <code>===</code> para evitar coerción inesperada.</li>
+      <li>Usa <code>undefined</code> para variables sin inicializar.</li>
+      <li>Usa <code>null</code> para expresar “sin valor” de forma intencional.</li>
+    </ul>
+    <p>Prefiere <code>===</code> sobre <code>==</code> siempre que sea posible.</p>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://code-boxx.com/javascript-null-vs-undefined-vs-empty/" target="_blank">Null vs Undefined</a>
+  </div>
+</section>

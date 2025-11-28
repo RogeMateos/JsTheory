@@ -1,0 +1,38 @@
+<section class="box">
+  <h2>Referencia vs valor</h2>
+  <p>Los primitivos se copian por valor; los objetos/arrays/funciones se copian por referencia.</p>
+
+  <article>
+    <h3>Valor (primitivos)</h3>
+    <p>Al asignar un primitivo, se copia el valor. Cada variable es independiente.</p>
+    <pre><code class="language-javascript">
+let a = 10;
+let b = a; // copia del valor
+b = 20;
+console.log(a); // 10
+console.log(b); // 20
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Referencia (objetos)</h3>
+    <p>Al asignar un objeto/array, se copia la referencia. Ambas variables apuntan al mismo lugar.</p>
+    <pre><code class="language-javascript">
+let obj1 = { name: 'Alice' };
+let obj2 = obj1; // misma referencia
+obj2.name = 'Bob';
+console.log(obj1.name); // Bob
+console.log(obj2.name); // Bob
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>Mutaciones compartidas</h4>
+      <p>Cambiar propiedades desde una variable afecta a todas las referencias.</p>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#primitive_values" target="_blank">MDN: valores primitivos</a>
+    <a href="https://www.javascripttutorial.net/javascript-pass-by-value-vs-pass-by-reference/" target="_blank">Value vs reference</a>
+  </div>
+</section>

@@ -2,6 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const content = document.getElementById("content");
   const links = document.querySelectorAll("nav a");
   const categories = document.querySelectorAll(".categories > li > h3");
+  const langButtons = document.querySelectorAll(".lang-btn");
+  
+  let currentLanguage = "en";
+  let currentSection = null;
 
   links.forEach((link) => {
     link.addEventListener("click", (e) => {
@@ -12,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
       updateActiveLink(e.target);
       
       // Load content
+      currentSection = section;
       loadContent(section);
     });
   });
@@ -20,15 +25,47 @@ document.addEventListener("DOMContentLoaded", () => {
     category.addEventListener("click", () => {
       const subMenu = category.nextElementSibling;
       subMenu.style.display =
-        subMenu.style.display === "block" ? "none" : "block";
+      subMenu.style.display === "block" ? "none" : "block";
     });
   });
+
+  langButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const selectedLang = button.getAttribute("data-lang");
+      if (selectedLang === currentLanguage) return;
+      setLanguage(selectedLang);
+    });
+  });
+
+  function setLanguage(lang) {
+    currentLanguage = lang;
+    langButtons.forEach((btn) => {
+      btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
+    });
+
+    // Reload current section in the chosen language
+    if (currentSection) {
+      loadContent(currentSection);
+    }
+  }
 
   function loadContent(section) {
     // Add loading state
     content.classList.add('loading');
     
-    fetch(`sections/${section}.html`)
+    const primaryPath = `sections/${currentLanguage}/${section}.html`;
+    const fallbackPath = `sections/en/${section}.html`;
+
+    fetch(primaryPath)
+      .then((response) => {
+        if (!response.ok) {
+          if (currentLanguage !== "en") {
+            return fetch(fallbackPath);
+          }
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response;
+      })
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

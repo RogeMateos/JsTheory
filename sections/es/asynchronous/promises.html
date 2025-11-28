@@ -1,0 +1,83 @@
+<section class="box">
+  <h2>Promesas en JavaScript</h2>
+  <article>
+    <h3>¿Qué es una promesa?</h3>
+    <p>Objeto que representa un resultado futuro: pendiente, resuelta o rechazada. Como pedir comida a domicilio: tienes la promesa, pero aún no llega.</p>
+
+    <h3>Estados</h3>
+    <ol>
+      <li><strong>Pendiente</strong></li>
+      <li><strong>Resuelta</strong></li>
+      <li><strong>Rechazada</strong></li>
+    </ol>
+
+    <h3>Crear y consumir</h3>
+    <pre><code class="language-javascript">const myPromise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    const ok = true;
+    ok ? resolve("Listo") : reject("Error");
+  }, 1000);
+});
+
+myPromise
+  .then(res => console.log(res))
+  .catch(err => console.error(err))
+  .finally(() => console.log("Siempre se ejecuta"));
+    </code></pre>
+
+    <h3>Ejemplo práctico: pizza 🍕</h3>
+    <pre><code class="language-javascript">function orderPizza(type) {
+  return new Promise((resolve, reject) => {
+    console.log(`Preparando ${type}...`);
+    setTimeout(() => {
+      const menu = ['pepperoni', 'margherita'];
+      menu.includes(type)
+        ? resolve(`Tu ${type} está lista 🍕`)
+        : reject(`No tenemos ${type}`);
+    }, 1500);
+  });
+}
+
+orderPizza('pepperoni')
+  .then(msg => console.log(msg))
+  .catch(err => console.error(err));
+    </code></pre>
+
+    <h3>Encadenar promesas</h3>
+    <pre><code class="language-javascript">function step(msg, t) {
+  return new Promise(res => setTimeout(() => {
+    console.log(msg);
+    res();
+  }, t));
+}
+
+step("Paso 1", 500)
+  .then(() => step("Paso 2", 500))
+  .then(() => step("Paso 3", 500))
+  .then(() => console.log("Completado 🎉"));
+    </code></pre>
+
+    <h3>Vs callback hell</h3>
+    <pre><code class="language-javascript">// Antes
+operation1(function(r1) {
+  operation2(r1, function(r2) {
+    operation3(r2, function(r3) {
+      operation4(r3, function(r4) {
+        // difícil de leer
+      });
+    });
+  });
+});
+
+// Con promesas
+operation1()
+  .then(r1 => operation2(r1))
+  .then(r2 => operation3(r2))
+  .then(r3 => operation4(r3))
+  .catch(console.error);
+    </code></pre>
+
+    <h3>Lado A/Lado B</h3>
+    <p><code>resolve</code> = éxito, <code>reject</code> = error. Maneja ambos caminos siempre.</p>
+  </article>
+</section>

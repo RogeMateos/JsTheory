@@ -1,0 +1,57 @@
+<section class="box">
+  <h2>Destructuring</h2>
+  <article>
+      <h3>Destructuring</h3>
+      <p>Object destructuring is a new way to extract elements from an object or an array.</p>
+      <p>For arrays, destructuring is used to find elements from an array and store them into variables in a simplified form. Consider the following array</p>
+      <p>Destructuring is a syntax in JavaScript that allows you to unpack values from arrays or properties from objects into distinct variables. It provides a shorthand way to extract data and simplifies working with complex data structures.</p>
+      
+      <h4>Array Destructuring:</h4>
+      <pre><code class="language-javascript">
+      const numbers = [1, 2, 3, 4];
+  
+      // Traditional way
+      const first = numbers[0];
+      const second = numbers[1];
+  
+      // Destructuring
+      const [first, second, , fourth] = numbers;
+  
+      console.log(first); // Output: 1
+      console.log(second); // Output: 2
+      console.log(fourth); // Output: 4
+      </code></pre>
+  
+      <h4>Object Destructuring:</h4>
+      <pre><code class="language-javascript">
+      const person = { name: 'Alice', age: 25, country: 'UK' };
+  
+      // Traditional way
+      const name = person.name;
+      const age = person.age;
+  
+      // Destructuring
+      const { name, age, country } = person;
+  
+      console.log(name); // Output: Alice
+      console.log(age); // Output: 25
+      console.log(country); // Output: UK
+      </code></pre>
+      
+      <h4>Renaming Variables:</h4>
+      <p>You can also rename variables while destructuring:</p>
+      <pre><code class="language-javascript">
+      const { name: fullName, age: yearsOld } = person;
+      
+      console.log(fullName); // Output: Alice
+      console.log(yearsOld); // Output: 25
+      </code></pre>
+  </article>
+  
+  <!-- Links -->
+  <div class="links">
+      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment" target="_blank">MDN: Destructuring Assignment</a>
+      <a href="https://javascript.info/destructuring-assignment" target="_blank">JavaScript.info: Destructuring Assignment</a>
+      <a href="https://www.youtube.com/watch?v=NIq3qLaHCIs" target="_blank">YouTube: Destructuring Explained (Traversy Media)</a>
+  </div>
+</section>

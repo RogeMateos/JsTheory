@@ -1,0 +1,41 @@
+<section class="box">
+  <h2>Memoization</h2>
+  <article>
+    <h3>¿Qué es?</h3>
+    <p>Técnica de optimización: guarda en caché resultados de llamadas costosas para no recalcular cuando los argumentos se repiten.</p>
+    
+    <h4>Ejemplo: función memoizada</h4>
+    <pre><code class="language-javascript">
+    function memoizedAdd() {
+      let cache = {};
+
+      return function(num) {
+        if (num in cache) {
+          console.log('Fetching from cache:', num);
+          return cache[num];
+        } else {
+          console.log('Calculating result:', num);
+          let result = num + 10; // aquí iría el cálculo costoso
+          cache[num] = result;
+          return result;
+        }
+      };
+    }
+
+    const add = memoizedAdd();
+    console.log(add(5)); // Calculating result: 15
+    console.log(add(5)); // Fetching from cache: 15
+    console.log(add(6)); // Calculating result: 16
+    </code></pre>
+    <p>La segunda llamada con 5 usa cache; con 6 recalcula y guarda.</p>
+  </article>
+
+  <!-- Links -->
+  <div class="links">
+    <a href="https://www.youtube.com/watch?v=mKNtUsGrV0w" target="_blank">Memoization YouTube</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Glossary/Memoization" target="_blank">MDN: Memoization</a>
+    <a href="https://www.freecodecamp.org/news/understanding-memoization-in-javascript-51d07d19430e/" target="_blank">FreeCodeCamp: Understanding Memoization</a>
+    <a href="https://www.youtube.com/watch?v=N0fr5UU0kU8" target="_blank">YouTube: Memoization Explained (Codevolution)</a>
+    <a href="https://www.geeksforgeeks.org/javascript-memoization/" target="_blank">GeeksforGeeks: JavaScript Memoization</a>
+  </div>
+</section>

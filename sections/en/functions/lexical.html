@@ -1,0 +1,107 @@
+<!-- LEXICAL ENVIRONMENT, EXECUTION CONTEXT -->
+<section id="Lexical" class="box">
+  <h2> Lexical and Execution Context </h2>
+  <article>
+    <h3>Lexical</h3>
+    <p>The lexical environment is concerned with where the code is written. It dictates the scope and visibility of variables and functions based on their physical placement in the code.</p>
+    <pre><code class="language-javascript">
+      function outerFunction() {
+          var outerVar = 'I am outside!';
+
+          function innerFunction() {
+              var innerVar = 'I am inside!';
+              console.log(outerVar); // Accessing outerVar from inner function
+          }
+
+          innerFunction();
+          console.log(innerVar); // This will cause an error: innerVar is not defined
+      }
+
+      outerFunction();
+    </code></pre>
+    <h3>Explanation</h3>
+    <ul>
+      <li><code>outerVar</code> is defined in the lexical environment of <code>outerFunction</code>. It is accessible throughout <code>outerFunction</code> and any inner functions.</li>
+      <li><code>innerVar</code> is defined in the lexical environment of <code>innerFunction</code>. It is only accessible within <code>innerFunction</code>.</li>
+    </ul>
+    <p>The lexical environment determines the scope based on where variables and functions are physically written in the code. Here, <code>innerVar</code> is not accessible in <code>outerFunction</code> because it is lexically scoped within <code>innerFunction</code>.</p>
+  </article>
+
+  <article>
+    <h3>Execution Context</h3>
+    <p>The execution context is concerned with what code is currently being executed. Each time a function is called, a new execution context is created. It manages the code that is running, including which variables and functions are accessible at that time.</p>
+    <pre><code class="language-javascript">
+      var globalVar = 'I am global!';
+
+      function firstFunction() {
+          var firstVar = 'I am in firstFunction!';
+
+          function secondFunction() {
+              var secondVar = 'I am in secondFunction!';
+              console.log(globalVar); // Accessing globalVar
+              console.log(firstVar);  // Accessing firstVar
+              console.log(secondVar); // Accessing secondVar
+          }
+
+          secondFunction();
+      }
+
+      firstFunction();
+    </code></pre>
+    <h3>Explanation</h3>
+    <ul>
+      <li>When <code>firstFunction</code> is called, a new execution context is created for it. This context includes <code>globalVar</code> and <code>firstVar</code>.</li>
+      <li>When <code>secondFunction</code> is called, another execution context is created for it. This context includes <code>globalVar</code>, <code>firstVar</code>, and <code>secondVar</code>.</li>
+    </ul>
+    <p>Each function call creates a new execution context, which contains all the variables and functions available at that time. These contexts stack up, and the currently active one is at the top.</p>
+  </article>
+
+  <h3>Summary</h3>
+  <h4>Lexical Environment:</h4>
+  <ul>
+    <li>Refers to the physical location of code.</li>
+    <li>Determines variable/function scope based on where they are written.</li>
+    <li>Static, does not change when code is executed.</li>
+  </ul>
+
+  <h4>Execution Context:</h4>
+  <ul>
+    <li>Refers to the currently executing code.</li>
+    <li>Manages the scope and context of variables/functions while the code runs.</li>
+    <li>Dynamic, changes with each function call or execution phase.</li>
+  </ul>
+
+  <pre><code class="language-javascript">
+    var globalVar = 'I am global!';
+
+    function firstFunction() {
+        var firstVar = 'I am in firstFunction!';
+
+        function secondFunction() {
+            var secondVar = 'I am in secondFunction!';
+
+            function thirdFunction() {
+                var thirdVar = 'I am in thirdFunction!';
+                console.log(globalVar); // Accessing globalVar
+                console.log(firstVar);  // Accessing firstVar
+                console.log(secondVar); // Accessing secondVar
+                console.log(thirdVar);  // Accessing thirdVar
+            }
+
+            thirdFunction();
+        }
+
+        secondFunction();
+    }
+
+    firstFunction();
+  </code></pre>
+
+  <!-- Bloque de enlaces -->
+  <div class="links">
+    <a href="https://chatgpt.com/c/ba770bf4-a012-4908-a070-10e9eeaef3fb" target="_blank">Chat Gpt 5 years old explanation</a>
+    <a href="https://www.youtube.com/watch?v=3V5SzF3bBZQ&list=PL7RhnTJi-WKp0sQExARliBUt1yMJSON5t&index=29" target="_blank">Contexto de ejecución</a>
+    <a href="https://www.youtube.com/watch?v=oGaOaDWXAzk&list=PL7RhnTJi-WKp0sQExARliBUt1yMJSON5t&index=31" target="_blank">Cómo Funciona JS</a>
+    <a href="https://chatgpt.com/c/c6cf08c7-cbb5-4a61-87c5-5a63a0c0e546" target="_blank">Chat GPT Lexical Scope</a>
+  </div>
+</section>

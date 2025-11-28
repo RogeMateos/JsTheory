@@ -1,0 +1,87 @@
+<!-- OBJECTS AND PRIMITIVE VALUES -->
+<section class="box">
+  <h2>Objetos y valores primitivos</h2>
+  <article>
+    <h3>Objetos en JavaScript</h3>
+    <p>Un objeto almacena colecciones de datos y puede tener propiedades y métodos.</p>
+    <ul>
+      <li>Son mutables</li>
+      <li>Se almacenan/copían por referencia</li>
+      <li>Pueden agrupar múltiples valores</li>
+      <li>Pueden tener métodos</li>
+    </ul>
+    <pre><code class="language-javascript">
+      let person = {
+        name: "Alice",
+        age: 30,
+        greet: function() {
+          console.log("Hello, I'm " + this.name);
+        }
+      };
+      
+      person.greet(); // Output: Hello, I'm Alice
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Valores primitivos</h3>
+    <p>Son los tipos más simples:</p>
+    <ul>
+      <li>String</li>
+      <li>Number</li>
+      <li>Boolean</li>
+      <li>Undefined</li>
+      <li>Null</li>
+      <li>Symbol</li>
+      <li>BigInt</li>
+    </ul>
+    <p>Key characteristics of primitives:</p>
+    <ul>
+      <li>Inmutables</li>
+      <li>Se copian por valor</li>
+      <li>Representan un único valor</li>
+    </ul>
+    <pre><code class="language-javascript">
+      let str = "Hello";
+      let num = 42;
+      let bool = true;
+      let undef = undefined;
+      let n = null;
+      let sym = Symbol("unique");
+      let bigInt = 1234567890123456789012345678901234567890n;
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Diferencias principales</h3>
+    <ol>
+      <li><strong>Complejidad:</strong> primitivos son simples; objetos pueden ser complejos.</li>
+      <li><strong>Mutabilidad:</strong> primitivos inmutables; objetos mutables.</li>
+      <li><strong>Copiado:</strong> primitivos por valor; objetos por referencia.</li>
+      <li><strong>Comparación:</strong> primitivos por valor; objetos por referencia.</li>
+      <li><strong>Métodos:</strong> primitivos no tienen (JS los envuelve temporalmente); objetos sí.</li>
+    </ol>
+    <pre><code class="language-javascript">
+      // Primitives
+      let a = 5;
+      let b = a;
+      b = 10;
+      console.log(a); // 5
+      console.log(b); // 10
+
+      // Objects
+      let obj1 = {x: 5};
+      let obj2 = obj1;
+      obj2.x = 10;
+      console.log(obj1.x); // 10
+      console.log(obj2.x); // 10
+    </code></pre>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures" target="_blank">MDN: tipos y estructuras de datos</a>
+    <a href="https://javascript.info/object" target="_blank">javascript.info: Objetos</a>
+    <a href="https://www.w3schools.com/js/js_object_definition.asp" target="_blank">W3Schools: Objetos</a>
+  </div>
+</section>

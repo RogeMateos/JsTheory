@@ -1,0 +1,175 @@
+<section class="box">
+  <h2>Métodos de arrays: map, filter, find, reduce, some, every, includes</h2>
+
+  <article>
+    <h3>Map</h3>
+    <p>Crea un nuevo array aplicando una función a cada elemento.</p>
+    <pre><code class="language-javascript">
+const people = [
+{
+name: "Alice",
+age: 28,
+occupation: "Engineer"
+},
+{
+name: "Bob",
+age: 35,
+occupation: "Designer"
+},
+{
+name: "Charlie",
+age: 40,
+occupation: "Teacher"
+}
+];
+
+const names = people.map(function(person) {
+return person.name;
+});
+
+console.log(names);
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Filter</h3>
+    <p>Devuelve solo los elementos que cumplan la condición.</p>
+    <h4>Ejemplo 1</h4>
+    <pre><code class="language-javascript">
+const overThirties = people.filter(function(person) {
+return person.age >= 30;
+});
+
+console.log(overThirties);
+    </code></pre>
+    <h4>Ejemplo 2</h4>
+    <pre><code class="language-javascript">
+const items = [
+  { name: 'Bike', price: 500 },
+  { name: 'TV', price: 800 },
+  { name: 'Laptop', price: 1200 },
+  { name: 'Phone', price: 700 },
+  { name: 'Headphones', price: 150 }
+];
+const affordableItems = items.filter(item => item.price <= 100);
+
+console.log(affordableItems);
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Find</h3>
+    <p>Devuelve el primer elemento que cumpla la condición, o <code>undefined</code>.</p>
+    <pre><code class="language-javascript">
+const people = [
+  { name: "Alice", age: 28, occupation: "Engineer" },
+  { name: "Bob", age: 35, occupation: "Designer" },
+  { name: "Charlie", age: 40, occupation: "Teacher" }
+];
+const firstEngineer = people.find(function(person) {
+return person.occupation === "Engineer";
+});
+
+console.log(firstEngineer); 
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Reduce</h3>
+    <p>Acumula el array en un solo valor.</p>
+    <pre><code class="language-javascript">
+const totalAge = people.reduce(function(accumulator, person) {
+return accumulator + person.age;
+}, 0);
+
+console.log(totalAge);
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Some</h3>
+    <p>¿Al menos uno cumple la condición?</p>
+    <pre><code class="language-javascript">
+const hasDesigner = people.some(function(person) {
+return person.occupation === "Designer";
+});
+
+console.log(hasDesigner); // Logs: true
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Every</h3>
+    <p>¿Todos cumplen la condición?</p>
+    <pre><code class="language-javascript">
+const allOverTwenty = people.every(function(person) {
+return person.age > 20;
+});
+
+console.log(allOverTwenty); // Logs: true
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Includes</h3>
+    <p>¿El array contiene el valor?</p>
+    <pre><code class="language-javascript">
+const occupations = people.map(person => person.occupation);
+const hasTeacher = occupations.includes("Teacher");
+
+console.log(hasTeacher); // Logs: true
+    </code></pre>
+  </article>
+
+  <div class="links">
+    <a href="https://www.youtube.com/watch?v=8MoElay6dWU" target="_blank">Video Map, Filter, Reduce</a>
+    <a href="https://summarize.ing/video-79466-Map-Filter-Reduce-EXPLAINED-in-JavaScript-It-s-EASY-" target="_blank">Summarize Map filter reduce</a>
+    <a href="https://www.youtube.com/watch?v=R8rmfD9Y5-c" target="_blank">Video Some, Every, Includes</a>
+    <a href="https://www.youtube.com/watch?v=RVxuGCWZ_8E" target="_blank">All Arrays Methods</a>
+    <a href="https://chatgpt.com/c/5ba003ae-7432-4511-9793-d17c8b26542a" target="_blank">ChatGPT</a>
+  </div>
+</section>
+
+<section class="box">
+  <h2>Diferencia entre map y forEach</h2>
+  <article>
+    <h3>Differences</h3>
+    <p><code>forEach</code> no devuelve nada (undefined). <code>map</code> devuelve un nuevo array transformado.</p>
+    <div class="links">
+      <a href="https://chatgpt.com/c/f5507d04-6485-4ad1-a7e7-742676b929c6">Chat GPT</a>
+    </div>
+  </article>
+
+  <article>
+    <h3>ForEach</h3>
+    <p>Ejecuta una función por elemento, sin crear nuevo array.</p>
+    <pre><code class="language-javascript">
+const numeros = [1, 2, 3, 4, 5];
+
+numeros.forEach(x => {
+console.log(x); // Logs: 1, 2, 3, 4, 5
+});
+
+const res01 = numeros.forEach(x => x * 5);
+console.log(res01); // Logs: undefined
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Map</h3>
+    <p>Crea un array nuevo transformando cada elemento.</p>
+    <pre><code class="language-javascript">
+const numeros = [1, 2, 3, 4, 5];
+
+const res01 = numeros.map(x => x * 5);
+console.log(res01); // Logs: [5, 10, 15, 20, 25]
+    </code></pre>
+  </article>
+
+  <div class="links">
+    <a href="https://www.youtube.com/watch?v=HQCZBkwEWys" target="_blank">Video ForEach vs. map</a>
+    <a href="https://summarize.ing/video-79507-JavaScript-forEach-vs-map-%E2%80%94-When-To-Use-Each-and-Why" target="_blank">Summarize ForEach vs. map</a>
+    <a href="https://summarize.ing/video-80882-La-diferencia-de-usar-forEach-y-map-en-javascript-es6" target="_blank">Video ForEach vs. map, Spanish</a>
+    <a href="https://www.youtube.com/watch?v=1R3hlqUMmk8" target="_blank">Summarize ForEach vs. map, Spanish</a>
+  </div>
+</section>

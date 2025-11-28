@@ -1,0 +1,139 @@
+<section class="box">
+  <h2>Event Loop: paso a paso</h2>
+  <article>
+    <h3>¿Qué es?</h3>
+    <p>Es el ciclo que coordina la ejecución asíncrona. Revisa continuamente qué ejecutar en un solo hilo.</p>
+
+    <h3>Componentes</h3>
+    <ul>
+      <li><strong>Call Stack</strong>: ejecuta código síncrono</li>
+      <li><strong>Web APIs/Node.js</strong>: manejan operaciones asíncronas</li>
+      <li><strong>Task Queue / Microtask Queue</strong>: colas de callbacks</li>
+    </ul>
+
+    <h3>Flujo</h3>
+
+    <div class="step">
+      <h4>1. Ejecuta el Call Stack</h4>
+      <p>Corre el código síncrono en orden.</p>
+    </div>
+
+    <div class="step">
+      <h4>2. Encuentra operaciones async</h4>
+      <p>fetch, timers, eventos… se delegan.</p>
+    </div>
+
+    <div class="step">
+      <h4>3. Delegación</h4>
+      <p>Web APIs/Node.js gestionan esas tareas.</p>
+    </div>
+
+    <div class="step">
+      <h4>4. Terminan</h4>
+      <p>Cuando acaban, generan un callback.</p>
+    </div>
+
+    <div class="step">
+      <h4>5. Encolado</h4>
+      <p>Callbacks van a <strong>Task Queue</strong> o <strong>Microtask Queue</strong>.</p>
+    </div>
+
+    <div class="step">
+      <h4>6. ¿Stack vacío?</h4>
+      <p>El loop revisa si el stack está libre.</p>
+    </div>
+
+    <div class="step">
+      <h4>7. Mover tareas</h4>
+      <p>Si está vacío, mueve primero microtareas y luego tareas.</p>
+    </div>
+
+    <div class="step">
+      <h4>8. Repetir</h4>
+      <p>Vuelve al paso 1.</p>
+    </div>
+
+    <h3>Visual Diagram</h3>
+    <pre><code class="language-javascript">┌─────────────────────────────────────────────┐
+│           JavaScript Runtime                 │
+│                                              │
+│  ┌──────────────┐                           │
+│  │  Call Stack  │ ← Executes code           │
+│  └──────────────┘                           │
+│         ↑                                    │
+│         │                                    │
+│    ┌────┴─────┐                             │
+│    │Event Loop│ ← Monitors & moves tasks    │
+│    └────┬─────┘                             │
+│         │                                    │
+│         ↓                                    │
+│  ┌──────────────┐    ┌──────────────┐      │
+│  │  Microtask   │    │  Task Queue  │      │
+│  │    Queue     │    │   (Macro)    │      │
+│  └──────────────┘    └──────────────┘      │
+│         ↑                    ↑               │
+│         │                    │               │
+│         └────────┬───────────┘               │
+│                  │                           │
+│         ┌────────┴─────────┐                │
+│         │   Web APIs /     │                │
+│         │     Node.js      │                │
+│         └──────────────────┘                │
+└─────────────────────────────────────────────┘
+    </code></pre>
+
+    <h3>Ejemplo</h3>
+    <pre><code class="language-javascript">console.log('Start'); // 1. Stack
+
+setTimeout(() => {
+  console.log('Timeout'); // Task Queue
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log('Promise'); // Microtask
+});
+
+console.log('End'); // 2. Stack
+
+// Output order:
+// Start
+// End
+// Promise
+// Timeout
+    </code></pre>
+
+    <h3>¿Por qué ese orden?</h3>
+    <ul>
+      <li>Stack: Start, End</li>
+      <li>Microtareas primero: Promise</li>
+      <li>Luego tareas: Timeout</li>
+    </ul>
+
+    <h3>Claves</h3>
+    <ul>
+      <li>Loop infinito coordinando ejecución</li>
+      <li>Síncrono: Stack inmediato</li>
+      <li>Async delega a Web APIs/Node</li>
+      <li>Callbacks a colas (micro y macro)</li>
+      <li>Prioridad: microtareas > tareas</li>
+      <li>Solo mueve cuando el Stack está libre</li>
+    </ul>
+
+    <h3>Por qué importa</h3>
+    <p>Explica el orden de ejecución y ayuda a escribir código async predecible.</p>
+
+    <h3>Related pages</h3>
+    <ul>
+      <li>
+        <a href="#" data-section="asynchronous/asynchrony"
+          >Asynchronism Overview</a
+        >
+      </li>
+      <li>
+        <a href="#" data-section="asynchronous/synchronous-code"
+          >Synchronous Code (examples)</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>

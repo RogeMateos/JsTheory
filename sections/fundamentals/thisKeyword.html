@@ -1,0 +1,142 @@
+<section class="box">
+  <div class="learning-objectives">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Entender qué determina el valor de <code>this</code> en cada llamada</li>
+      <li>Diferenciar el comportamiento de <code>this</code> en funciones regulares y arrow functions</li>
+      <li>Practicar el cambio de contexto con <code>call</code>, <code>apply</code> y <code>bind</code></li>
+      <li>Reconocer los errores más comunes al usar <code>this</code></li>
+    </ul>
+  </div>
+
+  <h2>Uso de <code>this</code> en JavaScript</h2>
+
+  <div class="problem-box">
+    <h4>Por qué confunde</h4>
+    <p>
+      <code>this</code> no apunta a la función en sí, sino a quien la <em>invoca</em>. Cambia según el lugar y la forma en que se llama, lo que genera resultados inesperados si no se controla.
+    </p>
+  </div>
+
+  <div class="solution-box">
+    <h4>Idea clave</h4>
+    <p>
+      Piensa en <code>this</code> como el "dueño" de la ejecución actual. En funciones normales el dueño se decide al momento de invocar; en arrow functions el dueño es el mismo que rodea la definición.
+    </p>
+  </div>
+
+  <article>
+    <h3>Contexto global vs. objetos</h3>
+    <div class="key-concept">
+      <h4>Regla rápida</h4>
+      <p>
+        En el ámbito global del navegador, <code>this</code> es <code>window</code>; en Node.js suele ser <code>global</code>. Dentro de un objeto, <code>this</code> apunta a ese objeto si él hace la llamada.
+      </p>
+    </div>
+
+    <div class="code-comparison">
+      <div class="before">
+        <h5>Contexto global</h5>
+        <pre><code class="language-javascript">function getName() {
+  console.log(this.name);
+}
+
+global.name = 'Global Name'; // Node.js
+getName(); // "Global Name"
+
+// En el navegador
+window.name = 'Global Name';
+getName(); // "Global Name"
+</code></pre>
+      </div>
+      <div class="after">
+        <h5>Dentro de un objeto</h5>
+        <pre><code class="language-javascript">const user = {
+  name: 'MyObject Name',
+  getName: function() {
+    console.log(this.name);
+  }
+};
+
+user.getName(); // "MyObject Name"
+</code></pre>
+      </div>
+    </div>
+  </article>
+
+  <article>
+    <h3>Arrow functions y herencia de <code>this</code></h3>
+    <div class="warning-box">
+      <h4>Sin propio contexto</h4>
+      <p>Las arrow functions no crean su propio <code>this</code>; heredan el del entorno donde se declararon.</p>
+    </div>
+
+    <pre><code class="language-javascript">const myObject = {
+  name: 'MyObject Name',
+  getName: () => {
+    console.log(this.name);
+  }
+};
+
+global.name = 'Global Name';
+myObject.getName(); // "Global Name" (heredado del ámbito exterior)
+</code></pre>
+  </article>
+
+  <article>
+    <h3>Cambiar el contexto explícitamente</h3>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('call-apply')">call / apply</button>
+      <button class="nav-tab" onclick="showTab('bind')">bind</button>
+    </div>
+
+    <div id="call-apply" class="tab-content active">
+      <pre><code class="language-javascript">function getName() {
+  console.log(this.name);
+}
+
+const myObject = { name: 'MyObject Name' };
+
+getName.call(myObject);  // "MyObject Name"
+getName.apply(myObject); // "MyObject Name"
+</code></pre>
+    </div>
+
+    <div id="bind" class="tab-content">
+      <pre><code class="language-javascript">function getName() {
+  console.log(this.name);
+}
+
+const myObject = { name: 'MyObject Name' };
+const boundGetName = getName.bind(myObject);
+
+boundGetName(); // "MyObject Name" siempre
+</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>Funciones anidadas y solución con <code>bind</code></h3>
+    <pre><code class="language-javascript">const account = {
+  owner: 'Ada',
+  printOwner() {
+    function inner() {
+      console.log(this.owner);
+    }
+    inner.call(this); // o inner.bind(this)()
+  }
+};
+
+account.printOwner(); // "Ada"
+</code></pre>
+  </article>
+
+  <div class="box links">
+    <h3>Recursos extra</h3>
+    <a href="https://codesandbox.io/p/devbox/00-advanced-functions-forked-6znmkp?file=%2Fsrc%2Fstyles.css%3A1%2C1-95%2C1&workspaceId=ws_21JtMFzPJb1eodwgVHEDeH" target="_blank" rel="noopener noreferrer">This Midu Code</a>
+    <a href="https://www.youtube.com/watch?v=byirHCoSPFY&list=PL7RhnTJi-WKp0sQExARliBUt1yMJSON5t&index=16" target="_blank" rel="noopener noreferrer">Video: Qué es this</a>
+    <a href="https://summarize.ing/video-254771-%F0%9F%93%9A-%C2%BFQu%C3%A9-es-this-en-JavaScript-Explicaci%C3%B3n-f%C3%A1cil-directa-y-sencilla-con-ejemplos" target="_blank" rel="noopener noreferrer">Resumen rápido</a>
+    <a href="https://claude.ai/chat/22a0cb4a-166c-4d7f-98a7-d3fd95b86f32" target="_blank" rel="noopener noreferrer">Claude Mouredev</a>
+    <a href="https://chatgpt.com/c/6723e8e8-0e98-8008-bcaa-57ec2a071a59" target="_blank" rel="noopener noreferrer">ChatGPT explicación y ejemplos</a>
+  </div>
+</section>

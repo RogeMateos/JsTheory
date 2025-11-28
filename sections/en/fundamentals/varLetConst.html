@@ -1,0 +1,97 @@
+<!-- VAR LET CONST -->
+<section class="box">
+  <h2>Var, Let, Const, Block Scope, Global Scope</h2>
+
+  <article>
+    <h3>var</h3>
+    <p><b>var</b> is function-scoped and allows redeclaration within the same scope. If you declare a variable using
+      <b>var</b> within a function, it is accessible anywhere within that function. <b>var</b> does not have
+      block-level scope.</p>
+    <pre><code>
+      var x = 10;
+      if (x === 10) {
+          var x = 20;
+          console.log(x); // Output: 20
+      }
+      console.log(x); // Output: 20
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>let</h3>
+    <p><b>let</b> is block-scoped and cannot be redeclared within the same scope. This means that once you declare a
+      variable with <b>let</b> in a block, it cannot be redeclared or accessed outside that block.</p>
+    <pre><code>
+      let y = 10;
+      if (y === 10) {
+          let y = 20;
+          console.log(y); // Output: 20
+      }
+      console.log(y); // Output: 10
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>const</h3>
+    <p><b>const</b> is also block-scoped and is used to declare constants. Once a value is assigned to a
+      <b>const</b> variable, it cannot be reassigned. However, if the variable holds an object or array, the
+      properties or elements of that object or array can be modified.</p>
+    <pre><code>
+      const z = 10;
+      console.log(z); // Output: 10
+
+      const obj = { name: 'Alice' };
+      obj.name = 'Bob';
+      console.log(obj.name); // Output: Bob
+
+      const arr = [1, 2, 3];
+      arr.push(4);
+      console.log(arr); // Output: [1, 2, 3, 4]
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Scope Comparison</h3>
+    <p><b>var</b> is function-scoped and can be redeclared within the same scope. <b>let</b> and <b>const</b> are
+      block-scoped and cannot be redeclared within the same scope. <b>const</b> is used for constants that should
+      not be reassigned, while <b>let</b> is used for variables that can be reassigned.</p>
+    <p>Understanding the differences between <b>var</b>, <b>let</b>, and <b>const</b> is crucial for writing clean
+      and maintainable JavaScript code.</p>
+  </article>
+
+  <!-- Links Section -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let" target="_blank">MDN: let</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const" target="_blank">MDN: const</a>
+    <a href="https://chatgpt.com/c/5b0a5ff1-0a0c-4c4f-89a2-07bc5465a248" target="_blank">YouTube: Var, Let, and Const - What's the Difference?</a>
+  </div>
+</section>
+
+<!-- SECTION EXAMPLE ------------------------->
+<section id="example" class="box">
+  <h2>EXAMPLE</h2>
+  <article>
+    <h3>{{DIFFERENT_ARTICLE_TITLE}}</h3>
+    <p>{{DIFFERENT_ARTICLE_DESCRIPTION}}</p>
+    <pre><code>
+      // Your code here
+    </code></pre>
+  </article>
+
+  <!-- Links Section -->
+  <div class="links">
+    <a href="https://claude.ai/chat/9e534f46-b0f1-4e46-a949-cb9309715dda" target="_blank">Claude: Faking Namespaces in JavaScript</a>
+    <a href="https://chatgpt.com/c/66f322ab-38a0-8008-be5d-3f01d2652e47" target="_blank">ChatGPT: Faking Namespaces in JavaScript</a>
+    <a href="https://dmitripavlutin.com/differences-between-arrow-and-regular-functions/#google_vignette" target="_blank">Arrow vs Regular Functions</a>
+    <a href="https://www.youtube.com/watch?v=6UAKBYpUC-Y" target="_blank">Arrow vs Regular Functions</a>
+    <a href="https://chatgpt.com/c/66f1f938-aeec-8008-b444-286f05e56fc3" target="_blank">ChatGPT: Objects</a>
+    <a href="https://chatgpt.com/c/66f1fd1b-2bd0-8008-a6cf-ff4fe8728678" target="_blank">ChatGPT: Literal Object</a>
+    <a href="{{ANOTHER_LINK_1_URL}}" target="_blank">{{ANOTHER_LINK_1_TEXT}}</a>
+    <a href="{{ANOTHER_LINK_2_URL}}" target="_blank">{{ANOTHER_LINK_2_TEXT}}</a>
+    <a href="https://www.youtube.com/watch?v=eiC58R16hb8&t=61s" target="_blank">Event LOOP</a>
+    <a href="https://www.youtube.com/watch?v=byirHCoSPFY" target="_blank">This Midudev</a>
+    <a href="https://www.youtube.com/watch?v=mwccHwUn7Gc&list=PLkZYeFmDuaN2pZOuMWjIfvZ6v2ZFp2jyK&index=2" target="_blank">Authentication</a>
+    
+    <!-- Add more links if necessary -->
+  </div>
+</section>

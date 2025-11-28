@@ -1,0 +1,473 @@
+<section class="box">
+  <div class="learning-objectives">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Understand the difference between primitive and reference types</li>
+      <li>Learn how JavaScript's dynamic typing works in practice</li>
+      <li>Know when to use each data type effectively</li>
+      <li>Identify common type-related bugs and how to avoid them</li>
+    </ul>
+  </div>
+
+  <h2>Data Types and Dynamic Typing</h2>
+  
+  <div class="problem-box">
+    <h4>The Problem Junior Developers Face</h4>
+    <p>
+      "Why did my code break when I added a number to what I thought was another number, 
+      but JavaScript treated it as text instead?" This is one of the most common frustrations 
+      for new developers - not understanding how JavaScript handles different types of data.
+    </p>
+  </div>
+
+  <div class="solution-box">
+    <h4>Understanding JavaScript Data Types</h4>
+    <p>
+      JavaScript organizes data into two main categories: <strong>primitive types</strong> 
+      (simple values) and <strong>reference types</strong> (complex objects). Understanding 
+      this distinction helps you predict how your code will behave.
+    </p>
+  </div>
+
+  <article>
+    <h3>Primitive Types - The Building Blocks</h3>
+    
+    <div class="analogy-box">
+      <h4>🏗️ Construction Materials Analogy</h4>
+      <p>
+        Think of primitive types like basic construction materials:
+      </p>
+      <ul>
+        <li><strong>String:</strong> Like labels or signs - "Welcome to our store"</li>
+        <li><strong>Number:</strong> Like measurements - 42 inches, 3.14 meters</li>
+        <li><strong>Boolean:</strong> Like light switches - ON (true) or OFF (false)</li>
+        <li><strong>null:</strong> Like an empty box that was intentionally left empty</li>
+        <li><strong>undefined:</strong> Like a box that was never filled</li>
+      </ul>
+      <p>Each material serves a specific purpose and can't be broken down further!</p>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('primitive-examples')">Examples</button>
+      <button class="nav-tab" onclick="showTab('primitive-checking')">Type Checking</button>
+      <button class="nav-tab" onclick="showTab('primitive-gotchas')">Common Mistakes</button>
+    </div>
+
+    <div id="primitive-examples" class="tab-content active">
+      <pre><code class="language-javascript">
+// Primitive Types in Action
+let userName = 'Alice';           // String
+let userAge = 25;                 // Number
+let isLoggedIn = true;            // Boolean
+let data = null;                  // Null (intentionally empty)
+let notAssigned;                  // Undefined (never assigned)
+
+// Modern primitives (ES6+)
+let uniqueId = Symbol('user');    // Symbol (unique identifier)
+let bigNumber = 123n;             // BigInt (very large numbers)
+
+console.log(typeof userName);     // "string"
+console.log(typeof userAge);      // "number"
+console.log(typeof isLoggedIn);   // "boolean"
+      </code></pre>
+    </div>
+
+    <div id="primitive-checking" class="tab-content">
+      <pre><code class="language-javascript">
+// Safe Type Checking Functions
+function isString(value) {
+  return typeof value === 'string';
+}
+
+function isNumber(value) {
+  return typeof value === 'number' && !isNaN(value);
+}
+
+function isBoolean(value) {
+  return typeof value === 'boolean';
+}
+
+// Usage in real applications
+function validateUserInput(input) {
+  if (!isString(input)) {
+    throw new Error('Input must be a string');
+  }
+  
+  if (input.length === 0) {
+    throw new Error('Input cannot be empty');
+  }
+  
+  return input.trim();
+}
+      </code></pre>
+    </div>
+
+    <div id="primitive-gotchas" class="tab-content">
+      <div class="warning-box">
+        <h4>Watch Out For These Traps!</h4>
+      </div>
+      
+      <div class="code-comparison">
+        <div class="before">
+          <h5>❌ Problematic Code</h5>
+          <pre><code class="language-javascript">
+// This looks like math but isn't!
+let result = '5' + 3;
+console.log(result); // "53" (string!)
+
+// Unexpected type conversion
+let age = '25';
+if (age > 18) {
+  console.log('Adult'); // Works but risky!
+}
+          </code></pre>
+        </div>
+        <div class="after">
+          <h5>✅ Better Approach</h5>
+          <pre><code class="language-javascript">
+// Explicit conversion is clearer
+let result = Number('5') + 3;
+console.log(result); // 8 (number!)
+
+// Type checking first
+let age = '25';
+let numAge = Number(age);
+if (numAge > 18) {
+  console.log('Adult'); // Safe and clear!
+}
+          </code></pre>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article>
+    <h3>Reference Types - Complex Containers</h3>
+    
+    <div class="key-concept">
+      <h4>Key Difference</h4>
+      <p>
+        Reference types don't store the actual data - they store a "pointer" 
+        to where the data lives in memory. It's like having the address of a house 
+        instead of carrying the entire house with you!
+      </p>
+    </div>
+
+    <pre><code class="language-javascript">
+// Reference Types - Store addresses, not values
+let user = {                     // Object
+  name: 'Alice',
+  age: 25
+};
+
+let hobbies = ['reading', 'gaming'];  // Array (special object)
+
+let greetUser = function(name) {      // Function (special object)
+  return `Hello, ${name}!`;
+};
+
+// They all have typeof "object" (except functions)
+console.log(typeof user);        // "object"
+console.log(typeof hobbies);     // "object" 
+console.log(typeof greetUser);   // "function"
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Dynamic Typing - Variables That Change Roles</h3>
+    
+    <div class="key-concept">
+      <h4>What Dynamic Typing Really Means</h4>
+      <p>
+        <strong>Dynamic typing</strong> means that in JavaScript, variables don't have a fixed data type - 
+        they can hold different types of values during program execution, and the type is determined 
+        at <strong>runtime</strong> (when the code actually runs).
+      </p>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('dynamic-concepts')">Core Concepts</button>
+      <button class="nav-tab" onclick="showTab('dynamic-comparison')">vs Static Typing</button>
+      <button class="nav-tab" onclick="showTab('dynamic-pros-cons')">Pros & Cons</button>
+      <button class="nav-tab" onclick="showTab('dynamic-pitfalls')">Common Issues</button>
+    </div>
+
+    <div id="dynamic-concepts" class="tab-content active">
+      <h4>Understanding the Terms</h4>
+      
+      <div class="concept-box">
+        <h4>What "Dynamic" Means</h4>
+        <ul>
+          <li><strong>Dynamic</strong> = can change while the program is running</li>
+          <li><strong>Static</strong> = fixed/unchanging once set</li>
+        </ul>
+      </div>
+
+      <div class="concept-box">
+        <h4>What "Runtime" Means</h4>
+        <ul>
+          <li><strong>Runtime</strong> = when your code is actually executing/running</li>
+          <li><strong>Compile time</strong> = when code is being processed before it runs</li>
+        </ul>
+      </div>
+
+      <div class="analogy-box">
+        <h4>🏷️ Storage Box Analogy</h4>
+        <p>Think of a variable like a storage box with a label:</p>
+        <p>
+          <strong>Static typing (Java/C++):</strong> The box has a permanent label "ONLY BOOKS" - 
+          you can only put books in it, forever.
+        </p>
+        <p>
+          <strong>Dynamic typing (JavaScript):</strong> The box just says "STORAGE" - 
+          you can put books in it today, shoes tomorrow, and toys next week!
+        </p>
+      </div>
+
+      <pre><code class="language-javascript">
+// JavaScript: Variables can hold any type, anytime!
+let myVariable = "Hello";        // myVariable is a string
+console.log(typeof myVariable);  // Output: "string"
+
+myVariable = 42;                 // Now it's a number
+console.log(typeof myVariable);  // Output: "number"
+
+myVariable = true;               // Now it's a boolean
+console.log(typeof myVariable);  // Output: "boolean"
+
+myVariable = ["a", "b", "c"];    // Now it's an array
+console.log(typeof myVariable);  // Output: "object"
+
+// The variable name stays the same, but the type changes!
+      </code></pre>
+    </div>
+
+    <div id="dynamic-comparison" class="tab-content">
+      <h4>Dynamic vs Static Typing Comparison</h4>
+      
+      <div class="code-comparison">
+        <div class="before">
+          <h5>🔴 Static Typing (Java/C++)</h5>
+          <pre><code class="language-java">
+// Java: Types are fixed at declaration
+int number = 5;        // This can ONLY hold integers
+number = "hello";      // ❌ ERROR! Can't assign string to int
+
+String text = "hello"; // This can ONLY hold strings
+text = 42;             // ❌ ERROR! Can't assign number to string
+
+// Types are checked BEFORE the program runs
+          </code></pre>
+        </div>
+        <div class="after">
+          <h5>🟢 Dynamic Typing (JavaScript)</h5>
+          <pre><code class="language-javascript">
+// JavaScript: Types can change anytime
+let number = 5;        // Holds an integer
+number = "hello";      // ✅ WORKS! Now holds a string
+
+let text = "hello";    // Holds a string
+text = 42;             // ✅ WORKS! Now holds a number
+
+// Types are checked WHILE the program runs
+          </code></pre>
+        </div>
+      </div>
+
+      <div class="analogy-box">
+        <h4>🎭 Shape-shifting Actor Analogy</h4>
+        <p>
+          <strong>Static typing:</strong> An actor who is typecast - once they're known for action movies, 
+          they can ONLY do action movies for their entire career.
+        </p>
+        <p>
+          <strong>Dynamic typing:</strong> A versatile actor who can play any role - action hero today, 
+          romantic lead tomorrow, comedian next week!
+        </p>
+      </div>
+    </div>
+
+    <div id="dynamic-pros-cons" class="tab-content">
+      <h4>Why Dynamic Typing Matters</h4>
+      
+      <div class="solution-box">
+        <h4>Advantages</h4>
+        <ul>
+          <li><strong>Flexibility:</strong> Easy to write and modify code quickly</li>
+          <li><strong>Less verbose:</strong> Don't need to declare types everywhere</li>
+          <li><strong>Rapid prototyping:</strong> Can change data structures on the fly</li>
+          <li><strong>Beginner-friendly:</strong> Less syntax to learn initially</li>
+        </ul>
+      </div>
+
+      <div class="problem-box">
+        <h4>Disadvantages</h4>
+        <ul>
+          <li><strong>Runtime errors:</strong> Type mismatches only discovered when code runs</li>
+          <li><strong>Harder debugging:</strong> Unexpected type changes can cause bugs</li>
+          <li><strong>Performance:</strong> Engine has to check types at runtime</li>
+          <li><strong>Documentation:</strong> Harder to know what types functions expect</li>
+        </ul>
+      </div>
+
+      <pre><code class="language-javascript">
+// Dynamic typing example in real development
+function processUserData(userData) {
+  // We don't know what type userData is until runtime!
+  // Could be: object, string, null, undefined, array...
+  
+  if (typeof userData === 'object' && userData !== null) {
+    return userData.name || 'Unknown';
+  }
+  
+  if (typeof userData === 'string') {
+    return userData;
+  }
+  
+  return 'Invalid data';
+}
+
+// All of these work, but produce different results:
+console.log(processUserData({ name: 'Alice' }));  // "Alice"
+console.log(processUserData('Bob'));              // "Bob"
+console.log(processUserData(null));               // "Invalid data"
+console.log(processUserData(undefined));          // "Invalid data"
+      </code></pre>
+    </div>
+
+    <div id="dynamic-pitfalls" class="tab-content">
+      <div class="warning-box">
+        <h4>Common Runtime Type Issues</h4>
+      </div>
+      
+      <pre><code class="language-javascript">
+// The infamous "addition" problem
+function addNumbers(a, b) {
+    return a + b;
+}
+
+// What do you think these return?
+console.log(addNumbers(5, 3));        // 8 (number + number = math)
+console.log(addNumbers("5", 3));      // "53" (string + number = concatenation!)
+console.log(addNumbers(5, "3"));      // "53" (number + string = concatenation!)
+console.log(addNumbers("5", "3"));    // "53" (string + string = concatenation)
+
+// This is why explicit type checking is important!
+function safeAddNumbers(a, b) {
+  // Convert to numbers first
+  const numA = Number(a);
+  const numB = Number(b);
+  
+  // Check if conversion was successful
+  if (isNaN(numA) || isNaN(numB)) {
+    throw new Error('Both arguments must be valid numbers');
+  }
+  
+  return numA + numB;
+}
+
+console.log(safeAddNumbers("5", "3"));  // 8 (safe!)
+console.log(safeAddNumbers("hello", 3)); // Error: Both arguments must be valid numbers
+      </code></pre>
+
+      <div class="concept-box">
+        <h4>Real-World Bug Example</h4>
+        <pre><code class="language-javascript">
+// This looks innocent but has a hidden bug!
+function calculateDiscount(price, discount) {
+  return price - (price * discount);
+}
+
+// These work fine
+calculateDiscount(100, 0.1);    // 90 (10% discount)
+calculateDiscount(50, 0.2);     // 40 (20% discount)
+
+// But what if data comes from a form or API?
+calculateDiscount("100", "0.1"); // "100" - "100" * "0.1" = "100" - 10 = 90 ✅ Works by luck!
+calculateDiscount("abc", 0.1);   // NaN (Not a Number) - broke!
+
+// The fix: Always validate and convert types!
+function safeCalculateDiscount(price, discount) {
+  const numPrice = Number(price);
+  const numDiscount = Number(discount);
+  
+  if (isNaN(numPrice) || isNaN(numDiscount)) {
+    throw new Error('Price and discount must be valid numbers');
+  }
+  
+  if (numDiscount < 0 || numDiscount > 1) {
+    throw new Error('Discount must be between 0 and 1');
+  }
+  
+  return numPrice - (numPrice * numDiscount);
+}
+        </code></pre>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <h4>Best Practices for Dynamic Typing</h4>
+      <ul>
+        <li><strong>Always validate inputs</strong> from users, APIs, or external sources</li>
+        <li><strong>Use typeof checks</strong> when you're unsure of a variable's type</li>
+        <li><strong>Convert types explicitly</strong> rather than relying on JavaScript's automatic conversion</li>
+        <li><strong>Consider TypeScript</strong> for larger projects to get static typing benefits</li>
+        <li><strong>Use ESLint rules</strong> to catch potential type-related issues</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="practice-section">
+    <h3>Practice Challenge</h3>
+    <p><strong>Build a Type Inspector!</strong></p>
+    <p>Create a function that takes any value and returns a detailed report about its type:</p>
+    
+    <pre><code class="language-javascript">
+function inspectType(value) {
+  // Your code here!
+  // Should return: { type: 'string', category: 'primitive', value: 'hello' }
+}
+
+// Test cases:
+console.log(inspectType('hello'));      // string, primitive
+console.log(inspectType(42));           // number, primitive  
+console.log(inspectType([1, 2, 3]));    // object (array), reference
+console.log(inspectType(null));         // object (but null), primitive
+    </code></pre>
+
+    <div class="expandable">
+      <div class="expandable-header" onclick="toggleExpand(this)">
+        💡 Hint: Click to reveal
+      </div>
+      <div class="expandable-content">
+        <p>Use <code>typeof</code> for basic type detection, but remember that arrays and null both return "object". You'll need special checks:</p>
+        <ul>
+          <li><code>Array.isArray()</code> for arrays</li>
+          <li><code>value === null</code> for null</li>
+          <li>List of primitive types: string, number, boolean, undefined, symbol, bigint</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="interview-box">
+    <h4>Interview Talking Points</h4>
+    <ul>
+      <li><strong>"JavaScript has 7 primitive types and reference types for complex data"</strong></li>
+      <li><strong>"Dynamic typing means variables can change types at runtime"</strong></li>
+      <li><strong>"I always use typeof for type checking and validate user inputs"</strong></li>
+      <li><strong>"Null is technically an object in typeof, which is a known JavaScript quirk"</strong></li>
+      <li><strong>"I prefer explicit type conversion over relying on JavaScript's automatic coercion"</strong></li>
+    </ul>
+  </div>
+
+  <!-- Enhanced Links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures" target="_blank">MDN: Data Structures</a>
+    <a href="https://javascript.info/types" target="_blank">JavaScript.info: Data Types</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof" target="_blank">MDN: typeof Operator</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray" target="_blank">MDN: Array.isArray()</a>
+    <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">TypeScript: Static Typing Alternative</a>
+  </div>
+</section>
+

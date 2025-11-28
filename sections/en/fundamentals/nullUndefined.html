@@ -1,0 +1,40 @@
+<!-- NULL AND UNDEFINED ------------------------->
+<section  class="box">
+  <h2>Null and Undefined</h2>
+  <article>
+    <h3>Understanding Null and Undefined in JavaScript</h3>
+    <p>In JavaScript, null and undefined are both used to represent the absence of a value, but they have distinct meanings and use cases:</p>
+    <p><b>undefined:</b> This represents the absence of a value because it hasn't been assigned yet. It typically occurs when a variable is declared but not initialized.</p>
+    <p><b>null:</b> This represents an intentional absence of a value. It's explicitly assigned to indicate that a variable should be empty.</p>
+    <pre><code class="language-javascript">
+      let myVariable = null; // Intentionally empty
+      let myOtherVariable;   // Declared but not assigned, so it's undefined
+
+      console.log(myVariable);       // Output: null
+      console.log(myOtherVariable);  // Output: undefined
+    </code></pre>
+    <h3>Key Differences:</h3>
+    <h4>Type Checking:</h4>
+    <p><b>typeof null</b> returns "object", which is a quirk in JavaScript due to legacy reasons.</p>
+    <p><b>typeof undefined</b> returns "undefined".</p>
+    <h4>Equality Comparison:</h4>
+    <p><b>Loose Equality (==):</b> <code>null == undefined</code> is true because they are considered equal in value when type is not considered.</p>
+    <p><b>Strict Equality (===):</b> <code>null === undefined</code> is false because they are different types.</p>
+    <pre><code class="language-javascript">
+      console.log(undefined == null);  // Output: true (due to loose equality)
+      console.log(undefined === null); // Output: false (due to strict equality)
+    </code></pre>
+    <h3>Best Practices:</h3>
+    <ul>
+      <li>Use <code>===</code> for Comparisons: It's best practice to use strict equality to avoid issues with type coercion.</li>
+      <li>Use <code>undefined</code> for uninitialized variables.</li>
+      <li>Use <code>null</code> to intentionally signify "no value."</li>
+    </ul>
+    <p>Prefer <code>===</code> over <code>==</code> to avoid unintended type coercion.</p>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://code-boxx.com/javascript-null-vs-undefined-vs-empty/" target="_blank">Null vs Undefined</a>
+  </div>
+</section>

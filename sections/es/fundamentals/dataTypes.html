@@ -1,0 +1,401 @@
+<section class="box">
+  <div class="learning-objectives">
+    <h3>Objetivos de aprendizaje</h3>
+    <ul>
+      <li>Entender la diferencia entre tipos primitivos y de referencia</li>
+      <li>Ver cómo funciona la tipificación dinámica en JavaScript</li>
+      <li>Saber cuándo usar cada tipo de dato de forma efectiva</li>
+      <li>Detectar errores comunes relacionados con tipos y evitarlos</li>
+    </ul>
+  </div>
+
+  <h2>Tipos de datos y tipado dinámico</h2>
+
+  <div class="problem-box">
+    <h4>El problema típico</h4>
+    <p>
+      “¿Por qué al sumar números obtuve texto?” Suele ocurrir cuando no entendemos cómo JavaScript convierte tipos automáticamente.
+    </p>
+  </div>
+
+  <div class="solution-box">
+    <h4>La idea</h4>
+    <p>
+      JavaScript agrupa datos en <strong>tipos primitivos</strong> (valores simples) y <strong>tipos de referencia</strong> (objetos). Distinguirlos te permite predecir el comportamiento de tu código.
+    </p>
+  </div>
+
+  <article>
+    <h3>Tipos primitivos</h3>
+
+    <div class="analogy-box">
+      <h4>🏗️ Como materiales básicos</h4>
+      <ul>
+        <li><strong>String:</strong> etiquetas o textos</li>
+        <li><strong>Number:</strong> medidas o cantidades</li>
+        <li><strong>Boolean:</strong> interruptor ON/OFF</li>
+        <li><strong>null:</strong> caja vacía a propósito</li>
+        <li><strong>undefined:</strong> caja nunca rellenada</li>
+        <li><strong>Symbol:</strong> identificador único</li>
+        <li><strong>BigInt:</strong> números enormes</li>
+      </ul>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('primitive-examples')">Ejemplos</button>
+      <button class="nav-tab" onclick="showTab('primitive-checking')">Chequeo de tipo</button>
+      <button class="nav-tab" onclick="showTab('primitive-gotchas')">Errores comunes</button>
+    </div>
+
+    <div id="primitive-examples" class="tab-content active">
+      <pre><code class="language-javascript">
+// Primitivos en acción
+let userName = 'Alice';         // String
+let userAge = 25;               // Number
+let isLoggedIn = true;          // Boolean
+let data = null;                // Null (vacío a propósito)
+let notAssigned;                // Undefined (sin asignar)
+let uniqueId = Symbol('user');  // Symbol
+let bigNumber = 123n;           // BigInt
+      </code></pre>
+    </div>
+
+    <div id="primitive-checking" class="tab-content">
+      <pre><code class="language-javascript">
+// Chequeo seguro de tipos
+const isString = (v) => typeof v === 'string';
+const isNumber = (v) => typeof v === 'number' && !isNaN(v);
+const isBoolean = (v) => typeof v === 'boolean';
+
+function validarNombre(input) {
+  if (!isString(input)) throw new Error('Debe ser string');
+  if (!input.length) throw new Error('No puede ir vacío');
+  return input.trim();
+}
+      </code></pre>
+    </div>
+
+    <div id="primitive-gotchas" class="tab-content">
+      <div class="warning-box">
+        <h4>Trampas comunes</h4>
+      </div>
+
+      <div class="code-comparison">
+        <div class="before">
+          <h5>❌ Problema</h5>
+          <pre><code class="language-javascript">
+let result = '5' + 3; // concatenación
+console.log(result);  // "53"
+          </code></pre>
+        </div>
+        <div class="after">
+          <h5>✅ Mejor</h5>
+          <pre><code class="language-javascript">
+let result = Number('5') + 3;
+console.log(result); // 8
+          </code></pre>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article>
+    <h3>Tipos de referencia</h3>
+    <div class="key-concept">
+      <h4>Diferencia clave</h4>
+      <p>Guardan una <em>referencia</em> (dirección) al valor en memoria.</p>
+    </div>
+
+    <pre><code class="language-javascript">
+const user = { name: 'Alice', age: 25 }; // Objeto
+const hobbies = ['leer', 'jugar'];       // Array (objeto)
+const greet = (name) => `Hola, ${name}!`; // Función (objeto especial)
+
+console.log(typeof user);   // "object"
+console.log(typeof hobbies); // "object"
+console.log(typeof greet);   // "function"
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Tipado dinámico</h3>
+    <div class="key-concept">
+      <h4>Qué significa</h4>
+      <p>Una variable puede cambiar de tipo en tiempo de ejecución; el tipo se decide cuando el código se ejecuta.</p>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('dynamic-concepts')">Conceptos</button>
+      <button class="nav-tab" onclick="showTab('dynamic-comparison')">Vs tipado estático</button>
+      <button class="nav-tab" onclick="showTab('dynamic-pros-cons')">Pros y contras</button>
+      <button class="nav-tab" onclick="showTab('dynamic-pitfalls')">Errores habituales</button>
+    </div>
+
+    <div id="dynamic-concepts" class="tab-content active">
+      <div class="concept-box">
+        <h4>¿Qué es “dinámico”?</h4>
+        <ul>
+          <li><strong>Dynamic</strong> = can change while the program is running</li>
+          <li><strong>Static</strong> = fixed/unchanging once set</li>
+        </ul>
+      </div>
+
+      <div class="concept-box">
+        <h4>What "Runtime" Means</h4>
+        <ul>
+          <li><strong>Runtime</strong> = when your code is actually executing/running</li>
+          <li><strong>Compile time</strong> = when code is being processed before it runs</li>
+        </ul>
+      </div>
+
+      <div class="analogy-box">
+        <h4>🏷️ Storage Box Analogy</h4>
+        <p>Think of a variable like a storage box with a label:</p>
+        <p>
+          <strong>Static typing (Java/C++):</strong> The box has a permanent label "ONLY BOOKS" - 
+          you can only put books in it, forever.
+        </p>
+        <p>
+          <strong>Dynamic typing (JavaScript):</strong> The box just says "STORAGE" - 
+          you can put books in it today, shoes tomorrow, and toys next week!
+        </p>
+      </div>
+
+      <pre><code class="language-javascript">
+// JavaScript: Variables can hold any type, anytime!
+let myVariable = "Hello";        // myVariable is a string
+console.log(typeof myVariable);  // Output: "string"
+
+myVariable = 42;                 // Now it's a number
+console.log(typeof myVariable);  // Output: "number"
+
+myVariable = true;               // Now it's a boolean
+console.log(typeof myVariable);  // Output: "boolean"
+
+myVariable = ["a", "b", "c"];    // Now it's an array
+console.log(typeof myVariable);  // Output: "object"
+
+// The variable name stays the same, but the type changes!
+      </code></pre>
+    </div>
+
+    <div id="dynamic-comparison" class="tab-content">
+      <h4>Dynamic vs Static Typing Comparison</h4>
+      
+      <div class="code-comparison">
+        <div class="before">
+          <h5>🔴 Static Typing (Java/C++)</h5>
+          <pre><code class="language-java">
+// Java: Types are fixed at declaration
+int number = 5;        // This can ONLY hold integers
+number = "hello";      // ❌ ERROR! Can't assign string to int
+
+String text = "hello"; // This can ONLY hold strings
+text = 42;             // ❌ ERROR! Can't assign number to string
+
+// Types are checked BEFORE the program runs
+          </code></pre>
+        </div>
+        <div class="after">
+          <h5>🟢 Tipado dinámico (JavaScript)</h5>
+          <pre><code class="language-javascript">
+// JavaScript: el tipo puede cambiar
+let number = 5;        // número
+number = "hola";       // ✅ ahora string
+
+let text = "hola";     // string
+text = 42;             // ✅ ahora número
+
+// Se valida en tiempo de ejecución
+          </code></pre>
+        </div>
+      </div>
+
+      <div class="analogy-box">
+        <h4>🎭 Analogía del actor</h4>
+        <p>
+          <strong>Tipado estático:</strong> Un actor encasillado: si es de acción, solo hará acción.
+        </p>
+        <p>
+          <strong>Tipado dinámico:</strong> Un actor versátil que puede ser héroe, romance o comedia.
+        </p>
+      </div>
+    </div>
+
+    <div id="dynamic-pros-cons" class="tab-content">
+      <h4>Por qué importa el tipado dinámico</h4>
+      
+      <div class="solution-box">
+        <h4>Ventajas</h4>
+        <ul>
+          <li><strong>Flexibilidad:</strong> escribir y modificar rápido</li>
+          <li><strong>Menos verbo:</strong> sin declarar tipos por todos lados</li>
+          <li><strong>Prototipado:</strong> cambiar estructuras sobre la marcha</li>
+          <li><strong>Curva amable:</strong> menos sintaxis al inicio</li>
+        </ul>
+      </div>
+
+      <div class="problem-box">
+        <h4>Desventajas</h4>
+        <ul>
+          <li><strong>Errores en ejecución:</strong> se detectan al correr</li>
+          <li><strong>Debug más difícil:</strong> cambios inesperados de tipo</li>
+          <li><strong>Performance:</strong> el motor checa tipos al volar</li>
+          <li><strong>Documentación:</strong> menos claro qué espera cada función</li>
+        </ul>
+      </div>
+
+      <pre><code class="language-javascript">
+// Ejemplo de tipado dinámico en código real
+function procesarUsuario(userData) {
+  // No sabemos el tipo hasta tiempo de ejecución
+  if (typeof userData === 'object' && userData !== null) {
+    return userData.name || 'Desconocido';
+  }
+
+  if (typeof userData === 'string') {
+    return userData;
+  }
+
+  return 'Dato inválido';
+}
+
+console.log(procesarUsuario({ name: 'Alice' }));  // "Alice"
+console.log(procesarUsuario('Bob'));              // "Bob"
+console.log(procesarUsuario(null));               // "Dato inválido"
+console.log(procesarUsuario(undefined));          // "Dato inválido"
+      </code></pre>
+    </div>
+
+    <div id="dynamic-pitfalls" class="tab-content">
+      <div class="warning-box">
+        <h4>Errores típicos en ejecución</h4>
+      </div>
+      
+      <pre><code class="language-javascript">
+// El problema de la "suma"
+function addNumbers(a, b) {
+    return a + b;
+}
+
+console.log(addNumbers(5, 3));        // 8 (número + número)
+console.log(addNumbers("5", 3));      // "53" (string + número = concat)
+console.log(addNumbers(5, "3"));      // "53" (número + string = concat)
+console.log(addNumbers("5", "3"));    // "53" (string + string = concat)
+
+// Por eso importa validar y convertir
+function safeAddNumbers(a, b) {
+  // Convertir a número primero
+  const numA = Number(a);
+  const numB = Number(b);
+  
+  if (isNaN(numA) || isNaN(numB)) {
+    throw new Error('Ambos argumentos deben ser números');
+  }
+  
+  return numA + numB;
+}
+
+console.log(safeAddNumbers("5", "3"));   // 8
+console.log(safeAddNumbers("hello", 3)); // Error
+      </code></pre>
+
+      <div class="concept-box">
+        <h4>Bug real</h4>
+        <pre><code class="language-javascript">
+// Parece inocente pero tiene bug
+function calculateDiscount(price, discount) {
+  return price - (price * discount);
+}
+
+calculateDiscount(100, 0.1);    // 90
+calculateDiscount(50, 0.2);     // 40
+
+// ¿Y si viene de un formulario?
+calculateDiscount("100", "0.1"); // 90 ✅ de suerte
+calculateDiscount("abc", 0.1);   // NaN ❌
+
+// Solución: validar y convertir
+function safeCalculateDiscount(price, discount) {
+  const numPrice = Number(price);
+  const numDiscount = Number(discount);
+  
+  if (isNaN(numPrice) || isNaN(numDiscount)) {
+    throw new Error('Precio y descuento deben ser números');
+  }
+  
+  if (numDiscount < 0 || numDiscount > 1) {
+    throw new Error('El descuento debe estar entre 0 y 1');
+  }
+  
+  return numPrice - (numPrice * numDiscount);
+}
+        </code></pre>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <h4>Buenas prácticas con tipado dinámico</h4>
+      <ul>
+        <li><strong>Valida entradas</strong> de usuarios/APIs</li>
+        <li><strong>Usa typeof</strong> si dudas del tipo</li>
+        <li><strong>Convierte explícitamente</strong> en vez de confiar en coerción</li>
+        <li><strong>Considera TypeScript</strong> en proyectos grandes</li>
+        <li><strong>Configura ESLint</strong> para atrapar errores de tipo</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="practice-section">
+    <h3>Reto de práctica</h3>
+    <p><strong>¡Construye un inspector de tipos!</strong></p>
+    <p>Crea una función que reciba cualquier valor y devuelva un reporte del tipo:</p>
+    
+    <pre><code class="language-javascript">
+function inspectType(value) {
+  // Your code here!
+  // Should return: { type: 'string', category: 'primitive', value: 'hello' }
+}
+
+// Test cases:
+console.log(inspectType('hello'));      // string, primitive
+console.log(inspectType(42));           // number, primitive  
+console.log(inspectType([1, 2, 3]));    // object (array), reference
+console.log(inspectType(null));         // object (pero null), primitive
+    </code></pre>
+
+    <div class="expandable">
+      <div class="expandable-header" onclick="toggleExpand(this)">
+        💡 Pista: haz clic para ver
+      </div>
+      <div class="expandable-content">
+        <p>Usa <code>typeof</code> para lo básico, pero arrays y null devuelven "object". Necesitas verificaciones extras:</p>
+        <ul>
+          <li><code>Array.isArray()</code> para arrays</li>
+          <li><code>value === null</code> para null</li>
+          <li>Primitivos: string, number, boolean, undefined, symbol, bigint</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="interview-box">
+    <h4>Para entrevista</h4>
+    <ul>
+      <li><strong>"JS tiene 7 tipos primitivos y referencias para datos complejos"</strong></li>
+      <li><strong>"El tipado dinámico permite que las variables cambien de tipo en ejecución"</strong></li>
+      <li><strong>"Uso typeof y valido entradas de usuario"</strong></li>
+      <li><strong>"Null devuelve object con typeof, es un clásico de JS"</strong></li>
+      <li><strong>"Prefiero conversión explícita a depender de coerción automática"</strong></li>
+    </ul>
+  </div>
+
+  <!-- Enhanced Links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures" target="_blank">MDN: estructuras de datos</a>
+    <a href="https://javascript.info/types" target="_blank">JavaScript.info: tipos de datos</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof" target="_blank">MDN: operador typeof</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray" target="_blank">MDN: Array.isArray()</a>
+    <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">TypeScript: tipado estático</a>
+  </div>
+</section>

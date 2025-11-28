@@ -1,0 +1,107 @@
+<!-- LEXICAL ENVIRONMENT, EXECUTION CONTEXT -->
+<section id="Lexical" class="box">
+  <h2> Entorno léxico y contexto de ejecución </h2>
+  <article>
+    <h3>Léxico</h3>
+    <p>Depende de <em>dónde</em> está escrito el código. Marca el alcance y visibilidad según la posición física.</p>
+    <pre><code class="language-javascript">
+      function outerFunction() {
+          var outerVar = 'Estoy afuera';
+
+          function innerFunction() {
+              var innerVar = 'Estoy adentro';
+              console.log(outerVar); // Accede a outerVar
+          }
+
+          innerFunction();
+          console.log(innerVar); // Error: innerVar no está definida
+      }
+
+      outerFunction();
+    </code></pre>
+    <h3>Explicación</h3>
+    <ul>
+      <li><code>outerVar</code> vive en el entorno léxico de <code>outerFunction</code> y se ve en funciones internas.</li>
+      <li><code>innerVar</code> vive solo dentro de <code>innerFunction</code>.</li>
+    </ul>
+    <p>El entorno léxico define alcance según la posición en el código.</p>
+  </article>
+
+  <article>
+    <h3>Contexto de ejecución</h3>
+    <p>Es el “marco” que se crea cada vez que se invoca una función. Contiene qué variables y funciones están disponibles en ese instante.</p>
+    <pre><code class="language-javascript">
+      var globalVar = 'Soy global';
+
+      function firstFunction() {
+          var firstVar = 'Estoy en firstFunction';
+
+          function secondFunction() {
+              var secondVar = 'Estoy en secondFunction';
+              console.log(globalVar);
+              console.log(firstVar);
+              console.log(secondVar);
+          }
+
+          secondFunction();
+      }
+
+      firstFunction();
+    </code></pre>
+    <h3>Explicación</h3>
+    <ul>
+      <li>Al llamar <code>firstFunction</code> se crea su contexto con <code>globalVar</code> y <code>firstVar</code>.</li>
+      <li>Al llamar <code>secondFunction</code>, su contexto incluye también <code>secondVar</code>.</li>
+    </ul>
+    <p>Cada llamada agrega un contexto a la pila; el activo está arriba.</p>
+  </article>
+
+  <h3>Resumen</h3>
+  <h4>Entorno léxico:</h4>
+  <ul>
+    <li>Ubicación física en el código.</li>
+    <li>Alcance según dónde se escribe.</li>
+    <li>Estático.</li>
+  </ul>
+
+  <h4>Contexto de ejecución:</h4>
+  <ul>
+    <li>El código que se está ejecutando ahora.</li>
+    <li>Maneja qué variables/funciones están accesibles.</li>
+    <li>Dinámico: cambia por llamada.</li>
+  </ul>
+
+  <pre><code class="language-javascript">
+    var globalVar = 'Soy global';
+
+    function firstFunction() {
+        var firstVar = 'Estoy en firstFunction';
+
+        function secondFunction() {
+            var secondVar = 'Estoy en secondFunction';
+
+            function thirdFunction() {
+                var thirdVar = 'Estoy en thirdFunction';
+                console.log(globalVar);
+                console.log(firstVar);
+                console.log(secondVar);
+                console.log(thirdVar);
+            }
+
+            thirdFunction();
+        }
+
+        secondFunction();
+    }
+
+    firstFunction();
+  </code></pre>
+
+  <!-- Bloque de enlaces -->
+  <div class="links">
+    <a href="https://chatgpt.com/c/ba770bf4-a012-4908-a070-10e9eeaef3fb" target="_blank">Explicación sencilla</a>
+    <a href="https://www.youtube.com/watch?v=3V5SzF3bBZQ&list=PL7RhnTJi-WKp0sQExARliBUt1yMJSON5t&index=29" target="_blank">Contexto de ejecución</a>
+    <a href="https://www.youtube.com/watch?v=oGaOaDWXAzk&list=PL7RhnTJi-WKp0sQExARliBUt1yMJSON5t&index=31" target="_blank">Cómo Funciona JS</a>
+    <a href="https://chatgpt.com/c/c6cf08c7-cbb5-4a61-87c5-5a63a0c0e546" target="_blank">Chat GPT Alcance léxico</a>
+  </div>
+</section>

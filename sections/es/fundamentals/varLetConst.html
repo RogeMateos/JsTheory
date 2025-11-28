@@ -1,0 +1,60 @@
+<!-- VAR LET CONST -->
+<section class="box">
+  <h2>Var, Let y Const</h2>
+
+  <article>
+    <h3>var</h3>
+    <p><b>var</b> tiene alcance de función y permite redeclarar. No respeta el bloque.</p>
+    <pre><code class="language-javascript">
+var x = 10;
+if (x === 10) {
+  var x = 20;
+  console.log(x); // 20
+}
+console.log(x); // 20 (se sobrescribió)
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>let</h3>
+    <p><b>let</b> es de bloque y no se puede redeclarar en el mismo scope.</p>
+    <pre><code class="language-javascript">
+let y = 10;
+if (y === 10) {
+  let y = 20;
+  console.log(y); // 20
+}
+console.log(y); // 10
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>const</h3>
+    <p><b>const</b> es de bloque y no permite reasignar la referencia. Objetos/arrays sí pueden mutar internamente.</p>
+    <pre><code class="language-javascript">
+const z = 10;
+// z = 11; // Error
+
+const obj = { name: 'Alice' };
+obj.name = 'Bob'; // ok
+
+const arr = [1, 2];
+arr.push(3); // ok
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Comparación rápida</h3>
+    <ul>
+      <li><strong>var:</strong> función, hoisting, se redeclara</li>
+      <li><strong>let:</strong> bloque, se reasigna, no se redeclara</li>
+      <li><strong>const:</strong> bloque, no se reasigna (la referencia)</li>
+    </ul>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let" target="_blank">MDN: let</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const" target="_blank">MDN: const</a>
+    <a href="https://www.youtube.com/watch?v=6UAKBYpUC-Y" target="_blank">Var vs let vs const</a>
+  </div>
+</section>

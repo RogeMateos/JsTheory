@@ -1,0 +1,36 @@
+<section class="box">
+  <h2>JSON vs Object Literals</h2>
+  <article>
+    <h3>¿En qué se diferencian?</h3>
+    <p>JSON se inspira en los literales de objeto, pero es un formato de datos <em>más estricto</em> para enviar información. No es lo mismo que el literal de objeto en JS.</p>
+    <p>Claves entre comillas, sin funciones ni <code>undefined</code>. Solo datos serializables.</p>
+    <pre><code class="language-javascript">
+  // JavaScript Object Literal
+  const person = {
+      firstName: 'Mary',
+      isProgrammer: true
+  };
+  
+  // Convert to JSON string
+  const jsonString = JSON.stringify(person);
+  console.log(jsonString); 
+  // Output: {"firstName":"Mary","isProgrammer":true}
+  
+  // Convert JSON string back to object
+  const jsonValue = JSON.parse(jsonString);
+  console.log(jsonValue);
+  // Output: { firstName: 'Mary', isProgrammer: true }
+    </code></pre>
+    <p>JSON es compacto y estándar para intercambio de datos (navegador y Node.js).</p>
+  </article>
+
+  <!-- Bloque de JSON vs Object Literals -->
+  <div class="links">
+    <a href="https://claude.ai/chat/9e534f46-b0f1-4e46-a949-cb9309715dda" target="_blank">Claude</a>
+    <a href="https://chatgpt.com/c/66f35932-aa7c-8008-9510-0745bfd48617" target="_blank">Chat GPT</a>
+    <a href="https://chatgpt.com/c/66f3667e-1350-8008-b194-bc887e5a1108" target="_blank">Chat GPT2</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON" target="_blank">MDN Web Docs: JSON</a>
+    <a href="https://www.youtube.com/watch?v=ivfUjzy67KE" target="_blank">YouTube: JSON vs JavaScript Object Literals</a>
+    <a href="https://www.digitalocean.com/community/tutorials/json-stringify-json-parse-js" target="_blank">Digital Ocean: Working with JSON in JavaScript</a>
+  </div>
+</section>

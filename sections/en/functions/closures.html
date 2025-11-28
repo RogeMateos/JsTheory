@@ -1,0 +1,53 @@
+<!-- CLOSURES -->
+<section id="closures" class="box">
+  <h2>Closures</h2>
+  <article>
+    <h3>Closures</h3>
+    <p>A closure occurs when a function is defined inside another function, giving the inner function access to the
+      outer function's variables and scope, even after the outer function has completed its execution. This means
+      that the inner function can still access and manipulate the variables of the outer function, even though those
+      variables are not accessible from the global scope or any other context.</p>
+    
+    <pre><code class="language-javascript">
+      function greet(name) {
+          if (validateName()) {
+              console.log('Hola ' + name);
+          }
+
+          function validateName() {
+              return (name.length > 1);
+          }
+      }
+
+      greet(''); // No output, name is too short
+      greet('Miguel'); // Outputs: Hola Miguel
+
+      validateName('pepe'); // Error: validateName is not defined
+    </code></pre>
+    
+    <pre><code class="language-javascript">
+      function outerFunction() {
+          let outerVariable = 'I am outside!';
+
+          function innerFunction() {
+              console.log(outerVariable);
+          }
+
+          return innerFunction;
+      }
+
+      const closure = outerFunction();
+      closure();  // Output: I am outside!
+    </code></pre>
+  </article>
+
+  <!-- Bloque de CLOSURES -->
+  <div class="links">
+    <a href="https://www.youtube.com/watch?v=3a0I8ICR1Vg&list=PL7RhnTJi-WKp0sQExARliBUt1yMJSON5t&index=2" target="_blank">YouTube: Closures Web Dev Simplified</a>
+    <a href="https://summarize.ing/video-39832-Learn-Closures-In-7-Minutes" target="_blank">Summary</a>
+    <a href="https://dev.to/shimphillip/javascript-closure-simply-explained-1f79" target="_blank">JavaScript Closure Simply Explained</a>
+    <a href="https://dev.to/reubengt/a-simple-example-i-use-to-remember-what-a-closure-is-1ap2" target="_blank">A Simple Example I Use to Remember What a Closure Is</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures" target="_blank">MDN Web Docs: Closures</a>
+    <a href="https://chatgpt.com/c/69197fa5-7d82-4bee-9638-3b543c14a354" target="_blank">Chat GPT</a>
+  </div>
+</section>

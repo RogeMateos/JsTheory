@@ -1,0 +1,393 @@
+<section class="box">
+  <div class="learning-objectives">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Master the three types of scope: global, function, and block</li>
+      <li>Understand lexical scoping and how functions "remember" their environment</li>
+      <li>Learn when to use var, let, and const for optimal scoping</li>
+      <li>Avoid common scope-related bugs and naming conflicts</li>
+    </ul>
+  </div>
+
+  <h2>JavaScript Scope - Variable Visibility Rules</h2>
+
+  <div class="problem-box">
+    <h4>The Problem Junior Developers Face</h4>
+    <p>
+      "I declared a variable in one part of my code, but I can't access it from another part. 
+      Sometimes my variables seem to 'disappear', and sometimes they interfere with each other. 
+      What's going on?" Sound familiar? This is scope confusion!
+    </p>
+  </div>
+
+  <div class="solution-box">
+    <h4>Understanding Variable Visibility</h4>
+    <p>
+      Scope determines <strong>where your variables can be seen and used</strong> in your code. 
+      Think of it as setting boundaries around your variables - some are available everywhere, 
+      others only in specific areas. Understanding these rules prevents bugs and makes your code predictable.
+    </p>
+  </div>
+
+  <article>
+    <h3>Global Scope - The Public Square</h3>
+    
+    <div class="analogy-box">
+      <h4>🏛️ Public Square Analogy</h4>
+      <p>
+        Global scope is like a public square in a city. Everyone can see what's there, 
+        anyone can use it, but it can get crowded and messy if too many people put their stuff there!
+      </p>
+      <p>
+        <strong>Good for:</strong> Constants everyone needs (like API URLs)<br>
+        <strong>Avoid for:</strong> Temporary variables, personal data
+      </p>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('global-examples')">Examples</button>
+      <button class="nav-tab" onclick="showTab('global-problems')">Problems</button>
+      <button class="nav-tab" onclick="showTab('global-solutions')">Best Practices</button>
+    </div>
+
+    <div id="global-examples" class="tab-content active">
+      <pre><code class="language-javascript">
+// Global variables - available everywhere
+const API_URL = 'https://api.myapp.com';  // Good: everyone needs this
+let appName = 'My Awesome App';            // OK: rarely changes
+
+// These can be accessed from anywhere
+function showConfig() {
+  console.log(`App: ${appName}`);
+  console.log(`API: ${API_URL}`);
+}
+
+function updateTitle() {
+  document.title = appName;  // Works from any function
+}
+
+showConfig();    // App: My Awesome App
+updateTitle();   // Updates page title
+      </code></pre>
+    </div>
+
+    <div id="global-problems" class="tab-content">
+      <div class="warning-box">
+        <h4>Global Variable Problems</h4>
+      </div>
+      
+      <div class="code-comparison">
+        <div class="before">
+          <h5>❌ Problematic Global Usage</h5>
+          <pre><code class="language-javascript">
+// Too many globals create chaos
+var userName = 'Alice';
+var userAge = 25;
+var temp = 'some value';
+var data = [];
+var counter = 0;
+
+// In another file...
+var counter = 10; // Oops! Overwrote the first one
+var temp = 'different value'; // Collision!
+
+function processUser() {
+  // Which counter? Which temp?
+  // Very confusing!
+}
+          </code></pre>
+        </div>
+        <div class="after">
+          <h5>✅ Better Organization</h5>
+          <pre><code class="language-javascript">
+// Organize globals into objects
+const APP_CONFIG = {
+  name: 'My Awesome App',
+  apiUrl: 'https://api.myapp.com',
+  version: '1.0.0'
+};
+
+// Keep temporary variables local
+function processUser(userName, userAge) {
+  const temp = 'processing...';  // Local temp
+  const data = [];               // Local data
+  
+  // Clear what belongs where
+  return { processed: true };
+}
+          </code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="global-solutions" class="tab-content">
+      <pre><code class="language-javascript">
+// Global best practices
+const CONFIG = Object.freeze({
+  API_BASE: 'https://api.example.com',
+  MAX_RETRIES: 3,
+  TIMEOUT: 5000
+});
+
+// Module pattern to avoid global pollution
+const UserModule = (function() {
+  // Private variables (not global)
+  let currentUser = null;
+  let loginAttempts = 0;
+  
+  // Public interface
+  return {
+    login(credentials) {
+      loginAttempts++;
+      // login logic here
+    },
+    
+    getCurrentUser() {
+      return currentUser;
+    }
+  };
+})();
+
+// Clean, organized, no global mess!
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>Function Scope - Private Rooms</h3>
+    
+    <div class="analogy-box">
+      <h4>🏠 Private Room Analogy</h4>
+      <p>
+        Function scope is like your private bedroom. You can keep anything you want in there, 
+        organize it however you like, and nobody from outside can mess with your stuff. 
+        But once you leave the room (function ends), everything inside stays there!
+      </p>
+    </div>
+
+    <pre><code class="language-javascript">
+function calculateOrder() {
+  // These variables are "private" to this function
+  const tax = 0.08;
+  const shippingFee = 15.00;
+  let subtotal = 0;
+  
+  // Helper function - also private!
+  function addItem(price) {
+    subtotal += price;
+  }
+  
+  // Process the order
+  addItem(29.99);
+  addItem(15.50);
+  
+  const total = subtotal + (subtotal * tax) + shippingFee;
+  
+  return {
+    subtotal: subtotal,
+    tax: subtotal * tax,
+    shipping: shippingFee,
+    total: total
+  };
+}
+
+const order = calculateOrder();
+console.log(order.total);
+
+// These would all cause errors:
+// console.log(tax);        // Error: tax is not defined
+// console.log(subtotal);   // Error: subtotal is not defined
+// addItem(10);             // Error: addItem is not defined
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>Why Function Scope Matters</h4>
+      <p>
+        Function scope creates <strong>encapsulation</strong> - each function gets its own 
+        private workspace. This prevents naming conflicts and keeps your code organized and predictable.
+      </p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Block Scope - Temporary Workspaces</h3>
+    
+    <div class="analogy-box">
+      <h4>🚧 Construction Zone Analogy</h4>
+      <p>
+        Block scope (with <code>let</code> and <code>const</code>) is like setting up a temporary construction zone. 
+        You bring in tools and materials for a specific job, use them within the marked area, 
+        then clean up when the job is done. No tools left lying around!
+      </p>
+    </div>
+
+    <div class="code-comparison">
+      <div class="before">
+        <h5>🔴 var: Function Scoped (Old Way)</h5>
+        <pre><code class="language-javascript">
+function messyFunction() {
+  if (true) {
+    var leakyVariable = 'I escape blocks!';
+  }
+  
+  for (var i = 0; i < 3; i++) {
+    var anotherLeaky = 'Me too!';
+  }
+  
+  // These work but shouldn't!
+  console.log(leakyVariable);  // "I escape blocks!"
+  console.log(anotherLeaky);   // "Me too!"
+  console.log(i);              // 3
+}
+        </code></pre>
+      </div>
+      <div class="after">
+        <h5>🟢 let/const: Block Scoped (Modern Way)</h5>
+        <pre><code class="language-javascript">
+function cleanFunction() {
+  if (true) {
+    const contained = 'I stay in my block!';
+    let alsoContained = 'Me too!';
+  }
+  
+  for (let i = 0; i < 3; i++) {
+    const temporary = 'Just for this loop';
+  }
+  
+  // These cause errors (which is good!)
+  // console.log(contained);    // Error: not defined
+  // console.log(alsoContained); // Error: not defined
+  // console.log(i);            // Error: not defined
+  // console.log(temporary);    // Error: not defined
+}
+        </code></pre>
+      </div>
+    </div>
+  </article>
+
+  <article>
+    <h3>Lexical Scope - Memory of Birthplace</h3>
+    
+    <div class="analogy-box">
+      <h4>🧬 DNA Memory Analogy</h4>
+      <p>
+        Lexical scope is like genetic memory. A function "remembers" the environment 
+        where it was born, not where it's called from. It carries this memory wherever it goes!
+      </p>
+    </div>
+
+    <pre><code class="language-javascript">
+const globalMessage = 'I am global';
+
+function createGreeter(personalMessage) {
+  // This function "remembers" personalMessage forever
+  
+  function greet(name) {
+    // Can access:
+    // 1. Its own parameters (name)
+    // 2. Parent's variables (personalMessage)  
+    // 3. Global variables (globalMessage)
+    return `${personalMessage}, ${name}! ${globalMessage}`;
+  }
+  
+  return greet; // Return the inner function
+}
+
+// Create specialized greeters
+const casualGreeter = createGreeter('Hey there');
+const formalGreeter = createGreeter('Good evening');
+
+// Even though createGreeter finished, the functions remember their personalMessage!
+console.log(casualGreeter('Alice'));   // "Hey there, Alice! I am global"
+console.log(formalGreeter('Bob'));     // "Good evening, Bob! I am global"
+
+// Different greeters, different memories!
+    </code></pre>
+  </article>
+
+  <div class="practice-section">
+    <h3>Practice Challenge: Scope Detective</h3>
+    <p><strong>Debug this code!</strong> Find and fix the scope issues:</p>
+    
+    <pre><code class="language-javascript">
+// Buggy code - multiple scope issues!
+var score = 0;
+
+function playGame() {
+  for (var i = 1; i <= 3; i++) {
+    var score = i * 10; // Oops!
+    setTimeout(() => {
+      console.log(`Round ${i}: ${score} points`); // Double oops!
+    }, 100);
+  }
+  
+  return score; // Which score?
+}
+
+console.log('Final score:', playGame());
+// What will this print? Why is it wrong?
+    </code></pre>
+
+    <div class="expandable">
+      <div class="expandable-header" onclick="toggleExpand(this)">
+        🔍 Problems to Find (Click to reveal)
+      </div>
+      <div class="expandable-content">
+        <ol>
+          <li><strong>Variable shadowing:</strong> Local <code>score</code> hides global <code>score</code></li>
+          <li><strong>Loop variable problem:</strong> <code>var i</code> is shared across all setTimeout callbacks</li>
+          <li><strong>Closure confusion:</strong> All callbacks see the final value of <code>i</code></li>
+          <li><strong>Return value issue:</strong> Returning wrong <code>score</code></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="expandable">
+      <div class="expandable-header collapsed" onclick="toggleExpand(this)">
+        ✅ Solution (Click to see the fix)
+      </div>
+      <div class="expandable-content">
+        <pre><code class="language-javascript">
+let totalScore = 0; // Renamed to avoid confusion
+
+function playGame() {
+  for (let i = 1; i <= 3; i++) { // let creates new i for each iteration
+    const roundScore = i * 10;   // Different name, const for safety
+    totalScore += roundScore;    // Update global score
+    
+    setTimeout(() => {
+      // Now each callback has its own i and roundScore!
+      console.log(`Round ${i}: ${roundScore} points`);
+    }, 100);
+  }
+  
+  return totalScore;
+}
+
+console.log('Final score:', playGame());
+        </code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="interview-box">
+    <h4>Interview Talking Points</h4>
+    <ul>
+      <li><strong>"JavaScript has three types of scope: global, function, and block scope"</strong></li>
+      <li><strong>"let and const provide block scope, while var only provides function scope"</strong></li>
+      <li><strong>"Lexical scope means functions remember their birth environment, not their call site"</strong></li>
+      <li><strong>"I minimize global variables to avoid naming conflicts and improve maintainability"</strong></li>
+      <li><strong>"Closures happen when inner functions access outer function variables"</strong></li>
+    </ul>
+  </div>
+
+  <!-- Enhanced Links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Glossary/Scope" target="_blank">MDN: Scope</a>
+    <a href="https://javascript.info/closure" target="_blank">JavaScript.info: Closure & Scope</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let" target="_blank">MDN: let Statement</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const" target="_blank">MDN: const Statement</a>
+    <a href="https://eslint.org/docs/rules/no-var" target="_blank">ESLint: Prefer let/const over var</a>
+  </div>
+</section>
+

@@ -1,0 +1,55 @@
+<section class="box">
+  <h2>Destructuring</h2>
+  <article>
+      <h3>¿Qué es?</h3>
+      <p>Destructurar es extraer valores de arrays u objetos en variables con una sintaxis corta.</p>
+      
+      <h4>Array destructuring</h4>
+      <pre><code class="language-javascript">
+      const numbers = [1, 2, 3, 4];
+  
+      // Tradicional
+      const primero = numbers[0];
+      const segundo = numbers[1];
+
+      // Destructurando
+      const [first, second, , fourth] = numbers;
+  
+      console.log(first); // Output: 1
+      console.log(second); // Output: 2
+      console.log(fourth); // Output: 4
+      </code></pre>
+  
+      <h4>Object destructuring</h4>
+      <pre><code class="language-javascript">
+      const person = { name: 'Alice', age: 25, country: 'UK' };
+  
+      // Tradicional
+      const name = person.name;
+      const age = person.age;
+
+      // Destructurando
+      const { name, age, country } = person;
+  
+      console.log(name); // Output: Alice
+      console.log(age); // Output: 25
+      console.log(country); // Output: UK
+      </code></pre>
+      
+      <h4>Renombrar variables</h4>
+      <p>Puedes renombrar mientras destructuras:</p>
+      <pre><code class="language-javascript">
+      const { name: fullName, age: yearsOld } = person;
+      
+      console.log(fullName); // Output: Alice
+      console.log(yearsOld); // Output: 25
+      </code></pre>
+  </article>
+  
+  <!-- Links -->
+  <div class="links">
+      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment" target="_blank">MDN: destructuring</a>
+      <a href="https://javascript.info/destructuring-assignment" target="_blank">JavaScript.info: destructuring</a>
+      <a href="https://www.youtube.com/watch?v=NIq3qLaHCIs" target="_blank">YouTube: Destructuring explicado</a>
+  </div>
+</section>

@@ -1,0 +1,64 @@
+<section  class="box">
+  <h2>Understanding Operator Precedence and Associativity in JavaScript</h2>
+  <article>
+    <h3>Operator Precedence</h3>
+    <p>Precedence defines the order in which operations are performed in an expression. Operators with higher
+      precedence are evaluated before those with lower precedence. For example, multiplication (*) has higher
+      precedence than addition (+).</p>
+    <pre><code class="language-javascript">
+      let result = 3 + 4 * 5;
+      console.log(result); // Output: 23
+    </code></pre>
+    <p>Multiplication is evaluated first: 4 * 5 is computed, resulting in 20. Addition is then evaluated: 3 + 20
+      results in 23.</p>
+    <pre><code class="language-javascript">
+      result = (3 + 4) * 5;
+      console.log(result); // Output: 35
+    </code></pre>
+    <ul>
+      <li>Parentheses force addition to be evaluated first: 3 + 4 is computed, resulting in 7.</li>
+      <li>Multiplication is then evaluated: 7 * 5 results in 35.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>Operator Associativity</h3>
+    <p>Associativity defines the direction in which operators of the same precedence level are evaluated. It can be
+      either left-to-right (left associativity) or right-to-left (right associativity).</p>
+    <pre><code class="language-javascript">
+      let a, b, c;
+      a = 2;
+      b = 3;
+      c = 4;
+
+      a = b = c;
+      console.log(a); // Output: 4
+      console.log(b); // Output: 4
+      console.log(c); // Output: 4
+    </code></pre>
+    <h3>Explanation</h3>
+    <ul>
+      <li>Right-to-left associativity of assignment: The expression b = c is evaluated first, assigning the value of
+        c (4) to b.</li>
+      <li>Then a = b is evaluated: The value of b (4) is assigned to a.</li>
+      <li>As a result, all three variables (a, b, and c) end up with the value 4.</li>
+    </ul>
+    <h3>Summary</h3>
+    <ul>
+      <li>Operator precedence determines the order of operations.</li>
+      <li>Associativity determines the order of evaluation when operators share the same precedence.</li>
+      <li>Use parentheses to control and clarify the order of operations.</li>
+    </ul>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://www.udemy.com/course/understand-javascript/learn/lecture/2237488#questions/1642638"
+      target="_blank">Video: Operator Precedence and Associativity</a>
+    <a href="https://chatgpt.com/c/88a3ef4d-871b-499d-843a-2bed69fb617f" target="_blank">Operator Precedence and
+      Associativity</a>
+    <a href="https://lia.disi.unibo.it/materiale/JS/developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence.html"
+      target="_blank">Table: Operator Precedence</a>
+    <a href="https://chatgpt.com/c/1b78f610-0558-467f-8e6e-24f8f8a36008" target="_blank">Chat GPT</a>
+  </div>
+</section>

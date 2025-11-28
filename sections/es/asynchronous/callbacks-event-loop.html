@@ -1,0 +1,103 @@
+<section class="box">
+  <h2>Asincronía: callbacks y event loop</h2>
+  <article>
+    <h3>Conceptos base</h3>
+
+    <div class="concept">
+      <h4>Callbacks</h4>
+      <ul>
+        <li><strong>Definición:</strong> función pasada como argumento que se ejecuta al terminar la operación.</li>
+        <li><strong>Uso:</strong> primer mecanismo para manejar asíncronos en JS.</li>
+      </ul>
+    </div>
+
+    <div class="concept">
+      <h4>setTimeout</h4>
+      <ul>
+        <li>API nativa para ejecutar código después de un tiempo.</li>
+        <li>El callback se encola; no bloquea el hilo.</li>
+      </ul>
+    </div>
+
+    <div class="concept">
+      <h4>Event Loop</h4>
+      <ul>
+        <li>Coordina la ejecución en un solo hilo.</li>
+        <li><strong>Call Stack:</strong> código síncrono</li>
+        <li><strong>Web APIs/Node APIs:</strong> manejan tareas async</li>
+        <li><strong>Task Queue / Microtask Queue:</strong> callbacks esperando</li>
+      </ul>
+    </div>
+
+    <h3>Ejemplos</h3>
+
+    <h4>setTimeout básico</h4>
+    <pre><code class="language-javascript">console.log("start");
+
+setTimeout(() => {
+  console.log("se ejecuta después de 2s");
+}, 2000);
+
+console.log("end");
+// start
+// end
+// se ejecuta después de 2s
+    </code></pre>
+
+    <p><strong>Orden:</strong> start/end se ejecutan en stack; el callback va a Web APIs y luego a la cola cuando el stack esté libre.</p>
+
+    <h4>Callback hell</h4>
+    <pre><code class="language-javascript">step1(() => {
+  step2(() => {
+    step3(() => {
+      console.log("completado");
+    });
+  });
+});
+    </code></pre>
+    <p><strong>Problema:</strong> difícil de leer/mantener.</p>
+
+    <h4>Analogía del restaurante</h4>
+    <ul>
+      <li><strong>Call Stack:</strong> chef</li>
+      <li><strong>Web APIs:</strong> horno/micro</li>
+      <li><strong>Task Queue:</strong> platos listos</li>
+      <li><strong>Event Loop:</strong> mesero que trae el siguiente plato cuando el chef queda libre</li>
+    </ul>
+
+    <h4>Flujo del loop</h4>
+    <ol>
+      <li>Ejecuta síncrono en Stack</li>
+      <li>Delegar async a Web APIs</li>
+      <li>Callbacks a colas (micro / macro)</li>
+      <li>Si Stack vacío, mueve microtareas y luego tareas</li>
+      <li>Repetir</li>
+    </ol>
+
+    <h3>Buenas prácticas</h3>
+    <ul>
+      <li>Callbacks para casos simples</li>
+      <li>Para dependencias múltiples, usar Promesas o async/await</li>
+      <li>Manejar errores siempre en callbacks</li>
+    </ul>
+
+    <h3>Errores comunes</h3>
+    <ul>
+      <li>Callback hell (anidación excesiva)</li>
+      <li>Suponer que async corre en el orden escrito</li>
+      <li>Olvidar que JS es single-thread</li>
+    </ul>
+
+    <h3>Ejercicio rápido</h3>
+    <pre><code class="language-javascript">console.log("A");
+
+setTimeout(() => console.log("B"), 0);
+console.log("C");
+setTimeout(() => console.log("D"), 100);
+console.log("E");
+// Orden: A, C, E, B, D
+    </code></pre>
+
+    <p>Conecta con: Promesas, async/await, Fetch API, y el event loop en Node.js.</p>
+  </article>
+</section>

@@ -1,0 +1,83 @@
+<!-- DEFAULT VALUES -->
+<section id="default-values" class="box">
+    <h2>Asignar valores por defecto</h2>
+    <article>
+      <h3>Operador OR (`||`) como fallback</h3>
+      <p>Podemos usar <code>||</code> para asignar un valor cuando el argumento es <code>undefined</code>, <code>null</code> u otro falsy.</p>
+  
+      <p>Sirve para que la función sea predecible aunque falten argumentos.</p>
+  
+      <h4>Ejemplo básico:</h4>
+      <pre><code class="language-javascript">
+        function greet(name) {
+          name = name || 'Your name here';
+          console.log('Hello ' + name);
+        }
+  
+        greet('Tony'); // Output: Hello Tony
+        greet();       // Output: Hello Your name here
+      </code></pre>
+  
+      <p>Si no llega <code>name</code>, usa "Your name here" porque <code>||</code> devuelve el primer valor truthy.</p>
+  
+      <h4>Cómo funciona OR</h4>
+      <p>Evalúa de izquierda a derecha y devuelve el primer truthy; si no hay, devuelve el último.</p>
+  
+      <pre><code class="language-javascript">
+  // Example 1
+  console.log(true || false);  // Output: true
+  
+  // Example 2
+  console.log(undefined || 'hello'); // Output: hello
+  
+  // Example 3
+  console.log(0 || 'default');  // Output: default
+      </code></pre>
+  
+      <p>En los ejemplos: <code>true</code> es truthy, <code>undefined</code> es falsy, <code>0</code> es falsy.</p>
+  
+      <h4>Asignar valor por defecto en funciones</h4>
+      <p>Si el parámetro es <code>undefined</code>, <code>||</code> usa el valor de respaldo.</p>
+  
+      <pre><code class="language-javascript">
+        function greet(name) {
+          name = name || 'Your name here';
+          console.log('Hello ' + name);
+        }
+  
+        greet('Tony');       // Output: Hello Tony
+        greet(undefined);    // Output: Hello Your name here
+      </code></pre>
+  
+      <p>Si es <code>undefined</code>, <code>null</code> o cadena vacía, cae al valor por defecto.</p>
+  
+      <h4>Problema</h4>
+      <p><code>0</code>, <code>false</code> o <code>''</code> son falsy y disparan el valor por defecto:</p>
+  
+      <pre><code class="language-javascript">
+        greet(0);  // Output: Hello Your name here
+      </code></pre>
+  
+      <p>Para permitirlos, usa el operador de fusión nula (<code>??</code>) que solo cae en <code>null</code> o <code>undefined</code>:</p>
+  
+      <pre><code class="language-javascript">
+        function greet(name) {
+          name = name ?? 'Your name here';
+          console.log('Hello ' + name);
+        }
+  
+        greet(0);  // Output: Hello 0
+      </code></pre>
+  
+      <p><code>??</code> solo aplica cuando es <code>null</code> o <code>undefined</code>.</p>
+    </article>
+  
+    <!-- Links -->
+    <div class="links">
+      <a href="https://www.udemy.com/course/understand-javascript/learn/lecture/2237500#overview" target="_blank">Udemy: Valores por defecto</a>
+      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR" target="_blank">MDN: operador OR</a>
+      <a href="https://javascript.info/logical-operators#or" target="_blank">JavaScript.info: operadores lógicos</a>
+      <a href="https://www.youtube.com/watch?v=NIq3qLaHCIs" target="_blank">YouTube: operador OR en JS</a>
+    </div>
+  </section>
+  

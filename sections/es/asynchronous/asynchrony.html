@@ -1,0 +1,88 @@
+<section class="box">
+  <h2>Resumen de conceptos clave</h2>
+  <article>
+    <h3>Tema central</h3>
+    <p>Asincronía en JavaScript: de un hilo único a manejar varias tareas sin bloquear.</p>
+
+    <h3>Conceptos clave</h3>
+    <ul>
+      <li>Single-thread: ejecuta línea a línea</li>
+      <li>Problema: operaciones largas bloquearían todo</li>
+      <li>Solución: APIs async + event loop para no bloquear</li>
+      <li>Entornos: navegador (Web APIs) y Node.js</li>
+    </ul>
+
+    <h3>Analogía</h3>
+    <p><strong>Restaurante</strong>:</p>
+    <ul>
+      <li>Síncrono: un mesero atiende una mesa completa antes de la siguiente.</li>
+      <li>Asíncrono: toma pedidos, cocina en paralelo y sirve cuando estén listos.</li>
+    </ul>
+    <p>Práctico: descargar un archivo grande sin impedir que el usuario siga navegando.</p>
+
+    <h3>Código ilustrativo</h3>
+    <pre><code class="language-javascript">// ❌ Bloqueante
+function queryDatabase() {
+  // Simula 5s bloqueando
+  let start = Date.now();
+  while (Date.now() - start < 5000) {
+    // esperando...
+  }
+  return "Data retrieved";
+}
+
+// ✅ Asíncrono
+function queryDatabaseAsync() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve("Data retrieved");
+    }, 5000);
+  });
+  // La app sigue corriendo mientras espera
+}
+    </code></pre>
+
+    <h3>Buenas prácticas</h3>
+    <ol>
+      <li>No bloquear: usa async en tareas largas</li>
+      <li>Aprovecha hardware: delega I/O al sistema</li>
+      <li>UX: permite interacción mientras se espera</li>
+      <li>Feedback: indicadores de carga</li>
+    </ol>
+
+    <h3>Ejercicios</h3>
+    <h4>1) Simular operación lenta</h4>
+    <pre><code class="language-javascript">// Simula llamada a API sin bloquear
+function simulateAPI() {
+  console.log("Inicio petición...");
+
+  setTimeout(() => {
+    console.log("Datos recibidos!");
+  }, 2000);
+
+  console.log("Petición enviada, sigo con otras tareas");
+}
+    </code></pre>
+
+    <h4>2) Comparar bloqueante vs no bloqueante</h4>
+    <p>Crea dos versiones de la misma función y compara su comportamiento.</p>
+
+    <h3>Conexiones en el ecosistema</h3>
+    <ul>
+      <li>React: <code>useEffect</code> y actualizaciones de estado asíncronas</li>
+      <li>APIs modernas: <code>fetch()</code>, <code>async/await</code></li>
+      <li>Node.js: backend no bloqueante</li>
+    </ul>
+
+    <h3>Próximos temas</h3>
+    <p>Callbacks, Promesas y async/await.</p>
+    <h3>Related pages</h3>
+    <ul>
+      <li>
+        <a href="#" data-section="asynchronous/synchronous-code"
+          >Synchronous Code (examples)</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>

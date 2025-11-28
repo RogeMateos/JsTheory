@@ -1,0 +1,39 @@
+<section class="box">
+  <h2>Coerción: valores Truthy y Falsy</h2>
+  <article>
+    <h3>Uso de Truthy y Falsy para comprobar existencia</h3>
+    <p>
+      En JavaScript, la tipificación dinámica y la coerción permiten convertir valores automáticamente en ciertos contextos (por ejemplo, en condicionales). Conocer cómo el motor interpreta valores <em>truthy</em> y <em>falsy</em> ayuda a simplificar comprobaciones de existencia y escribir código más limpio. Los falsy más comunes son <code>undefined</code>, <code>null</code>, <code>0</code>, <code>""</code> (cadena vacía) y <code>false</code>.
+    </p>
+
+    <pre><code class="language-javascript">
+// Ejemplo: comprobación simple con valores falsy
+var a;
+if (a) {
+  console.log('Hay algo');
+} else {
+  console.log('No hay nada');
+}
+// Muestra: "No hay nada" porque 'a' es undefined (falsy)
+    </code></pre>
+
+    <pre><code class="language-javascript">
+// Ejemplo: tratando 0 como valor válido
+var a = 0;
+if (a || a === 0) {
+  console.log('Hay algo, incluyendo 0');
+} else {
+  console.log('No hay nada');
+}
+// Muestra: "Hay algo, incluyendo 0" porque 0 se considera válido aquí.
+    </code></pre>
+  </article>
+
+  <div class="links">
+    <a href="https://www.udemy.com/course/understand-javascript/learn/lecture/2237498#overview" target="_blank">Udemy: Coerción, truthy y falsy</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof" target="_blank">MDN: operador typeof</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness" target="_blank">MDN: igualdad y comparaciones</a>
+    <a href="https://www.youtube.com/watch?v=boBnpK6WFOM" target="_blank">YouTube: Truthy y falsy en JS</a>
+    <a href="https://dev.to/alldanielscoding/understanding-truthy-and-falsy-values-in-javascript-49b2" target="_blank">Dev.to: Truthy y falsy en JavaScript</a>
+  </div>
+</section>

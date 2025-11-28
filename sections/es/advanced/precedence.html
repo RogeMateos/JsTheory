@@ -1,0 +1,58 @@
+<section class="box">
+  <h2>Precedencia y asociatividad de operadores</h2>
+  <article>
+    <h3>Precedencia</h3>
+    <p>Define el orden de evaluación. Operadores con mayor precedencia se calculan antes (ej. <code>*</code> antes que <code>+</code>).</p>
+    <pre><code class="language-javascript">
+      let result = 3 + 4 * 5;
+      console.log(result); // Output: 23
+    </code></pre>
+    <p>Primero 4 * 5 = 20; luego 3 + 20 = 23.</p>
+    <pre><code class="language-javascript">
+      result = (3 + 4) * 5;
+      console.log(result); // Output: 35
+    </code></pre>
+    <ul>
+      <li>Paréntesis fuerzan primero la suma (3 + 4 = 7).</li>
+      <li>Luego se multiplica: 7 * 5 = 35.</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>Asociatividad</h3>
+    <p>Dirección de evaluación cuando tienen la misma precedencia: izquierda a derecha o derecha a izquierda.</p>
+    <pre><code class="language-javascript">
+      let a, b, c;
+      a = 2;
+      b = 3;
+      c = 4;
+
+      a = b = c;
+      console.log(a); // Output: 4
+      console.log(b); // Output: 4
+      console.log(c); // Output: 4
+    </code></pre>
+    <h3>Explicación</h3>
+    <ul>
+      <li>Asignación es derecha a izquierda: primero <code>b = c</code> (b vale 4).</li>
+      <li>Luego <code>a = b</code> (a vale 4).</li>
+      <li>Las tres variables terminan con 4.</li>
+    </ul>
+    <h3>Resumen</h3>
+    <ul>
+      <li>Precedencia: orden entre operadores distintos.</li>
+      <li>Asociatividad: orden cuando comparten precedencia.</li>
+      <li>Usa paréntesis para dejar claro el orden.</li>
+    </ul>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://www.udemy.com/course/understand-javascript/learn/lecture/2237488#questions/1642638"
+      target="_blank">Video: precedencia y asociatividad</a>
+    <a href="https://chatgpt.com/c/88a3ef4d-871b-499d-843a-2bed69fb617f" target="_blank">Guía de operadores</a>
+    <a href="https://lia.disi.unibo.it/materiale/JS/developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence.html"
+      target="_blank">Table: Operator Precedence</a>
+    <a href="https://chatgpt.com/c/1b78f610-0558-467f-8e6e-24f8f8a36008" target="_blank">Chat GPT</a>
+  </div>
+</section>

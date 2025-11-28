@@ -1,0 +1,62 @@
+<section class="box">
+  <h2>Hoisting</h2>
+  <article>
+    <h3>¿Qué es hoisting?</h3>
+    <p>Significa que las declaraciones de variables y funciones se “mueven” al inicio de su contexto de ejecución antes de correr el código.</p>
+    <p>En la primera pasada, el motor guarda declaraciones en memoria; para variables solo sube la <em>declaración</em>, no la inicialización.</p>
+    <p>Por eso, si usas una variable antes de inicializarla con <code>var</code>, obtienes <code>undefined</code> en lugar de error.</p>
+    
+    <pre><code class="language-javascript">
+console.log(x); // undefined
+var x = 5;
+console.log(x); // 5
+    </code></pre>
+    
+    <p>Las funciones declaradas también se elevan completas, así que puedes invocarlas antes de escribirlas en el archivo.</p>
+    
+    <pre><code class="language-javascript">
+hello(); // "Hello, world!"
+
+function hello() {
+  console.log("Hello, world!");
+}
+    </code></pre>
+    
+    <p>Funciona porque la declaración de <code>hello</code> ya está en memoria al iniciar la ejecución.</p>
+    
+    <h3>Dos ejemplos</h3>
+    <pre><code class="language-javascript">
+console.log(greeting);
+hello();
+function hello(){
+  console.log('hello');
+}
+var greeting = "Hi there";
+console.log(greeting);
+
+// undefined
+// hello
+// Hi there
+    </code></pre>
+
+    <pre><code class="language-javascript">
+function hello(){
+  console.log('hello');
+}
+var greeting;
+console.log(greeting);
+hello();
+greeting = "Hi there";
+console.log(greeting);
+
+// undefined
+// hello
+// Hi there
+    </code></pre>
+  </article>
+
+  <div class="links">
+    <a href="https://www.programiz.com/javascript/hoisting" target="_blank">Hoisting</a>
+    <a href="https://dev.to/lydiahallie/javascript-visualized-hoisting-478h" target="_blank">Hoisting visualizado</a>
+  </div>
+</section>

@@ -1,0 +1,168 @@
+<section class="box">
+  <div class="learning-objectives">
+    <h3>Objetivos de aprendizaje</h3>
+    <ul>
+      <li>Dominar alcance global, de función y de bloque</li>
+      <li>Entender el alcance léxico: las funciones “recuerdan” su entorno</li>
+      <li>Elegir entre var, let y const según el alcance</li>
+      <li>Evitar colisiones y bugs por variables mal ubicadas</li>
+    </ul>
+  </div>
+
+  <h2>Scope en JavaScript: dónde viven tus variables</h2>
+
+  <div class="problem-box">
+    <h4>Problema común</h4>
+    <p>
+      “Declaré una variable, pero no puedo acceder desde otro lado; a veces desaparece o pisa a otra.” Eso es confusión de scope.
+    </p>
+  </div>
+
+  <div class="solution-box">
+    <h4>Idea clave</h4>
+    <p>
+      El scope define <strong>dónde se ven y se usan</strong> las variables. Algunas existen en todo el archivo; otras solo dentro de una función o un bloque.
+    </p>
+  </div>
+
+  <article>
+    <h3>Scope global</h3>
+    <div class="analogy-box">
+      <h4>🏛️ Plaza pública</h4>
+      <p>Todo el mundo ve lo que está ahí. Úsalo para constantes compartidas, no para variables temporales.</p>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('global-ejemplos')">Ejemplos</button>
+      <button class="nav-tab" onclick="showTab('global-problemas')">Problemas</button>
+      <button class="nav-tab" onclick="showTab('global-buenas')">Buenas prácticas</button>
+    </div>
+
+    <div id="global-ejemplos" class="tab-content active">
+      <pre><code class="language-javascript">
+const API_URL = 'https://api.miapp.com';
+let appName = 'Mi App';
+
+function mostrarConfig() {
+  console.log(appName, API_URL);
+}
+      </code></pre>
+    </div>
+
+    <div id="global-problemas" class="tab-content">
+      <div class="code-comparison">
+        <div class="before">
+          <h5>❌ Demasiados globales</h5>
+          <pre><code class="language-javascript">
+var userName = 'Ana';
+var counter = 0;
+// En otro archivo:
+var counter = 10; // Sobrescribe
+          </code></pre>
+        </div>
+        <div class="after">
+          <h5>✅ Organiza</h5>
+          <pre><code class="language-javascript">
+const APP = {
+  userName: 'Ana',
+  counter: 0,
+};
+          </code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="global-buenas" class="tab-content">
+      <pre><code class="language-javascript">
+const CONFIG = Object.freeze({
+  API_BASE: 'https://api.ejemplo.com',
+  RETRIES: 3,
+});
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>Scope de función</h3>
+    <div class="analogy-box">
+      <h4>🏠 Habitación privada</h4>
+      <p>Lo que declaras dentro vive y muere dentro. Fuera no existe.</p>
+    </div>
+
+    <pre><code class="language-javascript">
+function calcularPedido() {
+  const impuesto = 0.08;
+  let subtotal = 0;
+
+  function agregar(precio) {
+    subtotal += precio;
+  }
+
+  agregar(20);
+  agregar(10);
+  const total = subtotal + subtotal * impuesto;
+  return total;
+}
+
+calcularPedido(); // total
+// impuesto, subtotal y agregar no existen fuera
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Scope de bloque</h3>
+    <div class="analogy-box">
+      <h4>📦 Caja temporal</h4>
+      <p><code>let</code> y <code>const</code> viven solo dentro de llaves.</p>
+    </div>
+
+    <pre><code class="language-javascript">
+if (true) {
+  let mensaje = 'hola';
+  const flag = true;
+  console.log(mensaje, flag); // ok
+}
+// console.log(mensaje); // Error
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>var se eleva al scope de función</h4>
+      <pre><code class="language-javascript">
+if (true) {
+  var color = 'red';
+}
+console.log(color); // 'red' (sale del bloque)
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>Alcance léxico</h3>
+    <p>Una función recuerda el entorno donde se definió, no donde se ejecuta.</p>
+
+    <pre><code class="language-javascript">
+const nombre = 'Ada';
+
+function saludar() {
+  console.log(nombre); // Usa el nombre de su entorno
+}
+
+function ejecutar(fn) {
+  const nombre = 'Grace';
+  fn(); // Imprime "Ada", no "Grace"
+}
+
+ejecutar(saludar);
+    </code></pre>
+  </article>
+
+  <div class="interview-box">
+    <h4>Para entrevista</h4>
+    <ul>
+      <li>Global: visible en todo el archivo (evitar abusar)</li>
+      <li>Función: aislado dentro de la función</li>
+      <li>Bloque: <code>let</code>/<code>const</code> limitados a llaves</li>
+      <li>Alcance léxico: la función recuerda dónde nació</li>
+    </ul>
+  </div>
+</section>

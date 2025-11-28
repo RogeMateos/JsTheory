@@ -1,0 +1,62 @@
+<section class="box">
+  <h2>Código síncrono</h2>
+  <article>
+    <h3>Resumen</h3>
+    <p>Diferencia entre código bloqueante y la necesidad de usar async.</p>
+
+    <h3>Temas</h3>
+    <ul>
+      <li>Comportamiento síncrono</li>
+      <li>Problema de bloqueo en tareas lentas</li>
+      <li>Por qué usar asincronía</li>
+    </ul>
+
+    <h3>Ejemplo</h3>
+    <pre><code class="language-javascript">// Síncrono básico
+console.log("start");
+console.log("end");
+
+// Bloqueante
+console.log("start");
+for (let i = 0; i < 1000000000; i++) {
+  // Time-consuming operation
+}
+console.log("end");
+    </code></pre>
+
+    <p><strong>Idea:</strong> una tarea lenta congela todo lo demás.</p>
+
+    <h3>Analogía</h3>
+    <p><strong>Cocina:</strong></p>
+    <ol>
+      <li>Pones agua a hervir</li>
+      <li>Te quedas mirando la olla sin hacer nada</li>
+      <li>Recién después cortas las verduras</li>
+    </ol>
+    <p>Ineficiente: podrías cortar mientras hierve.</p>
+
+    <h3>Buenas prácticas</h3>
+    <ul>
+      <li>Operaciones &gt; 1s → hacerlas asíncronas</li>
+      <li>Consultas/HTTP siempre async</li>
+      <li>Evita congelar la UI</li>
+    </ul>
+
+    <h3>Ejercicios</h3>
+    <ol>
+      <li>
+        Simulador bloqueante: bucle hasta 100,000,000 y mide con <code>console.time</code>
+      </li>
+      <li>
+        Identifica 3 operaciones que deban ser async (subir archivos, peticiones, etc.)
+      </li>
+    </ol>
+
+    <h3>Conexión</h3>
+    <ul>
+      <li>React: <code>useEffect</code> y fetch async</li>
+      <li>UX: no congelar la interfaz</li>
+      <li>Loaders/estilos dinámicos sin bloquear</li>
+    </ul>
+  </article>
+</section>
