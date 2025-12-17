@@ -84,6 +84,357 @@ myObject.getName(); // "Global Name" (heredado del ámbito exterior)
   </article>
 
   <article>
+    <h3>Truco Mental para Dominar <code>this</code></h3>
+
+    <div class="key-concept">
+      <h4>Dibujito Mental</h4>
+      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #4f46e5; margin: 10px 0;">
+OBJETO
+└── método()  ← función NORMAL
+    └── arrow()  ← arrow function
+      </pre>
+      <p><strong>Lectura correcta:</strong></p>
+      <ul>
+        <li>🔵 <code>método()</code> → <code>this</code> = objeto</li>
+        <li>🟡 <code>arrow()</code> → copia el <code>this</code> de <code>método()</code></li>
+      </ul>
+      <p><strong>📌 Regla clave:</strong> La arrow NO mira al objeto, mira hacia arriba</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Frase mágica (memorízala)</h4>
+      <p><strong>Arrow function → hereda <code>this</code></strong></p>
+      <p><strong>Función normal → <code>this</code> es quien la llama</strong></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Test mental rápido (1 segundo)</h4>
+      <pre><code class="language-javascript">obj.method();</code></pre>
+      <p><strong>1️⃣ ¿Tiene <code>=></code>?</strong></p>
+      <ul>
+        <li>→ Sí → ❌ <code>this</code> NO es <code>obj</code></li>
+        <li>→ No → ✅ <code>this</code> SÍ es <code>obj</code></li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>Regla práctica</h4>
+      <ul>
+        <li>✅ Arrow → callbacks, setTimeout, map, filter</li>
+        <li>❌ Arrow → métodos de objetos</li>
+        <li>✅ Función normal → métodos que usan <code>this</code></li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Ejercicio Trampa (nivel entrevista)</h3>
+
+    <div class="problem-box">
+      <h4>❓ ¿Qué imprime?</h4>
+      <pre><code class="language-javascript">const team = {
+  name: "Digital Renewals",
+  show() {
+    setTimeout(function () {
+      console.log(this.name);
+    }, 100);
+  }
+};
+
+team.show();</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>🧠 Piensa con el truco</h4>
+      <ol>
+        <li><strong>1️⃣</strong> ¿setTimeout usa arrow? → ❌ NO</li>
+        <li><strong>2️⃣</strong> Función normal → pregunta: ¿quién me llama?</li>
+        <li><strong>3️⃣</strong> ¿Quién llama a esa función? → setTimeout</li>
+        <li><strong>4️⃣</strong> <code>this</code> ≠ team</li>
+      </ol>
+      <p><strong>✅ Resultado:</strong> <code>undefined</code></p>
+    </div>
+
+    <div class="code-comparison">
+      <div class="before">
+        <h5>❌ Incorrecto (función normal)</h5>
+        <pre><code class="language-javascript">const team = {
+  name: "Digital Renewals",
+  show() {
+    setTimeout(function () {
+      console.log(this.name);
+    }, 100);
+  }
+};
+
+team.show(); // undefined</code></pre>
+      </div>
+      <div class="after">
+        <h5>✅ Correcto (arrow function)</h5>
+        <pre><code class="language-javascript">const team = {
+  name: "Digital Renewals",
+  show() {
+    setTimeout(() => {
+      console.log(this.name);
+    }, 100);
+  }
+};
+
+team.show(); // "Digital Renewals"</code></pre>
+      </div>
+    </div>
+
+    <div class="solution-box">
+      <h4>🏁 Resumen Final</h4>
+      <ul>
+        <li>🔸 Arrow mira hacia arriba</li>
+        <li>🔸 Función normal mira quién la llama</li>
+        <li>🔸 Métodos de objetos → función normal</li>
+        <li>🔸 Callbacks → arrow</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Explicación Visual Paso a Paso</h3>
+
+    <div class="key-concept">
+      <h4>1️⃣ Dibujo Mental General</h4>
+      <pre><code class="language-javascript">const handler = {
+  name: "Brais",
+  greeting() {
+    const arrowGreeting = () => {
+      console.log(`Hola, ${this.name}`);
+    };
+    arrowGreeting();
+  }
+};
+
+handler.greeting(); // ✅ Hola, Brais</code></pre>
+      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #4f46e5; margin: 10px 0;">
+handler (objeto)
+│
+├─ name: "Brais"
+│
+└─ greeting()   ← FUNCIÓN NORMAL
+     │
+     └─ arrowGreeting()  ← ARROW FUNCTION
+      </pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🟦 PASO 1: ¿QUIÉN LLAMA A greeting()?</h4>
+      <pre><code class="language-javascript">handler.greeting()
+↑
+EL OBJETO handler</code></pre>
+      <p><strong>👉 Regla:</strong> En una función normal, <code>this</code> = quien la llama</p>
+      <p><code>this</code> ─────► <code>handler</code></p>
+    </div>
+
+    <div class="solution-box">
+      <h4>🟦 PASO 2: this DENTRO DE greeting</h4>
+      <pre><code class="language-javascript">greeting() {
+  // this === handler
+}</code></pre>
+      <p><strong>Visualmente:</strong></p>
+      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #4f46e5; margin: 10px 0;">
+greeting scope
+│
+├─ this ─────► handler
+      </pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>🟨 PASO 3: SE CREA LA ARROW FUNCTION</h4>
+      <pre><code class="language-javascript">const arrowGreeting = () => {
+  console.log(`Hola, ${this.name}`);
+};</code></pre>
+      <p><strong>⚠️ Momento CLAVE</strong></p>
+      <p>La arrow function:</p>
+      <ul>
+        <li>❌ NO crea su propio <code>this</code></li>
+        <li>✅ COPIA el <code>this</code> del sitio donde nace</li>
+      </ul>
+      <p><strong>¿Dónde nace?</strong> DENTRO de <code>greeting()</code></p>
+      <p>Así que hace esto: <code>arrowGreeting.this = greeting.this</code></p>
+      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #f59e0b; margin: 10px 0;">
+arrowGreeting
+│
+└─ this ─────► handler   ✅
+      </pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🟩 PASO 4: SE EJECUTA arrowGreeting()</h4>
+      <pre><code class="language-javascript">arrowGreeting();</code></pre>
+      <p>Cuando se ejecuta:</p>
+      <pre><code class="language-javascript">console.log(this.name)
+           │
+           └── handler.name → "Brais"</code></pre>
+      <p><strong>✔️ Resultado:</strong> <code>Hola, Brais</code></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>🎯 ESQUEMA FINAL COMPLETO</h4>
+      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #4f46e5; margin: 10px 0;">
+handler
+│
+├─ name: "Brais"
+│
+└─ greeting()
+     │
+     ├─ this ─────► handler
+     │
+     └─ arrowGreeting()
+          │
+          └─ this (heredado) ─────► handler
+      </pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🧠 FRASE MÁGICA PARA RECORDAR</h4>
+      <p>🔵 <strong>Función normal</strong> → crea su propio <code>this</code></p>
+      <p>🟡 <strong>Arrow function</strong> → hereda el <code>this</code> del padre</p>
+    </div>
+
+    <div class="code-comparison">
+      <div class="before">
+        <h5>❌ Arrow como método (NO funciona)</h5>
+        <pre><code class="language-javascript">const handler = {
+  name: "Brais",
+  arrowGreeting: () => {
+    console.log(this.name);
+  }
+};</code></pre>
+        <pre style="background: #fee2e2; padding: 15px; border-left: 4px solid #dc2626; margin: 10px 0;">
+arrowGreeting
+│
+└─ this ─────► global ❌
+        </pre>
+      </div>
+      <div class="after">
+        <h5>✅ Arrow dentro de función normal (SÍ funciona)</h5>
+        <pre><code class="language-javascript">greeting()
+│
+├─ this ─────► handler
+│
+└─ arrowGreeting()
+     │
+     └─ this ─────► handler</code></pre>
+      </div>
+    </div>
+  </article>
+
+  <article>
+    <h3>Ejercicios de Práctica</h3>
+
+    <div class="key-concept">
+      <h4>🧠 EJERCICIO 1</h4>
+      <pre><code class="language-javascript">const user = {
+  name: "Roge",
+  saludar() {
+    console.log(this.name);
+  }
+};
+
+user.saludar();</code></pre>
+      <p><strong>❓ Pregunta:</strong> ¿Qué imprime?</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Respuesta: <code>Roge</code></h4>
+      <p><strong>📌 Por qué:</strong></p>
+      <ul>
+        <li>Llama <code>user</code></li>
+        <li>Función normal</li>
+        <li><code>this</code> = <code>user</code></li>
+        <li><code>this.name</code> = <code>"Roge"</code></li>
+      </ul>
+    </div>
+
+    <div class="key-concept">
+      <h4>🧠 EJERCICIO 2</h4>
+      <pre><code class="language-javascript">const user = {
+  name: "Roge",
+  saludar: () => {
+    console.log(this.name);
+  }
+};
+
+user.saludar();</code></pre>
+      <p><strong>❓ Pregunta:</strong> ¿Qué imprime?</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Respuesta: <code>undefined</code></h4>
+      <p><strong>📌 Por qué:</strong></p>
+      <ul>
+        <li>Arrow function</li>
+        <li>No tiene <code>this</code></li>
+        <li>Hereda del scope exterior</li>
+        <li><code>this</code> ≠ <code>user</code></li>
+      </ul>
+    </div>
+
+    <div class="key-concept">
+      <h4>🧠 EJERCICIO 3 (EL IMPORTANTE 🔥)</h4>
+      <pre><code class="language-javascript">const user = {
+  name: "Roge",
+  saludar() {
+    setTimeout(() => {
+      console.log(this.name);
+    }, 1000);
+  }
+};
+
+user.saludar();</code></pre>
+      <p><strong>❓ Pregunta:</strong> ¿Qué imprime?</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Respuesta: <code>Roge</code></h4>
+      <p><strong>📌 Por qué:</strong></p>
+      <ul>
+        <li><code>saludar</code> es función normal</li>
+        <li><code>this</code> = <code>user</code></li>
+        <li>Arrow hereda ese <code>this</code></li>
+        <li>Sigue siendo <code>user</code> después de 1s</li>
+      </ul>
+    </div>
+
+    <div class="key-concept">
+      <h4>🧠 EJERCICIO 4 (COMPARACIÓN FINAL)</h4>
+      <pre><code class="language-javascript">const user = {
+  name: "Roge",
+  saludar() {
+    setTimeout(function () {
+      console.log(this.name);
+    }, 1000);
+  }
+};
+
+user.saludar();</code></pre>
+      <p><strong>❓ Pregunta:</strong> ¿Qué imprime?</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Respuesta: <code>undefined</code></h4>
+      <p><strong>📌 Por qué:</strong></p>
+      <ul>
+        <li>Función normal</li>
+        <li><code>setTimeout</code> llama la función</li>
+        <li><code>this</code> ya no es <code>user</code></li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>🏆 REGLA FINAL PARA SIEMPRE</h4>
+      <p>🟢 <strong>Función normal</strong> → <code>this</code> depende de quién llama</p>
+      <p>🔵 <strong>Arrow function</strong> → <code>this</code> depende de dónde se define</p>
+    </div>
+  </article>
+
+  <article>
     <h3>Cambiar el contexto explícitamente</h3>
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="showTab('call-apply')">call / apply</button>
@@ -137,6 +488,10 @@ account.printOwner(); // "Ada"
     <a href="https://www.youtube.com/watch?v=byirHCoSPFY&list=PL7RhnTJi-WKp0sQExARliBUt1yMJSON5t&index=16" target="_blank" rel="noopener noreferrer">Video: Qué es this</a>
     <a href="https://summarize.ing/video-254771-%F0%9F%93%9A-%C2%BFQu%C3%A9-es-this-en-JavaScript-Explicaci%C3%B3n-f%C3%A1cil-directa-y-sencilla-con-ejemplos" target="_blank" rel="noopener noreferrer">Resumen rápido</a>
     <a href="https://claude.ai/chat/22a0cb4a-166c-4d7f-98a7-d3fd95b86f32" target="_blank" rel="noopener noreferrer">Claude Mouredev</a>
+    <a href="https://claude.ai/chat/eafcee50-0966-40a7-9ff7-0f047ddf11c6" target="_blank" rel="noopener noreferrer">Claude - Tutorial completo this</a>
     <a href="https://chatgpt.com/c/6723e8e8-0e98-8008-bcaa-57ec2a071a59" target="_blank" rel="noopener noreferrer">ChatGPT explicación y ejemplos</a>
+    <a href="https://chatgpt.com/c/693f20af-580c-8331-be15-2cf9c56228d9" target="_blank" rel="noopener noreferrer">ChatGPT - Truco Mental this</a>
+    <a href="https://chatgpt.com/c/693f245d-5870-8324-ba69-9e6918296764" target="_blank" rel="noopener noreferrer">ChatGPT - Ejercicio Trampa</a>
+    <a href="https://chatgpt.com/c/693f2a04-19a0-832e-a5b3-f26360987eb5" target="_blank" rel="noopener noreferrer">ChatGPT - Ejercicios Práctica</a>
   </div>
 </section>

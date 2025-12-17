@@ -1,0 +1,329 @@
+<section class="box">
+  <h2>Entendiendo los Operadores Spread y Rest en JavaScript</h2>
+  <p>En JavaScript, los operadores <strong>spread (<code>...</code>)</strong> y <strong>rest (<code>...</code>)</strong> usan la misma sintaxis pero hacen cosas opuestas dependiendo de dónde se usen. Entender esta diferencia hace que trabajar con arrays y objetos sea mucho más fácil y legible.</p>
+
+  <article>
+    <h3>Spread Operator</h3>
+    <p>El operador spread (<code>...</code>) se usa para <strong>expandir un array u objeto en elementos o propiedades individuales</strong>.</p>
+
+    <p><strong>👉 Piensa en spread como "sacar cosas de una caja".</strong></p>
+
+    <p>Comúnmente usas spread para:</p>
+    <ul>
+      <li>Copiar arrays u objetos</li>
+      <li>Combinar arrays u objetos</li>
+      <li>Pasar valores de un array como argumentos individuales de función</li>
+    </ul>
+
+    <h4>Ejemplo: Expandiendo Arrays</h4>
+    <pre class="code-block"><code class="language-javascript">
+    const arr1 = [1, 2, 3];
+    const arr2 = [4, 5, 6];
+
+    const combinedArray = [...arr1, ...arr2];
+    console.log(combinedArray);
+    // Output: [1, 2, 3, 4, 5, 6]
+    </code></pre>
+
+    <p><strong>Qué está pasando aquí:</strong></p>
+    <ul>
+      <li><code>...arr1</code> se expande a <code>1, 2, 3</code></li>
+      <li><code>...arr2</code> se expande a <code>4, 5, 6</code></li>
+      <li>Estos valores se colocan en un nuevo array</li>
+    </ul>
+    <p>Así que JavaScript ve: <code>[1, 2, 3, 4, 5, 6]</code></p>
+
+    <h4>Ejemplo: Expandiendo Objetos</h4>
+    <pre class="code-block"><code class="language-javascript">
+    const person = { name: 'Alice', age: 25 };
+    const additionalInfo = { country: 'UK', job: 'Developer' };
+
+    const mergedPerson = { ...person, ...additionalInfo };
+    console.log(mergedPerson);
+    // Output: { name: 'Alice', age: 25, country: 'UK', job: 'Developer' }
+    </code></pre>
+
+    <p><strong>Qué está pasando aquí:</strong></p>
+    <ul>
+      <li><code>...person</code> expande cada propiedad (name, age)</li>
+      <li><code>...additionalInfo</code> expande sus propiedades</li>
+      <li>Todas las propiedades se copian en un nuevo objeto</li>
+    </ul>
+
+    <div style="background: #fff3cd; padding: 15px; margin: 15px 0; border-left: 4px solid #ffc107; border-radius: 5px;">
+      <strong>⚠️ Importante:</strong> Si dos objetos tienen la misma clave, el último gana.
+    </div>
+
+    <div style="background: #e3f2fd; padding: 15px; margin: 15px 0; border-left: 4px solid #2196f3; border-radius: 5px;">
+      <h4 style="margin-top: 0;">🧠 Regla Clave para Recordar</h4>
+      <p style="margin: 10px 0;">
+        <strong>Spread → expande valores</strong><br>
+        <strong>Rest → recolecta valores</strong>
+      </p>
+      <p style="margin-bottom: 0;">O simplemente:</p>
+      <ul style="margin: 5px 0 0 20px;">
+        <li><strong>Spread = desarmar</strong></li>
+        <li><strong>Rest = armar</strong></li>
+      </ul>
+    </div>
+  </article>
+  
+  <article>
+    <h3>Rest Operator</h3>
+    <p>El REST operator (<code>...</code>) sirve para <strong>recoger muchos valores en una sola variable (array)</strong>.</p>
+
+    <h4>Ejemplo MÁS SIMPLE posible</h4>
+    <pre class="code-block"><code class="language-javascript">
+    function sumar(...numeros) {
+      console.log(numeros);
+    }
+
+    sumar(1, 2, 3);  // Imprime: [1, 2, 3]
+    sumar(5, 10);    // Imprime: [5, 10]
+    </code></pre>
+
+    <p><strong>📌 ...numeros = "mete todos los argumentos en un array"</strong></p>
+
+    <h4>Diferencia clara: SIN vs CON rest operator</h4>
+    <pre class="code-block"><code class="language-javascript">
+    // SIN ... → recibes valores sueltos
+    function sumar(a, b) {
+      console.log(a, b);
+    }
+    sumar(5, 10);  // Imprime: 5 10
+
+    // CON ... → recibes un array con todos los valores
+    function sumar(...numeros) {
+      console.log(numeros);
+    }
+    sumar(5, 10);  // Imprime: [5, 10]
+    </code></pre>
+
+    <div style="background: #f0f0f0; padding: 15px; margin: 15px 0; border-left: 4px solid #4a90e2;">
+      <strong>🧠 Frase CLAVE:</strong><br>
+      Sin <code>...</code> → recibes valores sueltos<br>
+      Con <code>...</code> → recibes un array con todos los valores
+    </div>
+
+    <h4>Ahora sumamos sin bucles ni magia</h4>
+    <pre class="code-block"><code class="language-javascript">
+    function sumar(...numeros) {
+      return numeros[0] + numeros[1];
+    }
+
+    console.log(sumar(5, 10));  // 15
+    // No hay bucles, ni métodos, ni magia
+    </code></pre>
+
+    <h4>Escenario sin REST operator:</h4>
+    <pre class="code-block"><code class="language-javascript">
+    // ❌ Función limitada - solo suma 3 números
+    function sumarTresNumeros(a, b, c) {
+      return a + b + c;
+    }
+
+    console.log(sumarTresNumeros(1, 2, 3)); // 6
+    console.log(sumarTresNumeros(1, 2, 3, 4, 5)); // 6 (ignora 4 y 5!)
+    // Problema: ¿Y si quiero sumar 5 números? ¿10 números? ¿100 números?
+    </code></pre>
+
+    <h4>Solución con REST operator:</h4>
+    <pre class="code-block"><code class="language-javascript">
+    // ✅ Función flexible - suma cualquier cantidad de números
+    function sum(...numbers) {
+      console.log(numbers); // numbers es un ARRAY
+
+      let total = 0;
+      for (const num of numbers) {
+        total += num;
+      }
+      return total;
+    }
+
+    console.log(sum(1, 2, 3));           // 6
+    console.log(sum(1, 2, 3, 4, 5));     // 15
+    console.log(sum(10, 20, 30, 40, 50)); // 150
+    </code></pre>
+
+    <h4>Ejemplo con reduce:</h4>
+    <pre class="code-block"><code class="language-javascript">
+    function sum(...numbers) {
+      return numbers.reduce((acc, curr) => acc + curr, 0);
+    }
+
+    console.log(sum(1, 2, 3, 4)); // Output: 10
+    </code></pre>
+
+    <h4>Ejemplo: rest en objetos</h4>
+    <pre class="code-block"><code class="language-javascript">
+    const person = { name: 'Alice', age: 25, country: 'UK', job: 'Developer' };
+
+    const { name, ...rest } = person;
+    console.log(name); // Output: Alice
+    console.log(rest); // Output: { age: 25, country: 'UK', job: 'Developer' }
+    </code></pre>
+  </article>
+  
+  <article>
+    <h3>Diferencia entre Spread y Rest Operators</h3>
+    <p>Mismo símbolo <code>...</code>, pero <strong>momento diferente</strong>:</p>
+
+    <h4>1️⃣ REST → recoge valores y los mete en un array</h4>
+    <p><strong>👉 Se usa en la definición de la función</strong></p>
+    <pre class="code-block"><code class="language-javascript">
+    function mostrar(...numeros) {
+      console.log(numeros);
+    }
+
+    mostrar(1, 2, 3);  // [1, 2, 3]
+    mostrar(5, 10);    // [5, 10]
+
+    // Qué pasa realmente:
+    // mostrar(1, 2, 3)  → numeros = [1, 2, 3]
+    // mostrar(5, 10)    → numeros = [5, 10]
+    </code></pre>
+    <p><strong>📌 REST = muchos valores → 1 array</strong></p>
+
+    <h4>2️⃣ SPREAD → saca valores de un array</h4>
+    <p><strong>👉 Se usa al llamar a la función</strong></p>
+    <pre class="code-block"><code class="language-javascript">
+    function mostrar(a, b, c) {
+      console.log(a, b, c);
+    }
+
+    const nums = [1, 2, 3];
+    mostrar(...nums);  // 1 2 3
+
+    // Qué pasa realmente:
+    // mostrar(...nums)
+    // → mostrar(nums[0], nums[1], nums[2])
+    // → mostrar(1, 2, 3)
+    </code></pre>
+    <p><strong>📌 SPREAD = 1 array → muchos valores</strong></p>
+
+    <div style="background: #f8f9fa; padding: 20px; margin: 20px 0; border: 2px solid #dee2e6; border-radius: 8px;">
+      <h4 style="margin-top: 0; color: #495057;">🔍 Entendiendo: ¿Por qué existe esta línea?</h4>
+      <pre style="background: #e9ecef; padding: 10px; border-radius: 5px; color: #212529;"><code class="language-javascript">// → mostrar(nums[0], nums[1], nums[2])</code></pre>
+
+      <p><strong>Esta línea NO es código que escribas.</strong><br>
+      Es una <em>traducción mental</em> de lo que SPREAD hace internamente.</p>
+
+      <h5>Paso 1️⃣ Qué es <code>nums</code> realmente</h5>
+      <pre style="background: #e9ecef; padding: 10px; border-radius: 5px; color: #212529;"><code class="language-javascript">const nums = [1, 2, 3];</code></pre>
+      <p>En memoria, piénsalo así:</p>
+      <pre style="background: #e9ecef; padding: 10px; border-radius: 5px; color: #212529;"><code>índice: 0   1   2
+valor:  1   2   3</code></pre>
+      <p>Entonces: <code>nums[0] → 1</code>, <code>nums[1] → 2</code>, <code>nums[2] → 3</code></p>
+
+      <h5>Paso 2️⃣ Qué necesita una llamada de función</h5>
+      <pre style="background: #e9ecef; padding: 10px; border-radius: 5px; color: #212529;"><code class="language-javascript">function mostrar(a, b, c) { ... }</code></pre>
+      <p>Esta función quiere <strong>tres valores separados</strong>, no un array:</p>
+      <p>✅ <code>mostrar(a, b, c)</code><br>
+      ❌ <code>mostrar([1, 2, 3])</code> → No entiende esto</p>
+
+      <h5>Paso 3️⃣ Qué hace <code>...nums</code> realmente</h5>
+      <p>Cuando JavaScript ve: <code>mostrar(...nums);</code></p>
+      <p>Hace esto internamente:</p>
+      <ol style="margin: 10px 0 10px 20px;">
+        <li>Mira <code>nums</code></li>
+        <li>Toma los valores en orden</li>
+        <li>Los pasa uno por uno como argumentos</li>
+      </ol>
+      <p>Lo cual se convierte en:</p>
+      <pre style="background: #e9ecef; padding: 10px; border-radius: 5px; color: #212529;"><code class="language-javascript">mostrar(nums[0], nums[1], nums[2]);</code></pre>
+      <p>Y como <code>nums[0] = 1</code>, <code>nums[1] = 2</code>, <code>nums[2] = 3</code></p>
+      <p>Finalmente se convierte en:</p>
+      <pre style="background: #e9ecef; padding: 10px; border-radius: 5px; color: #212529;"><code class="language-javascript">mostrar(1, 2, 3);</code></pre>
+
+      <h5>Paso 4️⃣ Por qué JavaScript debe hacer esto</h5>
+      <p>Las funciones de JavaScript no desempaquetan arrays mágicamente.</p>
+      <p>Sin spread: <code>mostrar(nums);</code> → UN argumento<br>
+      Con spread: <code>mostrar(...nums);</code> → TRES argumentos</p>
+
+      <h5>Paso 5️⃣ Aclaración muy importante ❗</h5>
+      <p>Esta línea: <code>// mostrar(nums[0], nums[1], nums[2])</code></p>
+      <ul style="margin: 10px 0 10px 20px;">
+        <li>✔️ es <strong>conceptual</strong></li>
+        <li>✔️ es <strong>cómo se comporta spread</strong></li>
+        <li>❌ <strong>no</strong> es algo que normalmente escribas</li>
+        <li>❌ <strong>no</strong> es una característica diferente</li>
+      </ul>
+
+      <div style="background: #d1ecf1; padding: 15px; margin: 15px 0; border-left: 4px solid #0c5460; border-radius: 5px;">
+        <h5 style="margin-top: 0;">💡 Momento "clic" en una frase</h5>
+        <p style="margin: 0; font-size: 1.1em;"><strong>Spread (<code>...</code>) convierte un array en argumentos separados pasando cada índice como parámetro en orden.</strong></p>
+      </div>
+
+      <div style="background: #fff3cd; padding: 15px; margin: 15px 0; border-left: 4px solid #856404; border-radius: 5px;">
+        <h5 style="margin-top: 0;">🎯 Regla mental final (guarda esto para siempre)</h5>
+        <ul style="margin: 5px 0 0 20px;">
+          <li><strong>Arrays</strong> almacenan valores por <em>índice</em></li>
+          <li><strong>Funciones</strong> reciben valores por <em>posición</em></li>
+          <li><strong>Spread</strong> une ambos</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4>3️⃣ MISMO ... pero distinto momento</h4>
+    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+      <thead>
+        <tr style="background: #4a90e2; color: white;">
+          <th style="padding: 10px; border: 1px solid #ddd;">Dónde está ...</th>
+          <th style="padding: 10px; border: 1px solid #ddd;">Es</th>
+          <th style="padding: 10px; border: 1px solid #ddd;">Qué hace</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">En parámetros</td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><strong>REST</strong></td>
+          <td style="padding: 10px; border: 1px solid #ddd;">Junta valores en un array</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Al llamar</td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><strong>SPREAD</strong></td>
+          <td style="padding: 10px; border: 1px solid #ddd;">Separa un array en valores</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>4️⃣ Ejemplo mínimo lado a lado</h4>
+    <pre class="code-block"><code class="language-javascript">
+    // REST - empaqueta 📦
+    function ejemploRest(...args) {
+      console.log(args);
+    }
+    ejemploRest(1, 2, 3); // [1, 2, 3]
+
+    // SPREAD - desempaqueta 🎁
+    function ejemploSpread(a, b, c) {
+      console.log(a, b, c);
+    }
+    const args = [1, 2, 3];
+    ejemploSpread(...args); // 1 2 3
+    </code></pre>
+
+    <div style="background: #fffbea; padding: 20px; margin: 20px 0; border-left: 4px solid #f39c12; border-radius: 5px;">
+      <h4 style="margin-top: 0;">🧠 Truco mental DEFINITIVO</h4>
+      <p style="font-size: 1.2em; margin: 10px 0;">
+        <strong>👉 REST = empaqueta 📦</strong><br>
+        <strong>👉 SPREAD = desempaqueta 🎁</strong>
+      </p>
+      <p style="margin-bottom: 0;">
+        Sin <code>...</code> → recibes valores sueltos<br>
+        Con <code>...</code> → recibes un array con todos los valores
+      </p>
+    </div>
+  </article>
+
+  <!-- Links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax" target="_blank">MDN: spread</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters" target="_blank">MDN: parámetros rest</a>
+    <a href="https://javascript.info/rest-parameters-spread" target="_blank">JavaScript.info: rest y spread</a>
+    <a href="https://www.youtube.com/watch?v=iLx4ma8ZqvQ" target="_blank">YouTube: rest & spread</a>
+    <a href="https://claude.ai/chat/f809bc6c-8049-44ff-abc2-37d0fc5c435c" target="_blank">Rest Operator Claude</a>
+  </div>
+
+  <p>Dominar <code>...</code> ayuda a escribir código más claro al manejar colecciones.</p>
+</section>

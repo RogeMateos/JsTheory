@@ -1,0 +1,402 @@
+<!-- IIFE (Immediately Invoked Function Expression) -->
+<section id="iife" class="box">
+  <h2>IIFE - Immediately Invoked Function Expression</h2>
+
+  <article>
+    <h3>Qué son las IIFEs</h3>
+    <p><strong>IIFE</strong> (Immediately Invoked Function Expression) es una función que se ejecuta en el mismo momento en que se define. No necesitas llamarla explícitamente después.</p>
+
+    <pre><code class="language-javascript">
+// Función Normal - Primero la defines, luego la llamas
+function saludar() {
+  console.log('Hola desde función normal');
+}
+saludar(); // Output: "Hola desde función normal"
+
+// IIFE - Se define Y se ejecuta al mismo tiempo
+(function() {
+  console.log('Hola desde IIFE');
+})();
+// Output: "Hola desde IIFE"
+// No necesitaste llamarla por nombre, se ejecutó sola
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Sintaxis y Variantes</h3>
+
+    <h4>Anatomía de una IIFE</h4>
+    <pre><code class="language-javascript">
+// PASO 1: Una función anónima normal
+function() {
+  console.log('Esto es una función');
+}
+// ❌ Esto da error: Function statements require a function name
+
+// PASO 2: Convertirla en expresión con paréntesis
+(function() {
+  console.log('Ahora es una expresión de función');
+})
+// ✅ Ya no da error, pero tampoco se ejecuta
+
+// PASO 3: Invocarla inmediatamente
+(function() {
+  console.log('¡Ahora se ejecuta!');
+})();
+// ✅ Output: "¡Ahora se ejecuta!"
+
+/*
+ESTRUCTURA:
+  (function() {    ← Paréntesis convierte en expresión
+    // código
+  })               ← Cierra la expresión
+  ();              ← Invoca la función inmediatamente
+*/
+    </code></pre>
+
+    <h4>IIFE con Arrow Function</h4>
+    <pre><code class="language-javascript">
+// Sintaxis con arrow function (ES6+)
+(() => {
+  console.log('IIFE con arrow function');
+})();
+// Output: "IIFE con arrow function"
+
+// Versión compacta (una sola expresión)
+(() => console.log('IIFE compacta'))();
+// Output: "IIFE compacta"
+    </code></pre>
+
+    <h4>Dos Formas Válidas de Paréntesis</h4>
+    <pre><code class="language-javascript">
+// FORMA 1: Paréntesis fuera (MÁS COMÚN)
+(function() {
+  console.log('Paréntesis externos');
+})();
+
+// FORMA 2: Paréntesis dentro (MENOS COMÚN)
+(function() {
+  console.log('Paréntesis internos');
+}());
+
+// Ambas funcionan exactamente igual
+// La primera es más popular en la comunidad
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>El Problema del Punto y Coma</h3>
+    <p>JavaScript intenta insertar punto y coma automáticamente (ASI - Automatic Semicolon Insertion), pero a veces falla con IIFEs.</p>
+
+    <pre><code class="language-javascript">
+// ❌ EL PROBLEMA
+const saludo = 'Hola'
+
+(function() {
+  console.log('IIFE');
+})();
+
+/*
+Error: TypeError: "Hola" is not a function
+
+¿QUÉ PASÓ?
+JavaScript interpreta esto como:
+const saludo = 'Hola'(function() { ... })();
+Intenta llamar a 'Hola' como función!
+*/
+
+// ✅ SOLUCIÓN 1: Punto y coma ANTES de la IIFE
+const saludo2 = 'Hola';  // ← Punto y coma aquí
+
+(function() {
+  console.log('IIFE correcta');
+})();
+
+// ✅ SOLUCIÓN 2: Punto y coma DEFENSIVO al inicio
+const mensaje = 'Mundo'
+
+;(function() {  // ← Punto y coma defensivo
+  console.log('IIFE con ; defensivo');
+})();
+
+// 🎯 REGLA PRÁCTICA:
+// Si no usas punto y coma habitualmente:
+// → Siempre inicia IIFEs con punto y coma defensivo
+// ;(function() { ... })();
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>IIFEs con Parámetros</h3>
+
+    <pre><code class="language-javascript">
+// Pasar argumentos a una IIFE
+(function(nombre) {
+  console.log('Hola,', nombre);
+})('Roge');
+// Output: "Hola, Roge"
+
+// Múltiples parámetros
+(function(nombre, edad, ciudad) {
+  console.log(`${nombre} tiene ${edad} años y vive en ${ciudad}`);
+})('Ana', 28, 'Madrid');
+// Output: "Ana tiene 28 años y vive en Madrid"
+
+// IIFE que retorna un valor
+const resultado = (function(a, b) {
+  return a * b;
+})(4, 5);
+
+console.log('Resultado:', resultado);
+// Output: "Resultado: 20"
+// IMPORTANTE: resultado NO es una función, es el valor 20
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Casos de Uso Prácticos</h3>
+
+    <h4>1. Encapsulación de Variables</h4>
+    <pre><code class="language-javascript">
+// ❌ SIN IIFE - Contamina el scope global
+var contador = 0;
+var apiKey = 'secreto-123';
+
+// Estas variables están expuestas globalmente
+console.log(window.contador);  // 0 (accesible globalmente)
+
+// ✅ CON IIFE - Variables encapsuladas
+(function() {
+  var contador = 0;
+  var apiKey = 'secreto-123';
+
+  function incrementar() {
+    contador++;
+    console.log('Contador:', contador);
+  }
+
+  incrementar();  // Output: "Contador: 1"
+})();
+
+// console.log(contador);  // ❌ Error: contador is not defined
+    </code></pre>
+
+    <h4>2. Module Pattern (Patrón Módulo)</h4>
+    <pre><code class="language-javascript">
+const AppModule = (function() {
+  // Variables privadas
+  let usuarios = [];
+  const API_KEY = 'abc123';
+
+  // Funciones privadas
+  function validarUsuario(nombre) {
+    return nombre && nombre.length > 0;
+  }
+
+  // API pública (lo que se exporta)
+  return {
+    agregarUsuario(nombre) {
+      if (validarUsuario(nombre)) {
+        usuarios.push(nombre);
+        console.log(`Usuario ${nombre} agregado`);
+        return true;
+      }
+      return false;
+    },
+
+    obtenerUsuarios() {
+      return [...usuarios];  // Retorna copia
+    },
+
+    cantidadUsuarios() {
+      return usuarios.length;
+    }
+  };
+})();
+
+// Uso del módulo
+AppModule.agregarUsuario('Ana');     // Output: "Usuario Ana agregado"
+console.log(AppModule.obtenerUsuarios());  // Output: ['Ana']
+// console.log(AppModule.API_KEY);   // ❌ undefined (privado)
+    </code></pre>
+
+    <h4>3. Async/Await en IIFE</h4>
+    <pre><code class="language-javascript">
+// ✅ IIFE async para ejecutar código async inmediatamente
+(async function() {
+  try {
+    console.log('Cargando datos...');
+
+    const respuesta = await fetch('https://api.ejemplo.com/users/1');
+    const usuario = await respuesta.json();
+
+    console.log('Usuario cargado:', usuario.name);
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
+})();
+
+// Con arrow function
+(async () => {
+  const data = await fetch('https://api.ejemplo.com/posts/1');
+  const post = await data.json();
+  console.log('Post:', post.title);
+})();
+    </code></pre>
+
+    <h4>4. Contador Privado</h4>
+    <pre><code class="language-javascript">
+const contador = (function() {
+  let cuenta = 0;  // Variable privada
+
+  return function() {
+    cuenta++;
+    return cuenta;
+  };
+})();
+
+console.log(contador());  // Output: 1
+console.log(contador());  // Output: 2
+console.log(contador());  // Output: 3
+// console.log(cuenta);   // ❌ Error: cuenta is not defined
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Errores Comunes</h3>
+
+    <pre><code class="language-javascript">
+// ❌ ERROR 1: Olvidar paréntesis externos
+function() {
+  console.log('Error');
+}();
+// SyntaxError: Function statements require a function name
+
+// ✅ CORRECTO:
+(function() {
+  console.log('Correcto');
+})();
+
+// ❌ ERROR 2: Olvidar paréntesis de invocación
+(function() {
+  console.log('Esto nunca se ejecuta');
+});
+// No hay error, pero la función NUNCA se ejecuta
+
+// ✅ CORRECTO:
+(function() {
+  console.log('Ahora sí se ejecuta');
+})();  // ← Los () son cruciales
+
+// ❌ ERROR 3: Pasar parámetros incorrectamente
+(function(nombre) {
+  console.log('Hola', nombre);  // undefined
+})();
+// Faltó pasar el argumento
+
+// ✅ CORRECTO:
+(function(nombre) {
+  console.log('Hola', nombre);
+})('Roge');  // Output: "Hola Roge"
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>JavaScript Moderno vs IIFEs</h3>
+
+    <h4>Antes vs Ahora</h4>
+    <pre><code class="language-javascript">
+// ❌ ANTES (Pre-ES6): IIFEs para encapsulación
+(function() {
+  var configuracion = { apiUrl: 'https://api.ejemplo.com' };
+  var apiKey = 'secreto123';
+
+  function inicializar() {
+    console.log('App inicializada');
+  }
+
+  window.MiApp = { inicializar };
+})();
+
+// ✅ AHORA (ES6+): Módulos nativos
+// archivo: config.js
+export const configuracion = { apiUrl: 'https://api.ejemplo.com' };
+const apiKey = 'secreto123';  // Privado (no exportado)
+
+export function inicializar() {
+  console.log('App inicializada');
+}
+
+// archivo: app.js
+import { configuracion, inicializar } from './config.js';
+    </code></pre>
+
+    <h4>Block Scope con let/const</h4>
+    <pre><code class="language-javascript">
+// ❌ ANTES: IIFE para crear scope
+(function() {
+  var temporal = 'Solo existe aquí';
+  console.log(temporal);
+})();
+
+// ✅ AHORA: Block scope con {}
+{
+  const temporal = 'Solo existe aquí';
+  console.log(temporal);
+}
+// Más simple, menos sintaxis
+    </code></pre>
+
+    <h4>Cuándo TODAVÍA Usar IIFEs</h4>
+    <p>Las IIFEs siguen siendo útiles en estos casos:</p>
+    <ul>
+      <li><strong>Scripts inline en HTML:</strong> En tags &lt;script&gt; sin module type</li>
+      <li><strong>Browser console:</strong> Al escribir código directo en consola</li>
+      <li><strong>Bookmarklets:</strong> Pequeños scripts en marcadores</li>
+      <li><strong>Código legacy:</strong> Cuando trabajas con código antiguo sin build tools</li>
+      <li><strong>Polyfills y bibliotecas:</strong> Para compatibilidad</li>
+    </ul>
+
+    <pre><code class="language-javascript">
+// Ejemplo: Script inline en HTML
+&lt;script&gt;
+  (function() {
+    // Evita contaminar scope global
+    const miVariable = 'privada';
+    console.log(miVariable);
+  })();
+&lt;/script&gt;
+
+// Ejemplo: Inicialización única de config
+const CONFIG = (function() {
+  const env = process.env.NODE_ENV || 'development';
+
+  return env === 'development'
+    ? { apiUrl: 'http://localhost:3000', debug: true }
+    : { apiUrl: 'https://api.produccion.com', debug: false };
+})();
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Resumen</h3>
+    <div class="summary-box">
+      <h4>Puntos Clave:</h4>
+      <ul>
+        <li><strong>Definición:</strong> Immediately Invoked Function Expression - función que se ejecuta al definirse</li>
+        <li><strong>Sintaxis:</strong> <code>(function() { ... })()</code> o <code>(() => { ... })()</code></li>
+        <li><strong>Usos:</strong> Encapsulación, evitar contaminación del scope global, crear módulos privados</li>
+        <li><strong>Punto y coma:</strong> Usar <code>;</code> defensivo al inicio si no usas <code>;</code> habitualmente</li>
+        <li><strong>Moderno:</strong> Módulos ES6 reemplazan muchos usos, pero IIFEs siguen siendo útiles</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/es/docs/Glossary/IIFE" target="_blank">MDN: IIFE</a>
+    <a href="https://www.youtube.com/watch?v=8GDkpzxfZ1g" target="_blank">YouTube: JavaScript IIFE</a>
+    <a href="https://flaviocopes.com/javascript-iife/" target="_blank">JavaScript IIFE Explained</a>
+    <a href="https://dev.to/j471n/iife-in-javascript-5h6l" target="_blank">IIFE in JavaScript</a>
+  </div>
+</section>
