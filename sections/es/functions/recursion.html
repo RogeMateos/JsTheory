@@ -1,0 +1,99 @@
+<section class="box">
+  <h2>Recursión</h2>
+  <article>
+    <h3>Idea clave</h3>
+    <p>
+      <strong
+        >Recursión = una función que se pide ayuda a sí misma…<br />pero deja
+        una nota de "cuándo parar".</strong
+      >
+    </p>
+    <ul>
+      <li>Sin esa nota → caos 😅</li>
+      <li>Con esa nota → todo funciona.</li>
+    </ul>
+
+    <h3>📦 Ejemplo de la vida real (MUY simple)</h3>
+    <p><strong>🪜 Subir escaleras</strong></p>
+    <p>Imagínate que estás en el escalón 5 y quieres llegar al suelo (0).</p>
+    <p>Tú haces esto mentalmente:</p>
+    <ul>
+      <li>"Para bajar del 5… primero bajo del 4"</li>
+      <li>"Para bajar del 4… primero bajo del 3"</li>
+      <li>"Para bajar del 3… primero bajo del 2"</li>
+      <li>"Para bajar del 2… primero bajo del 1"</li>
+      <li>"Para bajar del 1… ya estoy abajo" ✅</li>
+    </ul>
+    <p>👉 <strong>Eso es recursión</strong></p>
+
+    <h3>🔁 Ahora en código (sin complicarlo)</h3>
+    <pre><code class="language-javascript">function bajarEscalon(n) {
+  if (n === 0) return;   // 🛑 nota de parar
+  console.log("Estoy en el escalón", n);
+  bajarEscalon(n - 1);  // me llamo a mí mismo
+}
+
+bajarEscalon(3);
+    </code></pre>
+
+    <p><strong>Qué pasa en tu cabeza:</strong></p>
+    <pre><code>bajarEscalon(3)
+→ bajarEscalon(2)
+→ bajarEscalon(1)
+→ bajarEscalon(0) 🛑
+    </code></pre>
+
+    <h3>🧠 Regla de ORO (memorízala)</h3>
+    <p>Una función recursiva <strong>SIEMPRE</strong> tiene 2 partes:</p>
+    <ol>
+      <li><strong>🛑 Caso base</strong> → cuándo paro</li>
+      <li>
+        <strong>🔁 Paso recursivo</strong> → me llamo a mí mismo, pero más cerca
+        del final
+      </li>
+    </ol>
+    <p>Si falta una → no es recursión correcta.</p>
+
+    <h3>🍕 Otro ejemplo ultra sencillo</h3>
+    <pre><code class="language-javascript">function comerPorciones(n) {
+  if (n === 0) {
+    console.log("No queda pizza");
+    return;
+  }
+
+  console.log("Me como una porción");
+  comerPorciones(n - 1);
+}
+
+comerPorciones(3);
+    </code></pre>
+
+    <p><strong>Salida:</strong></p>
+    <pre><code>Me como una porción
+Me como una porción
+Me como una porción
+No queda pizza
+    </code></pre>
+
+    <h3>🧩 Factorial (ya no debería dar miedo)</h3>
+    <pre><code class="language-javascript">function factorial(n) {
+  if (n === 1) return 1;      // 🛑
+  return n * factorial(n-1); // 🔁
+}
+    </code></pre>
+
+    <p><strong>Piensa así:</strong></p>
+    <p>
+      "El factorial de 5 es<br />5 × el factorial de 4<br />y el factorial de 4
+      ya sabrá qué hacer…"
+    </p>
+
+    <h3>🎯 Frase mágica para entrevistas</h3>
+    <p>
+      <em
+        >"Recursion is when a function solves a problem by delegating a smaller
+        version of the same problem to itself, and stops at a base case."</em
+      >
+    </p>
+  </article>
+</section>

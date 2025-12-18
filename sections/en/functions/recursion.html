@@ -1,0 +1,99 @@
+<section class="box">
+  <h2>Recursion</h2>
+  <article>
+    <h3>Key Idea</h3>
+    <p>
+      <strong
+        >Recursion = a function that asks itself for help…<br />but leaves a
+        note about "when to stop".</strong
+      >
+    </p>
+    <ul>
+      <li>Without that note → chaos 😅</li>
+      <li>With that note → it all works.</li>
+    </ul>
+
+    <h3>Real-world example (VERY simple)</h3>
+    <p><strong>🪜 Climbing stairs</strong></p>
+    <p>Imagine you're on step 5 and want to reach the ground (0).</p>
+    <p>You think about it like this:</p>
+    <ul>
+      <li>"To get down from 5… I first get down from 4"</li>
+      <li>"To get down from 4… I first get down from 3"</li>
+      <li>"To get down from 3… I first get down from 2"</li>
+      <li>"To get down from 2… I first get down from 1"</li>
+      <li>"To get down from 1… I'm already down" ✅</li>
+    </ul>
+    <p>👉 <strong>That's recursion</strong></p>
+
+    <h3>Now in code (without overcomplicating it)</h3>
+    <pre><code class="language-javascript">function goDownStep(n) {
+  if (n === 0) return;   // 🛑 note to stop
+  console.log("I'm on step", n);
+  goDownStep(n - 1);  // I call myself
+}
+
+goDownStep(3);
+    </code></pre>
+
+    <p><strong>What happens in your head:</strong></p>
+    <pre><code>goDownStep(3)
+→ goDownStep(2)
+→ goDownStep(1)
+→ goDownStep(0) 🛑
+    </code></pre>
+
+    <h3>🧠 GOLDEN RULE (memorize it)</h3>
+    <p>A recursive function <strong>ALWAYS</strong> has 2 parts:</p>
+    <ol>
+      <li><strong>🛑 Base case</strong> → when to stop</li>
+      <li>
+        <strong>🔁 Recursive step</strong> → I call myself, but closer to the
+        end
+      </li>
+    </ol>
+    <p>If one is missing → it's not proper recursion.</p>
+
+    <h3>🍕 Another ultra-simple example</h3>
+    <pre><code class="language-javascript">function eatSlices(n) {
+  if (n === 0) {
+    console.log("No pizza left");
+    return;
+  }
+
+  console.log("I eat one slice");
+  eatSlices(n - 1);
+}
+
+eatSlices(3);
+    </code></pre>
+
+    <p><strong>Output:</strong></p>
+    <pre><code>I eat one slice
+I eat one slice
+I eat one slice
+No pizza left
+    </code></pre>
+
+    <h3>🧩 Factorial (should not scare you now)</h3>
+    <pre><code class="language-javascript">function factorial(n) {
+  if (n === 1) return 1;      // 🛑
+  return n * factorial(n-1); // 🔁
+}
+    </code></pre>
+
+    <p><strong>Think of it like this:</strong></p>
+    <p>
+      "The factorial of 5 is<br />5 × the factorial of 4<br />and the factorial
+      of 4 already knows what to do…"
+    </p>
+
+    <h3>🎯 Magic phrase for interviews</h3>
+    <p>
+      <em
+        >"Recursion is when a function solves a problem by delegating a smaller
+        version of the same problem to itself, and stops at a base case."</em
+      >
+    </p>
+  </article>
+</section>
