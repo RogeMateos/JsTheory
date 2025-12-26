@@ -1,0 +1,263 @@
+<!-- CURRYING -->
+<section id="currying" class="box">
+  <h2>Currying en JavaScript</h2>
+
+  <article>
+    <h3>¿Qué es Currying?</h3>
+    <p><strong>Currying es una técnica que consiste en transformar una función que recibe varios parámetros en una serie de funciones que reciben un parámetro cada una.</strong></p>
+
+    <div class="key-concept">
+      <h4>Transformación</h4>
+      <p><strong>👉 Antes:</strong></p>
+      <pre><code class="language-javascript">funcion(a, b, c)</code></pre>
+
+      <p><strong>👉 Después (curry):</strong></p>
+      <pre><code class="language-javascript">funcion(a)(b)(c)</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>Ejemplo SIN Currying (normal)</h3>
+    <p>Una función normal recibe todo de golpe:</p>
+
+    <pre><code class="language-javascript">
+function sumar(a, b, c) {
+  return a + b + c;
+}
+
+sumar(1, 2, 3); // 6
+    </code></pre>
+
+    <div class="problem-box">
+      <h4>Aquí</h4>
+      <ul>
+        <li>Tengo que pasar los 3 valores siempre</li>
+        <li>No puedo reutilizar "parte" de la función</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>El MISMO Ejemplo CON Currying (paso a paso)</h3>
+
+    <pre><code class="language-javascript">
+function sumarCurry(a) {
+  return function (b) {
+    return function (c) {
+      return a + b + c;
+    };
+  };
+}
+    </code></pre>
+
+    <p><strong>Esta función no calcula nada todavía</strong><br>
+    👉 Solo va guardando valores poco a poco</p>
+  </article>
+
+  <article>
+    <h3>Cómo se Usa (muy claro)</h3>
+
+    <h4>Forma Encadenada</h4>
+    <pre><code class="language-javascript">
+sumarCurry(1)(2)(3); // 6
+    </code></pre>
+
+    <h4>Forma Paso a Paso (la más importante para entender)</h4>
+    <pre><code class="language-javascript">
+const pasoB = sumarCurry(1); // guarda a = 1
+const pasoC = pasoB(2);      // guarda b = 2
+const resultado = pasoC(3);  // usa a + b + c
+
+console.log(resultado); // 6
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>¿Qué Está Pasando Realmente? (clave mental)</h3>
+
+    <div class="key-concept">
+      <h4>Cada función recuerda lo que recibió antes</h4>
+
+      <p><strong>Ejemplo:</strong></p>
+      <pre><code class="language-javascript">const pasoB = sumarCurry(1);</code></pre>
+
+      <p><code>pasoB</code> es:</p>
+      <ul>
+        <li>Una función</li>
+        <li>Con una mochila donde dentro está: <code>a = 1</code></li>
+      </ul>
+
+      <p><strong>Eso se llama closure.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Ejemplo MUY CLARO y Real (multiplicar)</h3>
+
+    <pre><code class="language-javascript">
+const multiplicar = (a) => (b) => a * b;
+    </code></pre>
+
+    <h4>Uso:</h4>
+    <pre><code class="language-javascript">
+const por2 = multiplicar(2); // guarda a = 2
+
+por2(5);  // 10
+por2(8);  // 16
+por2(10); // 20
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>Aquí se ve clarísimo</h4>
+      <ul>
+        <li>Creo una función especial "por2"</li>
+        <li>No vuelvo a pasar el 2</li>
+        <li>Reutilizo el comportamiento</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Otro Ejemplo Cotidiano (saludos)</h3>
+
+    <pre><code class="language-javascript">
+const saludar = (saludo) => (nombre) => {
+  return `${saludo}, ${nombre}`;
+};
+
+const hola = saludar("Hola");
+const adios = saludar("Adiós");
+
+hola("Roge");  // Hola, Roge
+hola("Ana");   // Hola, Ana
+adios("Roge"); // Adiós, Roge
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>¿Por Qué Existe el Currying?</h3>
+
+    <div class="key-concept">
+      <h4>Sirve para</h4>
+      <ul>
+        <li>Reutilizar funciones</li>
+        <li>Guardar configuraciones</li>
+        <li>Crear funciones más específicas a partir de una general</li>
+      </ul>
+    </div>
+
+    <h4>👉 En vez de repetir:</h4>
+    <pre><code class="language-javascript">
+sumar(1, 2, 3);
+sumar(1, 2, 4);
+sumar(1, 2, 10);
+    </code></pre>
+
+    <h4>Haces:</h4>
+    <pre><code class="language-javascript">
+const sumar12 = sumarCurry(1)(2);
+sumar12(3);  // 6
+sumar12(4);  // 7
+sumar12(10); // 13
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Más Ejemplos Prácticos</h3>
+
+    <h4>Ejemplo 1: Descuentos en Tienda</h4>
+    <pre><code class="language-javascript">
+const aplicarDescuento = (descuento) => (precio) => {
+  return precio - (precio * descuento / 100);
+};
+
+const descuento10 = aplicarDescuento(10);
+const descuento20 = aplicarDescuento(20);
+
+console.log(descuento10(100)); // 90
+console.log(descuento10(50));  // 45
+console.log(descuento20(100)); // 80
+    </code></pre>
+
+    <h4>Ejemplo 2: Validadores</h4>
+    <pre><code class="language-javascript">
+const crearValidador = (minLength) => (text) => {
+  return text.length >= minLength;
+};
+
+const validarPassword = crearValidador(8);
+const validarUsername = crearValidador(3);
+
+console.log(validarPassword("abc"));      // false
+console.log(validarPassword("abc12345")); // true
+console.log(validarUsername("Jo"));       // false
+console.log(validarUsername("Joe"));      // true
+    </code></pre>
+
+    <h4>Ejemplo 3: Formateo de Mensajes</h4>
+    <pre><code class="language-javascript">
+const crearMensaje = (tipo) => (usuario) => (contenido) => {
+  return `[${tipo}] Usuario ${usuario}: ${contenido}`;
+};
+
+const error = crearMensaje("ERROR");
+const info = crearMensaje("INFO");
+
+const errorRoge = error("Roge");
+const infoAna = info("Ana");
+
+console.log(errorRoge("Archivo no encontrado"));
+// [ERROR] Usuario Roge: Archivo no encontrado
+
+console.log(infoAna("Operación exitosa"));
+// [INFO] Usuario Ana: Operación exitosa
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Currying vs Partial Functions</h3>
+
+    <div class="key-concept">
+      <h4>Diferencia Clave</h4>
+      <p><strong>Currying:</strong> Cada función recibe exactamente UN parámetro</p>
+      <pre><code class="language-javascript">const curry = (a) => (b) => (c) => a + b + c;</code></pre>
+
+      <p><strong>Partial Functions:</strong> Puedes fijar varios parámetros a la vez</p>
+      <pre><code class="language-javascript">
+const partial = (a, b) => {
+  return (c) => a + b + c;
+};
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>Resumen Ultra Corto (para memorizar)</h3>
+
+    <div class="interview-box">
+      <h4>Conceptos Clave</h4>
+      <ul>
+        <li><strong>Currying</strong> = <code>f(a, b, c)</code> → <code>f(a)(b)(c)</code></li>
+        <li>Cada función recibe un solo parámetro</li>
+        <li>Las funciones recuerdan valores anteriores (closure)</li>
+        <li>Sirve para reutilizar y especializar funciones</li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>Ventajas</h4>
+      <ul>
+        <li>✅ Código más reutilizable</li>
+        <li>✅ Funciones más especializadas</li>
+        <li>✅ Configuraciones guardadas</li>
+        <li>✅ Composición de funciones más fácil</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://javascript.info/currying-partials" target="_blank">JavaScript.info: Currying and Partials</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Glossary/Currying" target="_blank">MDN: Currying</a>
+    <a href="https://www.youtube.com/watch?v=iZLP4qOwY8I" target="_blank">YouTube: Currying in JavaScript</a>
+  </div>
+</section>

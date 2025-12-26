@@ -1,0 +1,373 @@
+<!-- PARTIAL FUNCTIONS -->
+<section id="partial" class="box">
+  <h2>Partial Functions</h2>
+
+  <article>
+    <h3>What is a Partial Function?</h3>
+    <p><strong>A partial function is a function that "freezes" or "fixes" some parameters and returns a new function that expects the remaining parameters.</strong></p>
+    <p>It's like preparing part of a recipe in advance to complete it later.</p>
+  </article>
+
+  <article>
+    <h3>The Real-World Problem</h3>
+    <p>Imagine you work at an online store and have this function to calculate prices:</p>
+
+    <pre><code class="language-javascript">
+// Normal function: receives EVERYTHING at once
+const calculateFinalPrice = (basePrice, discount, tax) => {
+  const withDiscount = basePrice - (basePrice * discount / 100);
+  const withTax = withDiscount + (withDiscount * tax / 100);
+  return withTax;
+};
+
+// You use it like this:
+console.log(calculateFinalPrice(100, 10, 21)); // 94.5
+console.log(calculateFinalPrice(200, 10, 21)); // 189
+console.log(calculateFinalPrice(50, 10, 21));  // 47.25
+    </code></pre>
+
+    <div class="problem-box">
+      <h4>Problem</h4>
+      <p>You're repeating <code>10</code> (discount) and <code>21</code> (tax) in every call. What if you always use the same discount and tax?</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>The Solution with Partial Function</h3>
+    <p><strong>Idea:</strong> Create a function that "remembers" the discount and tax, and only asks for the price.</p>
+
+    <pre><code class="language-javascript">
+// Partial function: freezes discount and tax
+const createCalculatorWithDiscount = (discount, tax) => {
+  // This function "remembers" discount and tax
+  return (basePrice) => {
+    const withDiscount = basePrice - (basePrice * discount / 100);
+    const withTax = withDiscount + (withDiscount * tax / 100);
+    return withTax;
+  };
+};
+
+// Now we create ONE calculator with fixed values
+const calculateWithCustomerDiscount = createCalculatorWithDiscount(10, 21);
+
+// And use it many times by only passing the price:
+console.log(calculateWithCustomerDiscount(100)); // 94.5
+console.log(calculateWithCustomerDiscount(200)); // 189
+console.log(calculateWithCustomerDiscount(50));  // 47.25
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>What happened here?</h4>
+      <ul>
+        <li><code>createCalculatorWithDiscount(10, 21)</code> → We fix discount and tax</li>
+        <li>It returns a NEW function that only needs the price</li>
+        <li>That new function "remembers" the 10% and 21%</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Let's Visualize the Concept</h3>
+
+    <pre><code class="language-javascript">
+// STEP BY STEP:
+
+// 1. Define the "parent" function
+const createCalculatorWithDiscount = (discount, tax) => {
+  console.log(`📦 Saving discount: ${discount}% and tax: ${tax}%`);
+
+  // 2. Return a "child" function that remembers those values
+  return (basePrice) => {
+    console.log(`💰 Calculating final price for: ${basePrice}€`);
+    const withDiscount = basePrice - (basePrice * discount / 100);
+    const withTax = withDiscount + (withDiscount * tax / 100);
+    return withTax;
+  };
+};
+
+// 3. Create the partial function
+const calculator = createCalculatorWithDiscount(10, 21);
+// Console: 📦 Saving discount: 10% and tax: 21%
+
+// 4. Use the partial function
+console.log(calculator(100));
+// Console: 💰 Calculating final price for: 100€
+// Result: 94.5
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>The Real-Life Analogy</h3>
+    <p>Think of a partial function as preparing coffee:</p>
+
+    <pre><code class="language-javascript">
+// ❌ Without partial function (doing everything each time):
+const makeCoffee = (milkType, sugar, coffeeType, amount) => {
+  return `${amount}ml of ${coffeeType} with ${milkType} and ${sugar}g of sugar`;
+};
+
+makeCoffee('soy', 0, 'espresso', 30);
+makeCoffee('soy', 0, 'espresso', 30);
+makeCoffee('soy', 0, 'espresso', 30);
+// Repetitive ↑
+    </code></pre>
+
+    <pre><code class="language-javascript">
+// ✅ With partial function (prepare your recipe):
+const createCoffeeRecipe = (milkType, sugar, coffeeType) => {
+  return (amount) => {
+    return `${amount}ml of ${coffeeType} with ${milkType} and ${sugar}g of sugar`;
+  };
+};
+
+// My personal recipe (just once):
+const myCoffee = createCoffeeRecipe('soy', 0, 'espresso');
+
+// Now I only say how much I want:
+console.log(myCoffee(30));  // "30ml of espresso with soy and 0g of sugar"
+console.log(myCoffee(60));  // "60ml of espresso with soy and 0g of sugar"
+console.log(myCoffee(120)); // "120ml of espresso with soy and 0g of sugar"
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Progressive Examples</h3>
+
+    <h4>Example 1: Personalized Greetings</h4>
+    <pre><code class="language-javascript">
+// Normal function
+const greet = (greeting, name) => {
+  return `${greeting}, ${name}!`;
+};
+
+console.log(greet('Hello', 'Ana'));
+console.log(greet('Hello', 'Peter'));
+console.log(greet('Hello', 'Maria'));
+
+
+// Partial function
+const createGreeting = (greeting) => {
+  return (name) => {
+    return `${greeting}, ${name}!`;
+  };
+};
+
+const spanishGreeting = createGreeting('Hola');
+const englishGreeting = createGreeting('Hello');
+const frenchGreeting = createGreeting('Bonjour');
+
+console.log(spanishGreeting('Ana'));   // "Hola, Ana!"
+console.log(englishGreeting('Peter')); // "Hello, Peter!"
+console.log(frenchGreeting('Marie'));  // "Bonjour, Marie!"
+    </code></pre>
+
+    <h4>Example 2: Multipliers</h4>
+    <pre><code class="language-javascript">
+// Simple partial function
+const createMultiplier = (factor) => {
+  return (number) => {
+    return number * factor;
+  };
+};
+
+// Create specific multipliers
+const double = createMultiplier(2);
+const triple = createMultiplier(3);
+const timesTen = createMultiplier(10);
+
+console.log(double(5));    // 10
+console.log(triple(5));    // 15
+console.log(timesTen(5));  // 50
+
+// The factor (2, 3, 10) is "frozen" in each function!
+    </code></pre>
+
+    <h4>Example 3: Form Validators</h4>
+    <pre><code class="language-javascript">
+// Partial function to validate length
+const createLengthValidator = (minimum) => {
+  return (text) => {
+    if (text.length >= minimum) {
+      return { valid: true, message: 'OK' };
+    } else {
+      return {
+        valid: false,
+        message: `Must be at least ${minimum} characters`
+      };
+    }
+  };
+};
+
+// Create specific validators
+const validatePassword = createLengthValidator(8);
+const validateName = createLengthValidator(3);
+const validateZipCode = createLengthValidator(5);
+
+console.log(validatePassword('abc'));
+// { valid: false, message: 'Must be at least 8 characters' }
+
+console.log(validatePassword('abc12345'));
+// { valid: true, message: 'OK' }
+
+console.log(validateName('Jo'));
+// { valid: false, message: 'Must be at least 3 characters' }
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Syntax with Arrow Functions (Short Version)</h3>
+    <p>You can write partial functions in a more compact way:</p>
+
+    <pre><code class="language-javascript">
+// Long version (clearer):
+const createMultiplier = (factor) => {
+  return (number) => {
+    return number * factor;
+  };
+};
+
+// Short version (same result):
+const createMultiplier = (factor) => (number) => number * factor;
+
+// Both do exactly the same:
+const timesFive = createMultiplier(5);
+console.log(timesFive(3)); // 15
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>Note</h4>
+      <p>Both versions are identical, use whichever is clearer to you.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Real Case - Format Prices</h3>
+
+    <pre><code class="language-javascript">
+// ❌ Without partial function:
+const formatPrice = (currency, decimals, amount) => {
+  return new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  }).format(amount);
+};
+
+// You have to repeat 'GBP' and 2 each time:
+console.log(formatPrice('GBP', 2, 123.45));
+console.log(formatPrice('GBP', 2, 678.90));
+console.log(formatPrice('GBP', 2, 999.99));
+    </code></pre>
+
+    <pre><code class="language-javascript">
+// ✅ With partial function:
+const createPriceFormatter = (currency, decimals) => {
+  return (amount) => {
+    return new Intl.NumberFormat('en-GB', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    }).format(amount);
+  };
+};
+
+// Just once: configure the formatter
+const formatPounds = createPriceFormatter('GBP', 2);
+
+// Many times: only pass the amount
+console.log(formatPounds(123.45)); // "£123.45"
+console.log(formatPounds(678.90)); // "£678.90"
+console.log(formatPounds(999.99)); // "£999.99"
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>When to Use Partial Functions?</h3>
+
+    <div class="solution-box">
+      <h4>Use them when</h4>
+      <p><strong>1. You repeat the same parameters many times</strong></p>
+      <pre><code class="language-javascript">
+// Instead of this:
+api.get('/users', { auth: token, format: 'json' });
+api.get('/products', { auth: token, format: 'json' });
+api.get('/orders', { auth: token, format: 'json' });
+
+// Do this:
+const apiWithAuth = createApiWithConfig(token, 'json');
+apiWithAuth('/users');
+apiWithAuth('/products');
+apiWithAuth('/orders');
+      </code></pre>
+
+      <p><strong>2. You want to create "specialized versions" of a function</strong></p>
+      <pre><code class="language-javascript">
+const calculateTax = (rate) => (price) => price * rate / 100;
+
+const vatSpain = calculateTax(21);
+const vatUK = calculateTax(20);
+const vatGermany = calculateTax(19);
+      </code></pre>
+
+      <p><strong>3. You work with configurations that don't change</strong></p>
+      <pre><code class="language-javascript">
+const logger = createLogger('production', 'errors.log');
+logger('Error 404');
+logger('Error 500');
+// You don't have to repeat 'production' and 'errors.log' each time
+      </code></pre>
+    </div>
+
+    <div class="problem-box">
+      <h4>DON'T use them when</h4>
+      <ul>
+        <li>You only call the function once or twice</li>
+        <li>All parameters always change</li>
+        <li>It makes the code harder to understand</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Final Summary</h3>
+
+    <div class="key-concept">
+      <h4>Definition</h4>
+      <p>A partial function is a function that "freezes" some parameters and returns a new function that expects the remaining parameters.</p>
+    </div>
+
+    <h4>General Pattern</h4>
+    <pre><code class="language-javascript">
+// Structure:
+const createPartialFunction = (parametersToFreeze) => {
+  return (parametersToChange) => {
+    // Logic that uses BOTH groups of parameters
+  };
+};
+
+// Usage:
+const specializedFunction = createPartialFunction(fixedValues);
+specializedFunction(variableValues);
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>Benefits</h4>
+      <ul>
+        <li>Less code repetition</li>
+        <li>More specialized and clear functions</li>
+        <li>More maintainable and reusable code</li>
+        <li>Configuration separated from usage</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://javascript.info/currying-partials" target="_blank">JavaScript.info: Currying and Partials</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Glossary/Partial_application" target="_blank">MDN: Partial Application</a>
+    <a href="https://www.youtube.com/watch?v=kHojnRq2SUE" target="_blank">YouTube: Partial Application</a>
+    <a href="https://claude.ai/chat/957d11bf-0207-4625-8c20-a1502a050a22" target="_blank">Claude: Partial Functions</a>
+    <a href="https://chatgpt.com/c/69473b5d-7f5c-8326-aa94-d369733fd63f" target="_blank">ChatGPT: Partial Functions</a>
+  </div>
+</section>

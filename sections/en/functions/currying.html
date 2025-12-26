@@ -1,0 +1,263 @@
+<!-- CURRYING -->
+<section id="currying" class="box">
+  <h2>Currying in JavaScript</h2>
+
+  <article>
+    <h3>What is Currying?</h3>
+    <p><strong>Currying is a technique that transforms a function that receives multiple parameters into a series of functions that each receive one parameter.</strong></p>
+
+    <div class="key-concept">
+      <h4>Transformation</h4>
+      <p><strong>👉 Before:</strong></p>
+      <pre><code class="language-javascript">function(a, b, c)</code></pre>
+
+      <p><strong>👉 After (curry):</strong></p>
+      <pre><code class="language-javascript">function(a)(b)(c)</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>Example WITHOUT Currying (normal)</h3>
+    <p>A normal function receives everything at once:</p>
+
+    <pre><code class="language-javascript">
+function sum(a, b, c) {
+  return a + b + c;
+}
+
+sum(1, 2, 3); // 6
+    </code></pre>
+
+    <div class="problem-box">
+      <h4>Here</h4>
+      <ul>
+        <li>I have to pass all 3 values always</li>
+        <li>I can't reuse "part" of the function</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>The SAME Example WITH Currying (step by step)</h3>
+
+    <pre><code class="language-javascript">
+function sumCurry(a) {
+  return function (b) {
+    return function (c) {
+      return a + b + c;
+    };
+  };
+}
+    </code></pre>
+
+    <p><strong>This function doesn't calculate anything yet</strong><br>
+    👉 It just saves values little by little</p>
+  </article>
+
+  <article>
+    <h3>How to Use It (very clear)</h3>
+
+    <h4>Chained Form</h4>
+    <pre><code class="language-javascript">
+sumCurry(1)(2)(3); // 6
+    </code></pre>
+
+    <h4>Step by Step Form (most important to understand)</h4>
+    <pre><code class="language-javascript">
+const stepB = sumCurry(1); // saves a = 1
+const stepC = stepB(2);    // saves b = 2
+const result = stepC(3);   // uses a + b + c
+
+console.log(result); // 6
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>What's Really Happening? (key mental model)</h3>
+
+    <div class="key-concept">
+      <h4>Each function remembers what it received before</h4>
+
+      <p><strong>Example:</strong></p>
+      <pre><code class="language-javascript">const stepB = sumCurry(1);</code></pre>
+
+      <p><code>stepB</code> is:</p>
+      <ul>
+        <li>A function</li>
+        <li>With a backpack containing: <code>a = 1</code></li>
+      </ul>
+
+      <p><strong>This is called a closure.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>VERY CLEAR Real Example (multiply)</h3>
+
+    <pre><code class="language-javascript">
+const multiply = (a) => (b) => a * b;
+    </code></pre>
+
+    <h4>Usage:</h4>
+    <pre><code class="language-javascript">
+const timesTwo = multiply(2); // saves a = 2
+
+timesTwo(5);  // 10
+timesTwo(8);  // 16
+timesTwo(10); // 20
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>Here it's very clear</h4>
+      <ul>
+        <li>I create a special "timesTwo" function</li>
+        <li>I don't pass 2 again</li>
+        <li>I reuse the behavior</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Another Everyday Example (greetings)</h3>
+
+    <pre><code class="language-javascript">
+const greet = (greeting) => (name) => {
+  return `${greeting}, ${name}`;
+};
+
+const hello = greet("Hello");
+const goodbye = greet("Goodbye");
+
+hello("Roge");   // Hello, Roge
+hello("Ana");    // Hello, Ana
+goodbye("Roge"); // Goodbye, Roge
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Why Does Currying Exist?</h3>
+
+    <div class="key-concept">
+      <h4>It's used for</h4>
+      <ul>
+        <li>Reusing functions</li>
+        <li>Saving configurations</li>
+        <li>Creating more specific functions from a general one</li>
+      </ul>
+    </div>
+
+    <h4>👉 Instead of repeating:</h4>
+    <pre><code class="language-javascript">
+sum(1, 2, 3);
+sum(1, 2, 4);
+sum(1, 2, 10);
+    </code></pre>
+
+    <h4>You do:</h4>
+    <pre><code class="language-javascript">
+const sum12 = sumCurry(1)(2);
+sum12(3);  // 6
+sum12(4);  // 7
+sum12(10); // 13
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>More Practical Examples</h3>
+
+    <h4>Example 1: Store Discounts</h4>
+    <pre><code class="language-javascript">
+const applyDiscount = (discount) => (price) => {
+  return price - (price * discount / 100);
+};
+
+const discount10 = applyDiscount(10);
+const discount20 = applyDiscount(20);
+
+console.log(discount10(100)); // 90
+console.log(discount10(50));  // 45
+console.log(discount20(100)); // 80
+    </code></pre>
+
+    <h4>Example 2: Validators</h4>
+    <pre><code class="language-javascript">
+const createValidator = (minLength) => (text) => {
+  return text.length >= minLength;
+};
+
+const validatePassword = createValidator(8);
+const validateUsername = createValidator(3);
+
+console.log(validatePassword("abc"));      // false
+console.log(validatePassword("abc12345")); // true
+console.log(validateUsername("Jo"));       // false
+console.log(validateUsername("Joe"));      // true
+    </code></pre>
+
+    <h4>Example 3: Message Formatting</h4>
+    <pre><code class="language-javascript">
+const createMessage = (type) => (user) => (content) => {
+  return `[${type}] User ${user}: ${content}`;
+};
+
+const error = createMessage("ERROR");
+const info = createMessage("INFO");
+
+const errorRoge = error("Roge");
+const infoAna = info("Ana");
+
+console.log(errorRoge("File not found"));
+// [ERROR] User Roge: File not found
+
+console.log(infoAna("Operation successful"));
+// [INFO] User Ana: Operation successful
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Currying vs Partial Functions</h3>
+
+    <div class="key-concept">
+      <h4>Key Difference</h4>
+      <p><strong>Currying:</strong> Each function receives exactly ONE parameter</p>
+      <pre><code class="language-javascript">const curry = (a) => (b) => (c) => a + b + c;</code></pre>
+
+      <p><strong>Partial Functions:</strong> You can fix multiple parameters at once</p>
+      <pre><code class="language-javascript">
+const partial = (a, b) => {
+  return (c) => a + b + c;
+};
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>Ultra Short Summary (to memorize)</h3>
+
+    <div class="interview-box">
+      <h4>Key Concepts</h4>
+      <ul>
+        <li><strong>Currying</strong> = <code>f(a, b, c)</code> → <code>f(a)(b)(c)</code></li>
+        <li>Each function receives a single parameter</li>
+        <li>Functions remember previous values (closure)</li>
+        <li>Used to reuse and specialize functions</li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>Advantages</h4>
+      <ul>
+        <li>✅ More reusable code</li>
+        <li>✅ More specialized functions</li>
+        <li>✅ Saved configurations</li>
+        <li>✅ Easier function composition</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://javascript.info/currying-partials" target="_blank">JavaScript.info: Currying and Partials</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Glossary/Currying" target="_blank">MDN: Currying</a>
+    <a href="https://www.youtube.com/watch?v=iZLP4qOwY8I" target="_blank">YouTube: Currying in JavaScript</a>
+  </div>
+</section>

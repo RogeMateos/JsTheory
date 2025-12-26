@@ -1,0 +1,373 @@
+<!-- PARTIAL FUNCTIONS -->
+<section id="partial" class="box">
+  <h2>Funciones Parciales</h2>
+
+  <article>
+    <h3>¿Qué es una Función Parcial?</h3>
+    <p><strong>Una función parcial es una función que "congela" o "fija" algunos parámetros y devuelve una nueva función que espera el resto de los parámetros.</strong></p>
+    <p>Es como preparar parte de una receta de antemano para completarla después.</p>
+  </article>
+
+  <article>
+    <h3>El Problema del Mundo Real</h3>
+    <p>Imagina que trabajas en una tienda online y tienes esta función para calcular precios:</p>
+
+    <pre><code class="language-javascript">
+// Función normal: recibe TODO de una vez
+const calcularPrecioFinal = (precioBase, descuento, impuesto) => {
+  const conDescuento = precioBase - (precioBase * descuento / 100);
+  const conImpuesto = conDescuento + (conDescuento * impuesto / 100);
+  return conImpuesto;
+};
+
+// La usas así:
+console.log(calcularPrecioFinal(100, 10, 21)); // 94.5
+console.log(calcularPrecioFinal(200, 10, 21)); // 189
+console.log(calcularPrecioFinal(50, 10, 21));  // 47.25
+    </code></pre>
+
+    <div class="problem-box">
+      <h4>Problema</h4>
+      <p>Estás repitiendo <code>10</code> (descuento) y <code>21</code> (IVA) en cada llamada. ¿Y si siempre usas el mismo descuento e IVA?</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>La Solución con Función Parcial</h3>
+    <p><strong>Idea:</strong> Crear una función que "recuerde" el descuento e IVA, y solo te pida el precio.</p>
+
+    <pre><code class="language-javascript">
+// Función parcial: congela descuento e impuesto
+const crearCalculadoraConDescuento = (descuento, impuesto) => {
+  // Esta función "recuerda" descuento e impuesto
+  return (precioBase) => {
+    const conDescuento = precioBase - (precioBase * descuento / 100);
+    const conImpuesto = conDescuento + (conDescuento * impuesto / 100);
+    return conImpuesto;
+  };
+};
+
+// Ahora creamos UNA calculadora con los valores fijos
+const calcularConDescuentoCliente = crearCalculadoraConDescuento(10, 21);
+
+// Y la usamos muchas veces solo pasando el precio:
+console.log(calcularConDescuentoCliente(100)); // 94.5
+console.log(calcularConDescuentoCliente(200)); // 189
+console.log(calcularConDescuentoCliente(50));  // 47.25
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>¿Qué pasó aquí?</h4>
+      <ul>
+        <li><code>crearCalculadoraConDescuento(10, 21)</code> → Fijamos descuento y IVA</li>
+        <li>Nos devuelve una NUEVA función que solo necesita el precio</li>
+        <li>Esa nueva función "recuerda" el 10% y el 21%</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Visualicemos el Concepto</h3>
+
+    <pre><code class="language-javascript">
+// PASO A PASO:
+
+// 1. Definimos la función "madre"
+const crearCalculadoraConDescuento = (descuento, impuesto) => {
+  console.log(`📦 Guardando descuento: ${descuento}% y impuesto: ${impuesto}%`);
+
+  // 2. Devolvemos una función "hija" que recuerda esos valores
+  return (precioBase) => {
+    console.log(`💰 Calculando precio final para: ${precioBase}€`);
+    const conDescuento = precioBase - (precioBase * descuento / 100);
+    const conImpuesto = conDescuento + (conDescuento * impuesto / 100);
+    return conImpuesto;
+  };
+};
+
+// 3. Creamos la función parcial
+const calculadora = crearCalculadoraConDescuento(10, 21);
+// Console: 📦 Guardando descuento: 10% y impuesto: 21%
+
+// 4. Usamos la función parcial
+console.log(calculadora(100));
+// Console: 💰 Calculando precio final para: 100€
+// Resultado: 94.5
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>La Analogía de la Vida Real</h3>
+    <p>Piensa en una función parcial como preparar café:</p>
+
+    <pre><code class="language-javascript">
+// ❌ Sin función parcial (hacer todo cada vez):
+const hacerCafe = (tipoLeche, azucar, tipoCafe, cantidad) => {
+  return `${cantidad}ml de ${tipoCafe} con ${tipoLeche} y ${azucar}g de azúcar`;
+};
+
+hacerCafe('soja', 0, 'espresso', 30);
+hacerCafe('soja', 0, 'espresso', 30);
+hacerCafe('soja', 0, 'espresso', 30);
+// Repetitivo ↑
+    </code></pre>
+
+    <pre><code class="language-javascript">
+// ✅ Con función parcial (preparar tu receta):
+const crearRecetaCafe = (tipoLeche, azucar, tipoCafe) => {
+  return (cantidad) => {
+    return `${cantidad}ml de ${tipoCafe} con ${tipoLeche} y ${azucar}g de azúcar`;
+  };
+};
+
+// Mi receta personal (una sola vez):
+const miCafe = crearRecetaCafe('soja', 0, 'espresso');
+
+// Ahora solo digo cuánto quiero:
+console.log(miCafe(30));  // "30ml de espresso con soja y 0g de azúcar"
+console.log(miCafe(60));  // "60ml de espresso con soja y 0g de azúcar"
+console.log(miCafe(120)); // "120ml de espresso con soja y 0g de azúcar"
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Ejemplos Progresivos</h3>
+
+    <h4>Ejemplo 1: Saludos Personalizados</h4>
+    <pre><code class="language-javascript">
+// Función normal
+const saludar = (saludo, nombre) => {
+  return `${saludo}, ${nombre}!`;
+};
+
+console.log(saludar('Hola', 'Ana'));
+console.log(saludar('Hola', 'Pedro'));
+console.log(saludar('Hola', 'María'));
+
+
+// Función parcial
+const crearSaludo = (saludo) => {
+  return (nombre) => {
+    return `${saludo}, ${nombre}!`;
+  };
+};
+
+const saludoEspañol = crearSaludo('Hola');
+const saludoIngles = crearSaludo('Hello');
+const saludoFrances = crearSaludo('Bonjour');
+
+console.log(saludoEspañol('Ana'));   // "Hola, Ana!"
+console.log(saludoIngles('Peter'));  // "Hello, Peter!"
+console.log(saludoFrances('Marie')); // "Bonjour, Marie!"
+    </code></pre>
+
+    <h4>Ejemplo 2: Multiplicadores</h4>
+    <pre><code class="language-javascript">
+// Función parcial simple
+const crearMultiplicador = (factor) => {
+  return (numero) => {
+    return numero * factor;
+  };
+};
+
+// Creamos multiplicadores específicos
+const duplicar = crearMultiplicador(2);
+const triplicar = crearMultiplicador(3);
+const porDiez = crearMultiplicador(10);
+
+console.log(duplicar(5));   // 10
+console.log(triplicar(5));  // 15
+console.log(porDiez(5));    // 50
+
+// ¡El factor (2, 3, 10) está "congelado" en cada función!
+    </code></pre>
+
+    <h4>Ejemplo 3: Validadores de Formularios</h4>
+    <pre><code class="language-javascript">
+// Función parcial para validar longitud
+const crearValidadorLongitud = (minimo) => {
+  return (texto) => {
+    if (texto.length >= minimo) {
+      return { valido: true, mensaje: 'OK' };
+    } else {
+      return {
+        valido: false,
+        mensaje: `Debe tener al menos ${minimo} caracteres`
+      };
+    }
+  };
+};
+
+// Creamos validadores específicos
+const validarPassword = crearValidadorLongitud(8);
+const validarNombre = crearValidadorLongitud(3);
+const validarCodigoPostal = crearValidadorLongitud(5);
+
+console.log(validarPassword('abc'));
+// { valido: false, mensaje: 'Debe tener al menos 8 caracteres' }
+
+console.log(validarPassword('abc12345'));
+// { valido: true, mensaje: 'OK' }
+
+console.log(validarNombre('Jo'));
+// { valido: false, mensaje: 'Debe tener al menos 3 caracteres' }
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Sintaxis con Arrow Functions (Versión Corta)</h3>
+    <p>Puedes escribir funciones parciales de forma más compacta:</p>
+
+    <pre><code class="language-javascript">
+// Versión larga (más clara):
+const crearMultiplicador = (factor) => {
+  return (numero) => {
+    return numero * factor;
+  };
+};
+
+// Versión corta (mismo resultado):
+const crearMultiplicador = (factor) => (numero) => numero * factor;
+
+// Ambas hacen exactamente lo mismo:
+const porCinco = crearMultiplicador(5);
+console.log(porCinco(3)); // 15
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>Nota</h4>
+      <p>Las dos versiones son iguales, usa la que te resulte más clara.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Caso Real - Formatear Precios</h3>
+
+    <pre><code class="language-javascript">
+// ❌ Sin función parcial:
+const formatearPrecio = (moneda, decimales, cantidad) => {
+  return new Intl.NumberFormat('es-ES', {
+    style: 'currency',
+    currency: moneda,
+    minimumFractionDigits: decimales,
+    maximumFractionDigits: decimales
+  }).format(cantidad);
+};
+
+// Tienes que repetir 'EUR' y 2 cada vez:
+console.log(formatearPrecio('EUR', 2, 123.45));
+console.log(formatearPrecio('EUR', 2, 678.90));
+console.log(formatearPrecio('EUR', 2, 999.99));
+    </code></pre>
+
+    <pre><code class="language-javascript">
+// ✅ Con función parcial:
+const crearFormateadorPrecio = (moneda, decimales) => {
+  return (cantidad) => {
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: moneda,
+      minimumFractionDigits: decimales,
+      maximumFractionDigits: decimales
+    }).format(cantidad);
+  };
+};
+
+// Una sola vez: configuras el formateador
+const formatearEuros = crearFormateadorPrecio('EUR', 2);
+
+// Muchas veces: solo pasas la cantidad
+console.log(formatearEuros(123.45)); // "123,45 €"
+console.log(formatearEuros(678.90)); // "678,90 €"
+console.log(formatearEuros(999.99)); // "999,99 €"
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>¿Cuándo Usar Funciones Parciales?</h3>
+
+    <div class="solution-box">
+      <h4>Úsalas cuando</h4>
+      <p><strong>1. Repites los mismos parámetros muchas veces</strong></p>
+      <pre><code class="language-javascript">
+// En vez de esto:
+api.get('/users', { auth: token, format: 'json' });
+api.get('/products', { auth: token, format: 'json' });
+api.get('/orders', { auth: token, format: 'json' });
+
+// Haz esto:
+const apiConAuth = crearApiConConfig(token, 'json');
+apiConAuth('/users');
+apiConAuth('/products');
+apiConAuth('/orders');
+      </code></pre>
+
+      <p><strong>2. Quieres crear "versiones especializadas" de una función</strong></p>
+      <pre><code class="language-javascript">
+const calcularImpuesto = (tasa) => (precio) => precio * tasa / 100;
+
+const ivaEspaña = calcularImpuesto(21);
+const ivaUK = calcularImpuesto(20);
+const ivaAlemania = calcularImpuesto(19);
+      </code></pre>
+
+      <p><strong>3. Trabajas con configuraciones que no cambian</strong></p>
+      <pre><code class="language-javascript">
+const logger = crearLogger('produccion', 'errores.log');
+logger('Error 404');
+logger('Error 500');
+// No tienes que repetir 'produccion' y 'errores.log' cada vez
+      </code></pre>
+    </div>
+
+    <div class="problem-box">
+      <h4>NO las uses cuando</h4>
+      <ul>
+        <li>Solo llamas a la función una o dos veces</li>
+        <li>Todos los parámetros cambian siempre</li>
+        <li>Hace el código más difícil de entender</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Resumen Final</h3>
+
+    <div class="key-concept">
+      <h4>Definición</h4>
+      <p>Una función parcial es una función que "congela" algunos parámetros y devuelve una nueva función que espera los parámetros restantes.</p>
+    </div>
+
+    <h4>Patrón General</h4>
+    <pre><code class="language-javascript">
+// Estructura:
+const crearFuncionParcial = (parametrosQueSeCongelan) => {
+  return (parametrosQueCambian) => {
+    // Lógica que usa AMBOS grupos de parámetros
+  };
+};
+
+// Uso:
+const funcionEspecializada = crearFuncionParcial(valoresFijos);
+funcionEspecializada(valoresVariables);
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>Beneficios</h4>
+      <ul>
+        <li>Menos repetición de código</li>
+        <li>Funciones más especializadas y claras</li>
+        <li>Código más mantenible y reutilizable</li>
+        <li>Configuración separada del uso</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://javascript.info/currying-partials" target="_blank">JavaScript.info: Currying and Partials</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Glossary/Partial_application" target="_blank">MDN: Partial Application</a>
+    <a href="https://www.youtube.com/watch?v=kHojnRq2SUE" target="_blank">YouTube: Partial Application</a>
+    <a href="https://claude.ai/chat/957d11bf-0207-4625-8c20-a1502a050a22" target="_blank">Claude: Partial Functions</a>
+    <a href="https://chatgpt.com/c/69473b5d-7f5c-8326-aa94-d369733fd63f" target="_blank">ChatGPT: Partial Functions</a>
+  </div>
+</section>

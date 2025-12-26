@@ -1,0 +1,351 @@
+<!-- CALLBACKS -->
+<section id="callbacks" class="box">
+  <h2>Callbacks en JavaScript</h2>
+
+  <article>
+    <h3>¿Qué es un Callback?</h3>
+    <p><strong>Un callback es una función que se pasa como argumento a otra función, para ejecutarse más tarde (normalmente cuando algo termina).</strong></p>
+    <p>Es como decir: <em>"Cuando estés listo, llama a ESTA función"</em>.</p>
+
+    <h4>Ejemplo Simple (sin asincronía)</h4>
+    <pre><code class="language-javascript">
+function procesarDato(dato, callback) {
+  callback(dato);
+}
+
+procesarDato("Hola", (mensaje) => {
+  console.log("Mensaje:", mensaje);
+});
+// Output: Mensaje: Hola
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>¿Qué pasa aquí?</h4>
+      <ol>
+        <li>Llamas <code>procesarDato("Hola", ...)</code></li>
+        <li><code>callback</code> es la función que pasaste</li>
+        <li>Dentro se ejecuta: <code>callback(dato)</code></li>
+        <li>Imprime: <code>Mensaje: Hola</code></li>
+      </ol>
+      <p style="margin-top: 15px;">
+        <a href="https://chatgpt.com/c/6949c6e0-5af0-8330-805e-5849b83c8194" target="_blank" style="color: #007bff; text-decoration: none;">💡 Ver explicación detallada en ChatGPT</a>
+      </p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Código Síncrono vs Asíncrono</h3>
+
+    <h4>Código Síncrono (bloquea el hilo)</h4>
+    <p>El código se ejecuta línea por línea, y cada línea "termina" antes de pasar a la siguiente.</p>
+
+    <pre><code class="language-javascript">
+console.log("A");
+console.log("B");
+console.log("C");
+
+// Output:
+// A
+// B
+// C
+    </code></pre>
+
+    <h4>Código Asíncrono (no bloquea)</h4>
+    <p>Hay operaciones que JavaScript no ejecuta en ese momento, sino que dice: <strong>"esto lo haré más tarde, cuando pueda"</strong>.</p>
+
+    <p><strong>Ejemplos típicos:</strong></p>
+    <ul>
+      <li>Temporizadores (<code>setTimeout</code>)</li>
+      <li>Peticiones a red (<code>fetch</code>)</li>
+      <li>Eventos (<code>click</code>)</li>
+      <li>Lectura de archivos (Node.js)</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>Primer Contacto con Asincronía: setTimeout</h3>
+    <p><code>setTimeout</code> recibe:</p>
+    <ul>
+      <li>Función callback (lo que quieres ejecutar)</li>
+      <li>Tiempo en ms (cuándo)</li>
+    </ul>
+
+    <pre><code class="language-javascript">
+setTimeout(() => {
+  console.log("Esto se ejecuta después");
+}, 2000);
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>El Ejemplo Clave: ¿Por qué sale "Inicio, Fin, Esto..."?</h3>
+
+    <pre><code class="language-javascript">
+console.log("Inicio");
+
+setTimeout(() => {
+  console.log("Esto se ejecuta");
+}, 0);
+
+console.log("Fin");
+    </code></pre>
+
+    <p><strong>Salida real:</strong></p>
+    <pre><code>Inicio
+Fin
+Esto se ejecuta
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>Corrección Importante</h4>
+      <p>Esto NO es ejecución "síncrona".<br>
+      <code>setTimeout</code> siempre es asíncrono (aunque pongas 0).</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Las Piezas del Motor: Call Stack, Web APIs, Task Queue, Event Loop</h3>
+
+    <h4>1. Call Stack (Pila de llamadas)</h4>
+    <ul>
+      <li>Donde se ejecuta el código síncrono</li>
+      <li>Es una pila: el último que entra, sale primero</li>
+    </ul>
+
+    <h4>2. Web APIs</h4>
+    <p>El navegador (o Node) ofrece "herramientas externas" como:</p>
+    <ul>
+      <li><code>setTimeout</code></li>
+      <li><code>fetch</code></li>
+      <li>Eventos del DOM</li>
+    </ul>
+    <p>JavaScript dice: <em>"Oye navegador, encárgate tú del temporizador"</em>.</p>
+
+    <h4>3. Task Queue (Cola de tareas / MacroTasks)</h4>
+    <p>Cuando el temporizador termina, su callback no se ejecuta directamente.<br>
+    Se mete en una cola esperando turno.</p>
+
+    <h4>4. Event Loop</h4>
+    <p>Es como el "controlador de tráfico":</p>
+    <ul>
+      <li>Mira si el Call Stack está vacío</li>
+      <li>Si lo está, toma una tarea de la cola y la mete al Call Stack</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>Paso a Paso del Ejemplo "Inicio / Fin / Esto..."</h3>
+
+    <pre><code class="language-javascript">
+console.log("Inicio");
+
+setTimeout(() => {
+  console.log("Esto se ejecuta");
+}, 0);
+
+console.log("Fin");
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>Paso 1</h4>
+      <p><code>console.log("Inicio")</code> entra al Call Stack → se ejecuta → sale</p>
+      <p>Imprime: <code>Inicio</code></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Paso 2</h4>
+      <p><code>setTimeout(...)</code> entra al Call Stack → registra el temporizador en Web APIs → sale</p>
+      <p><strong>⚠️ El callback NO se ejecuta aquí.</strong></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Paso 3</h4>
+      <p><code>console.log("Fin")</code> entra al Call Stack → se ejecuta → sale</p>
+      <p>Imprime: <code>Fin</code></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Paso 4</h4>
+      <p>Ahora el Call Stack está vacío.<br>
+      El temporizador ya terminó (0ms) → su callback está en Task Queue.<br>
+      Event Loop lo mete al Call Stack.</p>
+      <p>Se ejecuta: <code>Esto se ejecuta</code></p>
+      <p><strong>✅ Por eso sale al final.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>setTimeout con Tiempo Real (2 segundos)</h3>
+
+    <pre><code class="language-javascript">
+console.log("Inicio");
+
+setTimeout(() => {
+  console.log("Esto se ejecuta después de 2s");
+}, 2000);
+
+console.log("Fin");
+    </code></pre>
+
+    <p><strong>Salida:</strong></p>
+    <pre><code>Inicio
+Fin
+(espera 2s)
+Esto se ejecuta después de 2s
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Encadenar Tareas Asíncronas con Callbacks</h3>
+
+    <p>Vamos a crear tres funciones asíncronas:</p>
+
+    <pre><code class="language-javascript">
+function stepOne(callback) {
+  setTimeout(() => {
+    console.log("Paso 1 completado");
+    callback();
+  }, 1000);
+}
+
+function stepTwo(callback) {
+  setTimeout(() => {
+    console.log("Paso 2 completado");
+    callback();
+  }, 1000);
+}
+
+function stepThree(callback) {
+  setTimeout(() => {
+    console.log("Paso 3 completado");
+    callback();
+  }, 1000);
+}
+    </code></pre>
+
+    <h4>Caso A: Lanzarlas "en paralelo" (no dependen)</h4>
+    <pre><code class="language-javascript">
+stepOne(() => console.log("Termina stepOne"));
+stepTwo(() => console.log("Termina stepTwo"));
+stepThree(() => console.log("Termina stepThree"));
+    </code></pre>
+    <p>Esto puede terminar en orden distinto dependiendo del tiempo de cada una.</p>
+
+    <h4>Caso B: Dependen (1 → 2 → 3)</h4>
+    <p>Aquí nace el patrón típico:</p>
+
+    <pre><code class="language-javascript">
+stepOne(() => {
+  stepTwo(() => {
+    stepThree(() => {
+      console.log("Todos los pasos completados");
+    });
+  });
+});
+    </code></pre>
+
+    <p><strong>Salida (aprox):</strong></p>
+    <pre><code>Paso 1 completado
+Paso 2 completado
+Paso 3 completado
+Todos los pasos completados
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>Resultado</h4>
+      <p>✅ Funciona perfecto.<br>
+      ❌ Pero el código empieza a "irse a la derecha" (anidación).</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Callback Hell: Qué es y Por Qué Pasa</h3>
+
+    <div class="problem-box">
+      <h4>Definición</h4>
+      <p><strong>Callback Hell</strong> ocurre cuando:</p>
+      <ul>
+        <li>Tienes varias tareas asíncronas</li>
+        <li>Cada una depende de la anterior</li>
+        <li>Y las encadenas con callbacks anidados</li>
+      </ul>
+    </div>
+
+    <h4>Resultado:</h4>
+    <ul>
+      <li>Código difícil de leer</li>
+      <li>Difícil de mantener</li>
+      <li>Difícil de depurar</li>
+      <li>Difícil de manejar errores</li>
+    </ul>
+
+    <h4>Ejemplo "infierno" (más realista):</h4>
+    <pre><code class="language-javascript">
+login(user, () => {
+  getProfile(() => {
+    getOrders(() => {
+      processPayment(() => {
+        console.log("todo listo");
+      });
+    });
+  });
+});
+    </code></pre>
+
+    <p><strong>No es que sea imposible:</strong><br>
+    es que para humanos es una pesadilla.</p>
+  </article>
+
+  <article>
+    <h3>Por Qué Esto Empuja a Promesas</h3>
+
+    <p>Para solucionar el caos:</p>
+    <ul>
+      <li>Nacen las <strong>Promesas</strong></li>
+      <li>Y después llega <strong>async/await</strong></li>
+    </ul>
+
+    <h4>Así se vería con promesas (solo como adelanto):</h4>
+    <pre><code class="language-javascript">
+stepOnePromise()
+  .then(stepTwoPromise)
+  .then(stepThreePromise)
+  .then(() => console.log("Todos los pasos completados"));
+    </code></pre>
+
+    <p>💡 Y con <code>async/await</code> es todavía más legible (lo verás en el siguiente capítulo).</p>
+  </article>
+
+  <article>
+    <h3>Resumen Final</h3>
+
+    <div class="key-concept">
+      <h4>Conceptos Clave</h4>
+      <ul>
+        <li><strong>Callback:</strong> función pasada a otra función para ejecutarse después</li>
+        <li><strong>setTimeout</strong> es asíncrono siempre, incluso con 0</li>
+        <li><strong>Call Stack</strong> ejecuta lo síncrono</li>
+        <li><strong>Web APIs</strong> manejan timers/red/eventos</li>
+        <li><strong>Task Queue</strong> guarda callbacks listos</li>
+        <li><strong>Event Loop</strong> mete tareas al stack cuando está vacío</li>
+        <li><strong>Callback Hell</strong> = demasiada anidación por dependencias</li>
+      </ul>
+    </div>
+
+    <div class="interview-box">
+      <h4>Pregunta de Entrevista</h4>
+      <p><strong>¿Por qué setTimeout(..., 0) no se ejecuta "al instante"?</strong></p>
+      <p>Porque <code>setTimeout</code> siempre es asíncrono. El callback se registra en Web APIs, luego pasa a la Task Queue, y el Event Loop solo lo ejecuta cuando el Call Stack está vacío.</p>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Glossary/Callback_function" target="_blank">MDN: Callback Function</a>
+    <a href="https://javascript.info/callbacks" target="_blank">JavaScript.info: Callbacks</a>
+    <a href="https://www.youtube.com/watch?v=8aGhZQkoFbQ" target="_blank">YouTube: Event Loop Explained</a>
+    <a href="http://latentflip.com/loupe/" target="_blank">Loupe: Event Loop Visualizer</a>
+    <a href="https://chatgpt.com/c/6949b36a-1728-832f-8930-db199c9efeb8" target="_blank">ChatGPT: Callbacks Explained</a>
+    <a href="https://chatgpt.com/c/6949b217-b004-8331-b541-a87dee8630ea" target="_blank">ChatGPT: Async JavaScript</a>
+    <a href="https://claude.ai/chat/d236ffbb-136a-4b4b-90a4-1d370230acbf" target="_blank">Claude: Callbacks Tutorial</a>
+  </div>
+</section>
