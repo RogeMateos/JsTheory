@@ -9,12 +9,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   links.forEach((link) => {
     link.addEventListener("click", (e) => {
-      e.preventDefault();
       const section = e.target.getAttribute("data-section");
-      
+
+      // Only handle internal content links (those with data-section attribute)
+      if (!section) {
+        // Let external links work normally
+        return;
+      }
+
+      e.preventDefault();
+
       // Update active link styling
       updateActiveLink(e.target);
-      
+
       // Load content
       currentSection = section;
       loadContent(section);
