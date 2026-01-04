@@ -1,0 +1,307 @@
+<!-- ARRAY SEARCH OPERATIONS -->
+<section id="arraySearch" class="box">
+  <h2>Operaciones de Búsqueda en Arrays en JavaScript</h2>
+
+  <article>
+    <h3>Introducción</h3>
+    <p>Cuando trabajamos con arrays, una necesidad muy común es buscar elementos:</p>
+    <ul>
+      <li>Saber si un valor existe</li>
+      <li>Encontrar el primer elemento que cumpla una condición</li>
+      <li>Obtener la posición (índice) de un elemento</li>
+    </ul>
+    <p>Vamos a ver cómo hacerlo correctamente, por qué existen varios métodos y cuándo usar cada uno.</p>
+  </article>
+
+  <article>
+    <h3>1️⃣ El Problema "A la Vieja Usanza"</h3>
+    <p>Imagina este array:</p>
+
+    <pre><code class="language-javascript">
+const numbers = [1, 2, 3, 4, 6, 10];
+    </code></pre>
+
+    <p>Si queremos saber si existe el número 4, sin métodos especiales tendríamos que hacer algo así:</p>
+
+    <pre><code class="language-javascript">
+let exists = false;
+
+for (let i = 0; i < numbers.length; i++) {
+  if (numbers[i] === 4) {
+    exists = true;
+    break;
+  }
+}
+    </code></pre>
+
+    <div class="problem-box">
+      <h4>👉 Funciona, pero:</h4>
+      <ul>
+        <li>Es verboso</li>
+        <li>Es fácil cometer errores</li>
+        <li>No es expresivo</li>
+      </ul>
+      <p><strong>Por eso JavaScript nos ofrece métodos de búsqueda.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>2️⃣ includes() – ¿Existe Este Valor?</h3>
+
+    <h4>👉 Qué Hace</h4>
+    <p>Comprueba si un array contiene exactamente un valor.</p>
+
+    <h4>👉 Qué Devuelve</h4>
+    <ul>
+      <li><code>true</code> → existe</li>
+      <li><code>false</code> → no existe</li>
+    </ul>
+
+    <h4>👉 Ejemplo Básico</h4>
+    <pre><code class="language-javascript">
+const numbers = [1, 2, 3, 4, 6, 10];
+
+console.log(numbers.includes(4)); // true
+console.log(numbers.includes(5)); // false
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>👉 Cuándo Usarlo</h4>
+      <ul>
+        <li>Cuando ya sabes el valor exacto</li>
+        <li>Validaciones simples</li>
+        <li>Comprobaciones rápidas</li>
+      </ul>
+    </div>
+
+    <h4>👉 Detalle Útil</h4>
+    <p>Puedes indicar desde qué índice empezar a buscar:</p>
+    <pre><code class="language-javascript">
+numbers.includes(4, 4); // empieza desde el índice 4
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>3️⃣ some() – ¿Existe ALGO Que Cumpla una Condición?</h3>
+    <p>Aquí está un método que muchos olvidan, pero es clave.</p>
+
+    <h4>👉 Qué Hace</h4>
+    <p>Comprueba si algún elemento cumple una condición.</p>
+
+    <h4>👉 Qué Devuelve</h4>
+    <p><code>true</code> o <code>false</code></p>
+
+    <h4>👉 Ejemplo</h4>
+    <pre><code class="language-javascript">
+const hasEven = numbers.some(n => n % 2 === 0);
+console.log(hasEven); // true
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>👉 Cuándo Usarlo</h4>
+      <ul>
+        <li>Cuando necesitas boolean</li>
+        <li>Cuando la búsqueda depende de una condición</li>
+        <li>Es el equivalente lógico de <code>includes</code>, pero con condiciones</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>4️⃣ find() – Dame el PRIMER Elemento Que Cumpla</h3>
+    <p>Ahora damos un paso más.</p>
+
+    <h4>👉 Qué Hace</h4>
+    <p>Recorre el array y devuelve el primer elemento que cumple una condición.</p>
+
+    <h4>👉 Qué Devuelve</h4>
+    <ul>
+      <li>El elemento encontrado</li>
+      <li><code>undefined</code> si no encuentra nada</li>
+    </ul>
+
+    <h4>👉 Ejemplo: Primer Número Par</h4>
+    <pre><code class="language-javascript">
+const firstEven = numbers.find(n => n % 2 === 0);
+console.log(firstEven); // 2
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>⚠️ Punto Clave (Muy Importante)</h4>
+      <p><code>find()</code> depende del orden actual del array.</p>
+      <p>Si cambiamos el orden:</p>
+      <pre><code class="language-javascript">
+const reversed = [...numbers].reverse();
+console.log(reversed); // [10, 6, 4, 3, 2, 1]
+
+const firstEven = reversed.find(n => n % 2 === 0);
+console.log(firstEven); // 10
+      </code></pre>
+      <p><strong>👉 "Primer" significa primer en ese orden, no el menor ni el original.</strong></p>
+    </div>
+
+    <h4>👉 Caso: No Encuentra Nada</h4>
+    <pre><code class="language-javascript">
+const oddNumbers = [3, 7, 11];
+
+const result = oddNumbers.find(n => n % 2 === 0);
+console.log(result); // undefined
+    </code></pre>
+
+    <h4>👉 Patrón Seguro</h4>
+    <pre><code class="language-javascript">
+if (result === undefined) {
+  console.log("No se encontró ningún elemento");
+}
+    </code></pre>
+
+    <h4>👉 Ejemplo Realista con Objetos</h4>
+    <pre><code class="language-javascript">
+const users = [
+  { id: 1, name: "Ana" },
+  { id: 2, name: "Roge" },
+];
+
+const user = users.find(u => u.id === 2);
+console.log(user); // { id: 2, name: "Roge" }
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Importante</h4>
+      <p><strong>find</strong> es perfecto cuando necesitas el elemento completo.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>5️⃣ findIndex() – ¿En Qué Posición Está?</h3>
+
+    <h4>👉 Qué Hace</h4>
+    <p>Funciona igual que <code>find</code>, pero devuelve el índice.</p>
+
+    <h4>👉 Qué Devuelve</h4>
+    <ul>
+      <li>Un número ≥ 0 → índice encontrado</li>
+      <li><code>-1</code> → no encontrado</li>
+    </ul>
+
+    <h4>👉 Ejemplo</h4>
+    <pre><code class="language-javascript">
+const firstEvenIndex = numbers.findIndex(n => n % 2 === 0);
+console.log(firstEvenIndex); // 1
+    </code></pre>
+
+    <h4>👉 Caso: No Encuentra Nada</h4>
+    <pre><code class="language-javascript">
+const oddNumbers = [3, 7, 11];
+
+console.log(
+  oddNumbers.findIndex(n => n % 2 === 0)
+); // -1
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>💡 Importante</h4>
+      <p><strong>findIndex</strong> siempre devuelve un número.</p>
+    </div>
+
+    <h4>👉 Uso Típico: Modificar/Eliminar</h4>
+    <pre><code class="language-javascript">
+const idx = numbers.findIndex(n => n === 4);
+
+if (idx !== -1) {
+  numbers.splice(idx, 1);
+}
+
+console.log(numbers); // [1, 2, 3, 6, 10]
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>6️⃣ Diferencias Claras (Regla Mental)</h3>
+
+    <div class="key-concept">
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <thead>
+          <tr style="background-color: #f0f0f0;">
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Necesidad</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Método</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Saber si existe un valor exacto</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><code>includes</code></td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Saber si algo cumple una condición</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><code>some</code></td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Obtener el elemento</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><code>find</code></td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Obtener la posición</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><code>findIndex</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <article>
+    <h3>7️⃣ ⚠️ Importante: Mutación y Orden del Array</h3>
+
+    <h4>Métodos que MODIFICAN el Array Original:</h4>
+    <ul>
+      <li><code>sort()</code></li>
+      <li><code>reverse()</code></li>
+      <li><code>splice()</code></li>
+    </ul>
+
+    <div class="problem-box">
+      <h4>Ejemplo Peligroso:</h4>
+      <pre><code class="language-javascript">
+numbers.reverse(); // cambia el array original
+      </code></pre>
+      <p><strong>👉 Esto afecta directamente a <code>find</code> y <code>findIndex</code>.</strong></p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Solución Segura:</h4>
+      <pre><code class="language-javascript">
+const reversed = [...numbers].reverse();
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>8️⃣ Conclusión como Desarrollador Senior</h3>
+
+    <div class="interview-box">
+      <h4>Conceptos Clave</h4>
+      <ul>
+        <li>No hay un método "mejor", hay métodos correctos según el contexto</li>
+        <li><strong>Usa:</strong>
+          <ul>
+            <li><code>includes</code> para valores directos</li>
+            <li><code>some</code> para booleanos con condición</li>
+            <li><code>find</code> cuando necesitas el dato</li>
+            <li><code>findIndex</code> cuando necesitas la posición</li>
+          </ul>
+        </li>
+        <li>Ten siempre en cuenta el orden actual del array</li>
+        <li>Ojo con métodos que mutan</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes" target="_blank">MDN: Array.prototype.includes()</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some" target="_blank">MDN: Array.prototype.some()</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find" target="_blank">MDN: Array.prototype.find()</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex" target="_blank">MDN: Array.prototype.findIndex()</a>
+    <a href="https://javascript.info/array-methods#searching-in-array" target="_blank">JavaScript.info: Searching in Array</a>
+    <a href="https://chatgpt.com/c/69530c2e-6d74-8326-80cd-7385b04ae167" target="_blank">ChatGPT: Array Search Methods Explained</a>
+  </div>
+</section>

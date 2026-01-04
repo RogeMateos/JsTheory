@@ -1,0 +1,272 @@
+<!-- FLAT & FLATMAP -->
+<section id="flatFlatMap" class="box">
+  <h2>flat() y flatMap() en JavaScript</h2>
+
+  <article>
+    <h3>Objetivo del Tema</h3>
+    <p>Hoy vas a aprender dos métodos de arrays en JavaScript que se usan mucho cuando trabajas con datos reales (APIs, UI, listas, etc.):</p>
+
+    <ul>
+      <li><strong>flat(depth):</strong> aplana (reduce niveles) de un array anidado.</li>
+      <li><strong>flatMap(fn):</strong> hace un map y luego aplana 1 nivel.</li>
+    </ul>
+
+    <div class="key-concept">
+      <h4>⚠️ Importante</h4>
+      <p>Ninguno de los dos modifica el array original. Devuelven uno nuevo.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>1) Contexto Práctico (Por Qué Esto Importa)</h3>
+    <p>En proyectos reales, los datos suelen venir anidados:</p>
+
+    <ul>
+      <li>Una API devuelve categorías con listas de productos</li>
+      <li>Un post tiene comentarios (lista) y cada comentario tiene respuestas (otra lista)</li>
+      <li>Agrupas elementos por secciones y luego necesitas una lista "plana" para renderizar o filtrar</li>
+    </ul>
+
+    <div class="key-concept">
+      <h4>Cuando eso pasa, necesitas "aplanar" para poder:</h4>
+      <ul>
+        <li>Recorrer todo con un solo <code>.map()</code> de UI</li>
+        <li>Hacer un search global</li>
+        <li>Calcular totales</li>
+        <li>Aplicar filtros sin hacer bucles anidados</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>2) flat() — Qué Hace Exactamente</h3>
+
+    <h4>2.1 Definición Simple</h4>
+    <ul>
+      <li><code>flat(depth)</code> aplana un array hasta una profundidad <code>depth</code></li>
+      <li><code>depth</code> es opcional</li>
+      <li>Si no pones nada, el valor por defecto es <code>1</code></li>
+      <li>Devuelve un array nuevo</li>
+    </ul>
+
+    <h4>2.2 Ejemplo Base: Array Anidado</h4>
+    <pre><code class="language-javascript">
+const nested = [1, [2, [3, [4]]]];
+    </code></pre>
+
+    <h4>Caso A: flat() sin parámetro (depth = 1)</h4>
+    <pre><code class="language-javascript">
+const flat1 = nested.flat();
+
+console.log(flat1);  // [1, 2, [3, [4]]]
+console.log(nested); // [1, [2, [3, [4]]]]  (no cambia)
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ ¿Qué pasó?</h4>
+      <p>Se eliminó solo el primer nivel de anidación.</p>
+    </div>
+
+    <h4>2.3 Aplanar Más Niveles con depth</h4>
+    <pre><code class="language-javascript">
+console.log(nested.flat(2)); // [1, 2, 3, [4]]
+console.log(nested.flat(3)); // [1, 2, 3, 4]
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>✅ Idea Clave</h4>
+      <p><code>depth</code> es "cuántos niveles" quieres bajar.</p>
+    </div>
+
+    <h4>2.4 Cuando No Sabes Cuántos Niveles Hay: Infinity</h4>
+    <pre><code class="language-javascript">
+console.log(nested.flat(Infinity)); // [1, 2, 3, 4]
+    </code></pre>
+
+    <p><strong>Útil si el array viene de fuera (API) y no controlas cuán profundo es.</strong></p>
+  </article>
+
+  <article>
+    <h3>3) flatMap() — Qué Es y Por Qué Existe</h3>
+
+    <h4>3.1 Definición Correcta (La Regla Mental)</h4>
+    <div class="key-concept">
+      <h4>flatMap equivale a:</h4>
+      <pre><code class="language-javascript">
+array.flatMap(fn) = array.map(fn).flat(1)
+      </code></pre>
+
+      <p>O sea:</p>
+      <ol>
+        <li>Aplica una función a cada elemento (como map)</li>
+        <li>El resultado lo aplana solo 1 nivel</li>
+      </ol>
+    </div>
+  </article>
+
+  <article>
+    <h3>4) Ejemplo Claro: De Frases → Palabras</h3>
+
+    <h4>4.1 Datos</h4>
+    <pre><code class="language-javascript">
+const phrases = ["hola mundo", "adiós mundo"];
+    </code></pre>
+
+    <h4>4.2 Con map (te queda anidado)</h4>
+    <pre><code class="language-javascript">
+const mapped = phrases.map(p => p.split(" "));
+
+console.log(mapped);
+// [ ["hola", "mundo"], ["adiós", "mundo"] ]
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ ¿Qué pasó?</h4>
+      <ul>
+        <li><code>split(" ")</code> devuelve un array</li>
+        <li>Como lo haces con <code>map</code>, terminas con un array de arrays</li>
+      </ul>
+    </div>
+
+    <h4>4.3 Con flatMap (resultado plano)</h4>
+    <pre><code class="language-javascript">
+const words = phrases.flatMap(p => p.split(" "));
+
+console.log(words);
+// ["hola", "mundo", "adiós", "mundo"]
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ ¿Qué hizo flatMap?</h4>
+      <ol>
+        <li>Primero generó: <code>[["hola","mundo"],["adiós","mundo"]]</code></li>
+        <li>Luego lo aplanó 1 nivel: <code>["hola","mundo","adiós","mundo"]</code></li>
+      </ol>
+    </div>
+  </article>
+
+  <article>
+    <h3>5) Caso Real de Trabajo (UI / API)</h3>
+    <p>Imagina una API que te da categorías con items:</p>
+
+    <pre><code class="language-javascript">
+const categories = [
+  { name: "Fruta", items: ["manzana", "pera"] },
+  { name: "Bebida", items: ["agua"] }
+];
+    </code></pre>
+
+    <p>Si quieres renderizar todos los items en una lista única:</p>
+
+    <pre><code class="language-javascript">
+const allItems = categories.flatMap(c => c.items);
+console.log(allItems); // ["manzana", "pera", "agua"]
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>📌 Esto es típico para:</h4>
+      <ul>
+        <li>Una lista global en UI</li>
+        <li>Un buscador</li>
+        <li>Un selector (dropdown)</li>
+        <li>Analytics ("cuántos items hay en total")</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>6) Advertencias Importantes (Errores Típicos)</h3>
+
+    <h4>6.1 flatMap Solo Aplana 1 Nivel</h4>
+    <p>Si devuelves algo con más profundidad, no lo deja totalmente plano:</p>
+
+    <pre><code class="language-javascript">
+const arr = [1, 2];
+
+const result = arr.flatMap(x => [x, [x]]);
+console.log(result);
+// [1, [1], 2, [2]]
+    </code></pre>
+
+    <p>Si de verdad quieres plano completo:</p>
+
+    <pre><code class="language-javascript">
+const fully = arr.flatMap(x => [x, [x]]).flat();
+console.log(fully);
+// [1, 1, 2, 2]
+    </code></pre>
+
+    <h4>6.2 No Mutan el Original (Muy Importante)</h4>
+    <pre><code class="language-javascript">
+const original = [1, [2]];
+const copy = original.flat();
+
+console.log(original); // [1, [2]]
+console.log(copy);     // [1, 2]
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>⚠️ Importante</h4>
+      <p>Ambos métodos devuelven un nuevo array sin modificar el original.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>7) Cuándo Usar Cada Uno (Regla Rápida)</h3>
+
+    <div class="key-concept">
+      <ul>
+        <li><strong>Solo quieres aplanar</strong> → <code>flat(depth)</code></li>
+        <li><strong>Quieres transformar y aplanar 1 nivel</strong> → <code>flatMap(fn)</code></li>
+        <li><strong>No sabes la profundidad</strong> → <code>flat(Infinity)</code></li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>8) Mini-Ejercicios (Para Fijar)</h3>
+
+    <h4>Ejercicio 1</h4>
+    <pre><code class="language-javascript">
+const a = [1, [2, [3]]];
+// Haz que salga: [1, 2, 3]
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Solución</h4>
+      <pre><code class="language-javascript">a.flat(2);</code></pre>
+    </div>
+
+    <h4>Ejercicio 2</h4>
+    <pre><code class="language-javascript">
+const names = ["Ana López", "Juan Pérez"];
+// Quiero: ["Ana", "López", "Juan", "Pérez"]
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Solución</h4>
+      <pre><code class="language-javascript">names.flatMap(n => n.split(" "));</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>9) Resumen Final</h3>
+
+    <div class="interview-box">
+      <h4>Conceptos Clave</h4>
+      <ul>
+        <li><code>flat(depth)</code> aplana arrays anidados (depth por defecto = 1)</li>
+        <li><code>flatMap(fn)</code> es como <code>map(fn) + flat(1)</code></li>
+        <li>Ambos devuelven un array nuevo: no mutan el original</li>
+        <li>Muy útiles para transformar datos de APIs y renderizar listas en UI</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat" target="_blank">MDN: Array.prototype.flat()</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap" target="_blank">MDN: Array.prototype.flatMap()</a>
+    <a href="https://javascript.info/array-methods#flatmap" target="_blank">JavaScript.info: Array Methods</a>
+    <a href="https://chatgpt.com/c/6953007e-703c-832f-b7ca-802ad83641fd" target="_blank">ChatGPT: flat() & flatMap() Explained</a>
+  </div>
+</section>

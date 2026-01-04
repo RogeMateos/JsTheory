@@ -1,0 +1,420 @@
+<!-- MAPS IN JAVASCRIPT -->
+<section id="maps" class="box">
+  <h2>Maps en JavaScript: Diccionarios Clave → Valor</h2>
+  <p class="subtitle">Comparativa con Arrays y Sets, operaciones básicas e iteración</p>
+
+  <article>
+    <h3>1️⃣ ¿Qué es un Map en JavaScript?</h3>
+    <p>Un <strong>Map</strong> es una colección de pares clave → valor.</p>
+
+    <div class="key-concept">
+      <h4>👉 Características principales:</h4>
+      <ul>
+        <li>Las claves pueden ser de <strong>cualquier tipo</strong> (strings, números, objetos, funciones)</li>
+        <li>Mantiene el orden de inserción</li>
+        <li>Tiene métodos explícitos: get, set, has, delete</li>
+        <li>Conoce su tamaño con <code>.size</code></li>
+      </ul>
+    </div>
+
+    <pre><code class="language-javascript">
+const myMap = new Map([
+  ["name", "moure"],
+  ["age", 37]
+]);
+
+console.log(myMap);
+// Map { 'name' => 'moure', 'age' => 37 }
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>2️⃣ Array vs Set vs Map (Diferencias Clave)</h3>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+      <thead>
+        <tr style="background-color: #f0f0f0;">
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Estructura</th>
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Repetidos</th>
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Clave-valor</th>
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Uso principal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Array</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">✅</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">❌</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">Listas, transformaciones</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Set</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">❌</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">❌</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">Valores únicos</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Map</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">❌</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">✅</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">Diccionarios, lookup</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="key-concept">
+      <h4>👉 Regla Mental</h4>
+      <ul>
+        <li><strong>Array</strong> → listas y transformaciones</li>
+        <li><strong>Set</strong> → unicidad</li>
+        <li><strong>Map</strong> → relaciones clave → valor</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>3️⃣ Crear un Map</h3>
+
+    <h4>Estructura de Creación</h4>
+    <p>Un Map se crea pasando un array de pares <code>[clave, valor]</code>:</p>
+
+    <pre><code class="language-javascript">
+const myMap = new Map([
+  ["name", "moure"],
+  ["age", 37],
+  ["country", "ES"]
+]);
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Formato:</h4>
+      <ul>
+        <li><code>[ … ]</code> de fuera = array de elementos</li>
+        <li>Cada elemento es otro array de 2 posiciones: <code>[key, value]</code></li>
+      </ul>
+    </div>
+
+    <h4>Map Vacío</h4>
+    <pre><code class="language-javascript">
+const emptyMap = new Map();
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>4️⃣ Operaciones Básicas de Map</h3>
+
+    <h4>set() - Añadir o Actualizar</h4>
+    <pre><code class="language-javascript">
+const myMap = new Map();
+
+myMap.set("name", "moure");
+myMap.set("age", 37);
+myMap.set("country", "ES");
+
+console.log(myMap);
+// Map { 'name' => 'moure', 'age' => 37, 'country' => 'ES' }
+    </code></pre>
+
+    <h4>get() - Obtener Valor</h4>
+    <pre><code class="language-javascript">
+console.log(myMap.get("name")); // "moure"
+console.log(myMap.get("age"));  // 37
+    </code></pre>
+
+    <h4>has() - Verificar Existencia</h4>
+    <pre><code class="language-javascript">
+console.log(myMap.has("age"));     // true
+console.log(myMap.has("city"));    // false
+    </code></pre>
+
+    <h4>delete() - Eliminar</h4>
+    <pre><code class="language-javascript">
+myMap.delete("age");
+console.log(myMap.has("age")); // false
+    </code></pre>
+
+    <h4>size - Tamaño</h4>
+    <pre><code class="language-javascript">
+console.log(myMap.size); // 2
+    </code></pre>
+
+    <h4>clear() - Vaciar</h4>
+    <pre><code class="language-javascript">
+myMap.clear();
+console.log(myMap.size); // 0
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>5️⃣ Iteración con forEach (⚠️ MUY IMPORTANTE)</h3>
+
+    <div class="warning-box">
+      <h4>⚠️ Orden de Parámetros</h4>
+      <p>En <code>Map.forEach</code>, el callback recibe primero el <strong>value</strong> y luego el <strong>key</strong>:</p>
+      <pre><code class="language-javascript">
+myMap.forEach((value, key) => {
+  console.log(`${key}: ${value}`);
+});
+      </code></pre>
+      <p><strong>Esto es al revés de lo que muchos esperan.</strong></p>
+    </div>
+
+    <h4>Ejemplo Completo</h4>
+    <pre><code class="language-javascript">
+const myMap = new Map([
+  ["name", "moure"],
+  ["age", 37],
+  ["country", "ES"]
+]);
+
+myMap.forEach((value, key) => {
+  console.log(`${key}: ${value}`);
+});
+
+// name: moure
+// age: 37
+// country: ES
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>6️⃣ Iteración con for...of (Muy Recomendada)</h3>
+
+    <h4>Iteración Simple</h4>
+    <pre><code class="language-javascript">
+for (const [key, value] of myMap) {
+  console.log(key, value);
+}
+
+// name moure
+// age 37
+// country ES
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>💡 Ventaja</h4>
+      <p>Aquí usamos <strong>destructuring</strong> <code>[key, value]</code>, muy común en JS moderno.</p>
+    </div>
+
+    <h4>Iteración Explícita con .entries()</h4>
+    <pre><code class="language-javascript">
+for (const [key, value] of myMap.entries()) {
+  console.log(key, value);
+}
+    </code></pre>
+
+    <h4>Solo las Claves</h4>
+    <pre><code class="language-javascript">
+for (const key of myMap.keys()) {
+  console.log(key);
+}
+    </code></pre>
+
+    <h4>Solo los Valores</h4>
+    <pre><code class="language-javascript">
+for (const value of myMap.values()) {
+  console.log(value);
+}
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>7️⃣ Map vs Object (Cuándo Usar Cada Uno)</h3>
+
+    <div class="solution-box">
+      <h4>✔ Usa Object cuando:</h4>
+      <ul>
+        <li>Tus claves son strings simples</li>
+        <li>Quieres JSON fácil</li>
+        <li>Necesitas algo rápido y simple</li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>✔ Usa Map cuando:</h4>
+      <ul>
+        <li>Necesitas claves que NO sean strings (objetos, funciones)</li>
+        <li>Quieres saber el tamaño con <code>.size</code></li>
+        <li>Vas a añadir/eliminar mucho</li>
+        <li>Te importa el orden de inserción de forma explícita</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>8️⃣ Ejemplo Real: Cache por Objeto</h3>
+
+    <h4>Problema con Object</h4>
+    <p>Con objetos, las claves se convierten a string:</p>
+
+    <pre><code class="language-javascript">
+const cache = {};
+const obj1 = { id: 1 };
+const obj2 = { id: 2 };
+
+cache[obj1] = "valor1";
+cache[obj2] = "valor2";
+
+console.log(cache);
+// { '[object Object]': 'valor2' }
+// ❌ Ambos objetos tienen la misma clave
+    </code></pre>
+
+    <h4>Solución con Map</h4>
+    <pre><code class="language-javascript">
+const cache = new Map();
+const obj1 = { id: 1 };
+const obj2 = { id: 2 };
+
+cache.set(obj1, "valor1");
+cache.set(obj2, "valor2");
+
+console.log(cache.get(obj1)); // "valor1"
+console.log(cache.get(obj2)); // "valor2"
+// ✅ Cada objeto mantiene su propia clave
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Por Qué Funciona</h4>
+      <p>Map puede usar objetos como claves porque no los convierte a string.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>9️⃣ Ejemplo Real: Mapear ID → Usuario</h3>
+
+    <pre><code class="language-javascript">
+const users = [
+  { id: 1, name: "Ana" },
+  { id: 2, name: "Luis" },
+  { id: 3, name: "María" }
+];
+
+// Crear Map id → usuario
+const userMap = new Map();
+
+users.forEach(user => {
+  userMap.set(user.id, user);
+});
+
+// Acceso rápido por ID
+console.log(userMap.get(2));
+// { id: 2, name: "Luis" }
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>💡 Ventaja</h4>
+      <p>Búsqueda O(1) en lugar de O(n) con <code>array.find()</code></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>🔟 Ejemplo Real: Contar Repeticiones</h3>
+
+    <p>Usa un Map para contar cuántas veces aparece cada palabra:</p>
+
+    <pre><code class="language-javascript">
+const words = ["hola", "mundo", "hola", "javascript", "mundo", "hola"];
+
+const wordCount = new Map();
+
+words.forEach(word => {
+  if (wordCount.has(word)) {
+    wordCount.set(word, wordCount.get(word) + 1);
+  } else {
+    wordCount.set(word, 1);
+  }
+});
+
+console.log(wordCount);
+// Map { 'hola' => 3, 'mundo' => 2, 'javascript' => 1 }
+    </code></pre>
+
+    <h4>Versión Más Elegante</h4>
+    <pre><code class="language-javascript">
+words.forEach(word => {
+  wordCount.set(word, (wordCount.get(word) || 0) + 1);
+});
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>1️⃣1️⃣ Convertir Map a Array y Viceversa</h3>
+
+    <h4>Map → Array</h4>
+    <pre><code class="language-javascript">
+const myMap = new Map([
+  ["name", "moure"],
+  ["age", 37]
+]);
+
+// Convertir a array de pares
+const entries = [...myMap];
+console.log(entries);
+// [['name', 'moure'], ['age', 37]]
+
+// O usando Array.from
+const entries2 = Array.from(myMap);
+    </code></pre>
+
+    <h4>Array → Map</h4>
+    <pre><code class="language-javascript">
+const arr = [
+  ["name", "moure"],
+  ["age", 37]
+];
+
+const myMap = new Map(arr);
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>1️⃣2️⃣ Ejercicios Recomendados</h3>
+
+    <div class="key-concept">
+      <h4>1️⃣ Convierte este array en un Map por id:</h4>
+      <pre><code class="language-javascript">
+const users = [
+  { id: 1, name: "Ana" },
+  { id: 2, name: "Luis" },
+  { id: 3, name: "María" }
+];
+// Map: 1 => {id: 1, name: "Ana"}, etc.
+      </code></pre>
+
+      <h4>2️⃣ Cuenta cuántas veces aparece cada palabra:</h4>
+      <pre><code class="language-javascript">
+const text = "hola mundo hola javascript mundo hola";
+// Map: 'hola' => 3, 'mundo' => 2, 'javascript' => 1
+      </code></pre>
+
+      <h4>3️⃣ Crea un cache de resultados de función usando Map</h4>
+      <p>Usa objetos como claves para cachear resultados de cálculos costosos.</p>
+
+      <h4>4️⃣ Itera un Map imprimiendo solo las claves que tengan valores numéricos</h4>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣3️⃣ Resumen Mental Final</h3>
+
+    <div class="interview-box">
+      <h4>Conceptos Clave</h4>
+      <p><strong>Map es para relaciones clave → valor</strong></p>
+      <ul>
+        <li>Claves de cualquier tipo (no solo strings)</li>
+        <li>Métodos explícitos: <code>set, get, has, delete</code></li>
+        <li>forEach recibe <code>(value, key)</code> ⚠️</li>
+        <li>for...of con destructuring <code>[key, value]</code></li>
+        <li>Perfecto para caches, lookups y diccionarios</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" target="_blank">MDN: Map</a>
+    <a href="https://javascript.info/map-set" target="_blank">JavaScript.info: Map and Set</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach" target="_blank">MDN: Map.prototype.forEach()</a>
+    <a href="https://chatgpt.com/c/69531406-8880-832f-8570-c65b986ec413" target="_blank">ChatGPT: Maps Tutorial Complete</a>
+  </div>
+</section>

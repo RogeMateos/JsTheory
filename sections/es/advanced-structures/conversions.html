@@ -1,0 +1,392 @@
+<!-- CONVERSIONS BETWEEN DATA STRUCTURES -->
+<section id="conversions" class="box">
+  <h2>Conversión entre Estructuras en JavaScript</h2>
+  <p class="subtitle">Arrays · Sets · Maps · Objects - Cómo y cuándo convertir entre ellas</p>
+
+  <article>
+    <h3>1️⃣ ¿Por Qué Convertir Estructuras?</h3>
+    <p>Porque no existe una estructura perfecta para todo.</p>
+
+    <div class="key-concept">
+      <h4>👉 Cada estructura tiene ventajas distintas:</h4>
+
+      <h4>Arrays → ideales para:</h4>
+      <ul>
+        <li>map, filter, reduce</li>
+        <li>ordenar, recorrer, renderizar listas (React)</li>
+      </ul>
+
+      <h4>Sets → ideales para:</h4>
+      <ul>
+        <li>eliminar duplicados</li>
+        <li>operaciones de conjuntos</li>
+      </ul>
+
+      <h4>Maps → ideales para:</h4>
+      <ul>
+        <li>trabajar con pares clave → valor</li>
+        <li>búsquedas rápidas</li>
+        <li>mantener orden de inserción</li>
+      </ul>
+
+      <h4>Objects → ideales para:</h4>
+      <ul>
+        <li>datos de APIs (JSON)</li>
+        <li>modelos de datos simples</li>
+        <li>interoperabilidad con librerías</li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>📌 En la práctica</h4>
+      <p>Convertimos constantemente entre estas estructuras para aprovechar lo mejor de cada una.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>2️⃣ Recordatorio Rápido: ¿Qué es un Map?</h3>
+    <p>Un Map es una colección de pares clave → valor.</p>
+
+    <pre><code class="language-javascript">
+const userMap = new Map([
+  ["name", "Mour"],
+  ["age", 37]
+]);
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>Características:</h4>
+      <ul>
+        <li>Las claves no tienen que ser strings</li>
+        <li>Mantiene el orden de inserción</li>
+        <li>Tiene métodos propios (set, get, has, size)</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>3️⃣ Map → Array</h3>
+
+    <h4>¿Por Qué Hacerlo?</h4>
+    <p>Porque los Arrays tienen métodos muy potentes como <code>map</code>, <code>filter</code>, <code>reduce</code>, <code>sort</code>.</p>
+
+    <h4>🔸 Forma 1: Array.from(map)</h4>
+    <pre><code class="language-javascript">
+const userMap = new Map([
+  ["name", "Mour"],
+  ["age", 37]
+]);
+
+const arrayFromMap = Array.from(userMap);
+console.log(arrayFromMap);
+// [["name", "Mour"], ["age", 37]]
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Importante</h4>
+      <p>Cada elemento del array es un par <code>[clave, valor]</code>.</p>
+    </div>
+
+    <h4>🔸 Forma 2: Spread Operator (muy común)</h4>
+    <pre><code class="language-javascript">
+const arrayFromMap = [...userMap];
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>✔️ Ventajas del spread:</h4>
+      <ul>
+        <li>Hace exactamente lo mismo</li>
+        <li>Muy usado en JavaScript moderno</li>
+      </ul>
+    </div>
+
+    <h4>🔸 Acceder Solo a Claves o Valores</h4>
+    <pre><code class="language-javascript">
+const keys = [...userMap.keys()];
+console.log(keys);
+// ["name", "age"]
+
+const values = [...userMap.values()];
+console.log(values);
+// ["Mour", 37]
+    </code></pre>
+
+    <p>Esto es muy habitual en proyectos reales, sobre todo en UI.</p>
+  </article>
+
+  <article>
+    <h3>4️⃣ Map → Object (objeto plano)</h3>
+
+    <h4>¿Por Qué Hacerlo?</h4>
+    <div class="key-concept">
+      <h4>Porque:</h4>
+      <ul>
+        <li>Las APIs trabajan con objetos</li>
+        <li>JSON solo admite objetos</li>
+        <li>Muchas librerías esperan objetos</li>
+      </ul>
+    </div>
+
+    <h4>🔸 Conversión con Object.fromEntries</h4>
+    <pre><code class="language-javascript">
+const userMap = new Map([
+  ["name", "Mour"],
+  ["age", 37]
+]);
+
+const objectFromMap = Object.fromEntries(userMap);
+console.log(objectFromMap);
+// { name: "Mour", age: 37 }
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Funciona porque:</h4>
+      <ul>
+        <li>Map es iterable</li>
+        <li>Cada iteración devuelve <code>[key, value]</code></li>
+        <li>Object.fromEntries espera exactamente eso</li>
+      </ul>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚠️ Advertencia Importante (Nivel Senior)</h4>
+      <p>Al convertir a Object:</p>
+      <ul>
+        <li>Todas las claves se convierten en strings</li>
+        <li>Puedes perder información</li>
+      </ul>
+      <pre><code class="language-javascript">
+const map = new Map();
+map.set(1, "number");
+map.set("1", "string");
+
+const obj = Object.fromEntries(map);
+console.log(obj);
+// { "1": "string" }  ❌ se pisa
+      </code></pre>
+      <p><strong>👉 No conviertas a Object si necesitas claves no-string.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>5️⃣ Object → Map</h3>
+
+    <h4>¿Cuándo Tiene Sentido?</h4>
+    <div class="solution-box">
+      <h4>Cuando:</h4>
+      <ul>
+        <li>Quieres claves más flexibles</li>
+        <li>Necesitas <code>size</code></li>
+        <li>Haces muchas inserciones/borrados</li>
+        <li>Te importa el orden de inserción</li>
+      </ul>
+    </div>
+
+    <h4>🔸 Conversión Paso a Paso</h4>
+    <pre><code class="language-javascript">
+const userObject = {
+  name: "Mour",
+  age: 37
+};
+
+const mapFromObject = new Map(Object.entries(userObject));
+console.log(mapFromObject);
+// Map(2) { "name" => "Mour", "age" => 37 }
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Object.entries() devuelve:</h4>
+      <pre><code class="language-javascript">
+[
+  ["name", "Mour"],
+  ["age", 37]
+]
+      </code></pre>
+      <p>Justo lo que <code>new Map()</code> necesita.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>6️⃣ Ejemplos Prácticos (Mundo Real)</h3>
+
+    <h4>🔹 Filtrar Datos de un Map</h4>
+    <pre><code class="language-javascript">
+const users = new Map([
+  [1, { name: "Ana", active: true }],
+  [2, { name: "Luis", active: false }],
+  [3, { name: "María", active: true }]
+]);
+
+const activeUsers = [...users.values()].filter(u => u.active);
+console.log(activeUsers);
+// [{ name: "Ana", active: true }, { name: "María", active: true }]
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✔️ Proceso:</h4>
+      <ul>
+        <li>Convertimos a array solo de valores</li>
+        <li>Aplicamos filter</li>
+      </ul>
+    </div>
+
+    <h4>🔹 Preparar Datos para una UI (React)</h4>
+    <pre><code class="language-javascript">
+const items = new Map([
+  ["a1", { title: "Item 1" }],
+  ["b2", { title: "Item 2" }]
+]);
+
+const list = [...items].map(([id, data]) => ({
+  id,
+  ...data
+}));
+
+console.log(list);
+// [{ id: "a1", title: "Item 1" }, { id: "b2", title: "Item 2" }]
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>💡 Ideal para React:</h4>
+      <pre><code class="language-javascript">
+list.map(item => &lt;li key={item.id}&gt;{item.title}&lt;/li&gt;)
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>7️⃣ Relación con Sets y Arrays (Visión Global)</h3>
+
+    <h4>Array → Set → Eliminar Duplicados</h4>
+    <pre><code class="language-javascript">
+const array = [1, 2, 2, 3, 4, 4, 5];
+const unique = [...new Set(array)];
+console.log(unique);
+// [1, 2, 3, 4, 5]
+    </code></pre>
+
+    <h4>Set → Array → Usar Métodos Avanzados</h4>
+    <pre><code class="language-javascript">
+const set = new Set([1, 2, 3, 4, 5]);
+const arr = [...set];
+
+const doubled = arr.map(n => n * 2);
+// [2, 4, 6, 8, 10]
+    </code></pre>
+
+    <h4>Map ↔ Object → Modelo de Datos vs Colección</h4>
+    <pre><code class="language-javascript">
+// Object → Map (para operaciones potentes)
+const map = new Map(Object.entries(obj));
+
+// Map → Object (para APIs/JSON)
+const obj = Object.fromEntries(map);
+    </code></pre>
+
+    <h4>Map → Array → Procesamiento y Transformaciones</h4>
+    <pre><code class="language-javascript">
+const map = new Map([["a", 1], ["b", 2]]);
+const processed = [...map].map(([key, value]) => value * 2);
+// [2, 4]
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>👉 La Clave</h4>
+      <p>Combinar estructuras, no elegir solo una.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>8️⃣ Tabla de Conversiones Rápidas</h3>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+      <thead>
+        <tr style="background-color: #f0f0f0;">
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">De</th>
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">A</th>
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Código</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Map</td>
+          <td style="padding: 10px; border: 1px solid #ddd;">Array</td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><code>[...map]</code> o <code>Array.from(map)</code></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Map</td>
+          <td style="padding: 10px; border: 1px solid #ddd;">Object</td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><code>Object.fromEntries(map)</code></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Object</td>
+          <td style="padding: 10px; border: 1px solid #ddd;">Map</td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><code>new Map(Object.entries(obj))</code></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Array</td>
+          <td style="padding: 10px; border: 1px solid #ddd;">Set</td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><code>new Set(array)</code></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Set</td>
+          <td style="padding: 10px; border: 1px solid #ddd;">Array</td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><code>[...set]</code> o <code>Array.from(set)</code></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Map keys</td>
+          <td style="padding: 10px; border: 1px solid #ddd;">Array</td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><code>[...map.keys()]</code></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Map values</td>
+          <td style="padding: 10px; border: 1px solid #ddd;">Array</td>
+          <td style="padding: 10px; border: 1px solid #ddd;"><code>[...map.values()]</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </article>
+
+  <article>
+    <h3>9️⃣ Resumen Final (Muy Importante)</h3>
+
+    <div class="interview-box">
+      <h4>Conceptos Clave</h4>
+
+      <p><strong>Arrays</strong></p>
+      <ul>
+        <li>Procesamiento de datos</li>
+        <li>map, filter, reduce</li>
+      </ul>
+
+      <p><strong>Sets</strong></p>
+      <ul>
+        <li>Valores únicos</li>
+        <li>Operaciones de conjunto</li>
+      </ul>
+
+      <p><strong>Maps</strong></p>
+      <ul>
+        <li>Clave → valor potente</li>
+        <li>Claves no-string</li>
+        <li>Orden + rendimiento</li>
+      </ul>
+
+      <p><strong>Objects</strong></p>
+      <ul>
+        <li>Datos planos</li>
+        <li>APIs y JSON</li>
+      </ul>
+
+      <p><strong>🎯 Un buen desarrollador sabe cuándo convertir y por qué.</strong></p>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries" target="_blank">MDN: Object.entries()</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries" target="_blank">MDN: Object.fromEntries()</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from" target="_blank">MDN: Array.from()</a>
+    <a href="https://javascript.info/map-set" target="_blank">JavaScript.info: Map and Set</a>
+    <a href="https://chatgpt.com/c/6953162f-3c84-8328-a08a-de4113d0d90b" target="_blank">ChatGPT: Data Structure Conversions</a>
+  </div>
+</section>

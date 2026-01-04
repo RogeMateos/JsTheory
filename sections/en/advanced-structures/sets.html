@@ -1,0 +1,472 @@
+<!-- ADVANCED SETS -->
+<section id="sets" class="box">
+  <h2>Advanced Sets in JavaScript</h2>
+  <p class="subtitle">Set operations: remove duplicates, union, intersection and difference</p>
+
+  <article>
+    <h3>1. What is a Set and What is it For?</h3>
+    <p>A <strong>Set</strong> in JavaScript is a collection of unique values.</p>
+
+    <div class="key-concept">
+      <h4>👉 This means:</h4>
+      <ul>
+        <li>❌ Does not allow repeated values</li>
+        <li>✅ Ideal for checking if a value exists</li>
+        <li>✅ Perfect for set operations (like in mathematics)</li>
+      </ul>
+    </div>
+
+    <pre><code class="language-javascript">
+const mySet = new Set();
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>2. Array vs Set (Key Idea to Avoid Confusion)</h3>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+      <thead>
+        <tr style="background-color: #f0f0f0;">
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Feature</th>
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Array</th>
+          <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Set</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Allows duplicates</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">✅</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">❌</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Has index ([0])</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">✅</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">❌</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">map/filter methods</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">✅</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">❌</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Check existence</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">includes (slow)</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">has (fast)</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #ddd;">Main use</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">Transform data</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">Uniqueness / Sets</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="key-concept">
+      <h4>👉 Mental Rule</h4>
+      <ul>
+        <li><strong>Array</strong> = transformation</li>
+        <li><strong>Set</strong> = membership and sets</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>3. Create a Set from an Array (Remove Duplicates)</h3>
+
+    <h4>Real Problem</h4>
+    <p>We have an array with duplicates:</p>
+    <pre><code class="language-javascript">
+const numbersArray = [2, 2, 3, 4, 5, 6];
+    </code></pre>
+
+    <h4>Solution with Set</h4>
+    <pre><code class="language-javascript">
+const numbersSet = new Set(numbersArray);
+
+console.log(numbersSet);
+// Set {2, 3, 4, 5, 6}
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Result</h4>
+      <p>The Set automatically removes duplicates.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>4. Convert Set Back to Array (Very Common)</h3>
+    <p>We often need to continue working with an array.</p>
+
+    <pre><code class="language-javascript">
+const uniqueArray = [...numbersSet];
+
+console.log(uniqueArray);
+// [2, 3, 4, 5, 6]
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>What does the spread (...) do here?</h4>
+      <ul>
+        <li>"Extracts" each value from the Set</li>
+        <li>Places it inside a new array</li>
+      </ul>
+    </div>
+
+    <h4>Equivalent Alternative:</h4>
+    <pre><code class="language-javascript">
+Array.from(numbersSet);
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>5. Basic Set Operations (Necessary)</h3>
+
+    <pre><code class="language-javascript">
+const s = new Set();
+
+s.add(1);        // add
+s.has(1);        // true
+s.delete(1);     // remove
+s.size;          // number of elements
+s.clear();       // empty
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>💡 Important</h4>
+      <p><code>has</code> is the equivalent of <code>includes</code>, but much more efficient.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>5️⃣ Iterating a Set (Without Converting to Array)</h3>
+
+    <h4>Option 1: forEach</h4>
+    <pre><code class="language-javascript">
+const numbers = new Set([2, 3, 4, 5, 6]);
+
+numbers.forEach(n => {
+  console.log(n * 2);
+});
+// 4, 6, 8, 10, 12
+    </code></pre>
+
+    <h4>Option 2: for...of</h4>
+    <pre><code class="language-javascript">
+for (const num of numbers) {
+  console.log(num);
+}
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>💡 Advantage</h4>
+      <p>You don't need to convert to array to iterate through it.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>6️⃣ What a Set DOESN'T Have (And Why)</h3>
+
+    <div class="warning-box">
+      <h4>⚠️ Set DOESN'T have:</h4>
+      <ul>
+        <li><code>map()</code></li>
+        <li><code>filter()</code></li>
+        <li><code>reduce()</code></li>
+      </ul>
+      <p><strong>Reason:</strong> A Set is not designed for transformations, but for uniqueness and membership.</p>
+    </div>
+
+    <div class="key-concept">
+      <h4>👉 If you need to transform:</h4>
+      <p>You must convert to Array first.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>6. Set Operations (The Great Advantage of Sets)</h3>
+    <p>Let's work with two sets:</p>
+
+    <pre><code class="language-javascript">
+const setA = new Set([1, 2, 3]);
+const setB = new Set([2, 3, 4, 5]);
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>7. Union (A ∪ B)</h3>
+
+    <h4>What is it?</h4>
+    <p>All elements from both sets, without duplicates.</p>
+
+    <pre><code class="language-javascript">
+const union = new Set([...setA, ...setB]);
+
+console.log(union);
+// Set {1, 2, 3, 4, 5}
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>Why it Works</h4>
+      <ul>
+        <li><code>[...]</code> combines the values</li>
+        <li><code>new Set()</code> automatically removes duplicates</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>8. Intersection (A ∩ B)</h3>
+
+    <h4>What is it?</h4>
+    <p>The common elements between both sets.</p>
+
+    <pre><code class="language-javascript">
+const intersection = new Set(
+  [...setA].filter(value => setB.has(value))
+);
+
+console.log(intersection);
+// Set {2, 3}
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>Step by Step</h4>
+      <ol>
+        <li>Convert <code>setA</code> to array</li>
+        <li>Filter only values that exist in <code>setB</code></li>
+        <li>Create a new Set to maintain uniqueness</li>
+      </ol>
+    </div>
+  </article>
+
+  <article>
+    <h3>9. Difference (A − B)</h3>
+
+    <h4>What is it?</h4>
+    <p>Elements that are in A but NOT in B</p>
+
+    <pre><code class="language-javascript">
+const difference = new Set(
+  [...setA].filter(value => !setB.has(value))
+);
+
+console.log(difference);
+// Set {1}
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>Important ⚠️</h4>
+      <p>The difference doesn't return "the non-common ones",<br>
+      it returns those from one set that are not in the other.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>10. (Bonus) Symmetric Difference</h3>
+    <p>Elements that are in one or the other, but not in both.</p>
+
+    <pre><code class="language-javascript">
+const symmetricDifference = new Set([
+  ...[...setA].filter(x => !setB.has(x)),
+  ...[...setB].filter(x => !setA.has(x))
+]);
+
+console.log(symmetricDifference);
+// Set {1, 4, 5}
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>10️⃣ Using filter, map, reduce with Set</h3>
+    <p>If you need to transform a Set, first convert it to Array.</p>
+
+    <h4>Common Pattern:</h4>
+    <pre><code class="language-javascript">
+const numbers = new Set([1, 2, 3, 4, 5, 6]);
+
+// We want only even numbers, multiplied by 2
+const result = new Set(
+  [...numbers]
+    .filter(n => n % 2 === 0)
+    .map(n => n * 2)
+);
+
+console.log(result);
+// Set {4, 8, 12}
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>Process:</h4>
+      <ol>
+        <li>Set → Array: <code>[...numbers]</code></li>
+        <li>Filter: <code>.filter(...)</code></li>
+        <li>Transform: <code>.map(...)</code></li>
+        <li>Array → Set: <code>new Set(...)</code></li>
+      </ol>
+    </div>
+
+    <h4>Example with reduce:</h4>
+    <pre><code class="language-javascript">
+const sum = [...numbers].reduce((acc, n) => acc + n, 0);
+console.log(sum); // 21
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>💡 Important</h4>
+      <p>If the final result needs to be unique, convert it back to Set.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>11. Important Cases You Should Know (Senior Level)</h3>
+
+    <h4>🔹 NaN is Unique in Set</h4>
+    <pre><code class="language-javascript">
+new Set([NaN, NaN]).size; // 1
+    </code></pre>
+
+    <h4>🔹 Objects are Compared by Reference</h4>
+    <pre><code class="language-javascript">
+new Set([{a:1}, {a:1}]).size; // 2
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>⚠️ Important</h4>
+      <p>Even though they "look the same", they are different objects.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>12. Performance (Why Use Set)</h3>
+
+    <div class="key-concept">
+      <ul>
+        <li><code>array.includes(x)</code> → O(n)</li>
+        <li><code>set.has(x)</code> → O(1) average</li>
+      </ul>
+      <p><strong>👉 For frequent lookups, Set is much more efficient.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>13. When to Use Set and When Array</h3>
+
+    <div class="solution-box">
+      <h4>✔ Use Set when:</h4>
+      <ul>
+        <li>You need uniqueness</li>
+        <li>Check existence quickly</li>
+        <li>Set operations</li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>✔ Use Array when:</h4>
+      <ul>
+        <li>You need to transform data</li>
+        <li>Order and position matter</li>
+        <li>map, filter, reduce</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>13️⃣ Common Mistakes</h3>
+
+    <h4>❌ Mistake 1: Trying to access by index</h4>
+    <pre><code class="language-javascript">
+const s = new Set([1, 2, 3]);
+console.log(s[0]); // undefined ❌
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Solution:</h4>
+      <p>Convert to array first:</p>
+      <pre><code class="language-javascript">
+const arr = [...s];
+console.log(arr[0]); // 1 ✅
+      </code></pre>
+    </div>
+
+    <h4>❌ Mistake 2: Expecting Set to filter "equal" objects</h4>
+    <pre><code class="language-javascript">
+const s = new Set([
+  { id: 1 },
+  { id: 1 }
+]);
+
+console.log(s.size); // 2 (not 1)
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>⚠️ Reason:</h4>
+      <p>Objects are compared by <strong>reference</strong>, not by content.</p>
+    </div>
+
+    <h4>❌ Mistake 3: Using .map() directly</h4>
+    <pre><code class="language-javascript">
+const s = new Set([1, 2, 3]);
+s.map(x => x * 2); // ❌ TypeError
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Solution:</h4>
+      <pre><code class="language-javascript">
+const doubled = new Set([...s].map(x => x * 2)); // ✅
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>14. Recommended Exercises</h3>
+
+    <div class="key-concept">
+      <h4>1️⃣ Remove duplicates from:</h4>
+      <pre><code class="language-javascript">[1, 1, 2, 2, 3, 4, 4]</code></pre>
+
+      <h4>2️⃣ Implement functions that return Sets:</h4>
+      <ul>
+        <li><code>union(setA, setB)</code> → all elements</li>
+        <li><code>intersection(setA, setB)</code> → common elements</li>
+        <li><code>difference(setA, setB)</code> → A − B</li>
+      </ul>
+
+      <h4>3️⃣ Challenge: Remove duplicates from an array of objects by their <code>id</code> property</h4>
+      <pre><code class="language-javascript">
+const users = [
+  { id: 1, name: "Ana" },
+  { id: 2, name: "Luis" },
+  { id: 1, name: "Ana" }
+];
+// Expected result: [{ id: 1, name: "Ana" }, { id: 2, name: "Luis" }]
+      </code></pre>
+
+      <h4>4️⃣ Bonus: symmetric difference (elements in one or the other, but not both)</h4>
+
+      <h4>5️⃣ Given a Set of numbers, return a new Set with only even numbers multiplied by 2</h4>
+    </div>
+  </article>
+
+  <article>
+    <h3>15. Final Mental Summary</h3>
+
+    <div class="interview-box">
+      <h4>Key Concepts</h4>
+      <p><strong>Set is not an improved Array</strong><br>
+      Set is a different tool for different problems</p>
+      <ul>
+        <li>Uniqueness</li>
+        <li>Membership (<code>has</code>)</li>
+        <li>Sets (union, intersection, difference)</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" target="_blank">MDN: Set</a>
+    <a href="https://javascript.info/map-set" target="_blank">JavaScript.info: Map and Set</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/has" target="_blank">MDN: Set.prototype.has()</a>
+    <a href="https://chatgpt.com/c/69530f82-d040-8332-a8f8-2aacd3f4644b" target="_blank">ChatGPT: Advanced Sets Explained</a>
+    <a href="https://chatgpt.com/c/69531173-e54c-8325-918e-f0e471286e4d" target="_blank">ChatGPT: Sets Tutorial Complete</a>
+  </div>
+</section>
