@@ -1,0 +1,135 @@
+<section class="box">
+  <h2>Tools for consuming APIs</h2>
+  <article>
+    <p>
+      When we develop an application, we don't always want to test the API from code.<br>
+      During development, testing or initial API exploration, it's much more convenient to use <strong>visual HTTP clients</strong>.
+    </p>
+
+    <p>These tools allow us to:</p>
+    <ul>
+      <li>Test endpoints quickly</li>
+      <li>Send requests without writing JavaScript</li>
+      <li>See server responses in real time</li>
+      <li>Validate that an API works correctly before integrating it into the frontend</li>
+    </ul>
+
+    <h3>🎯 What is a visual HTTP client?</h3>
+    <p>An HTTP client is a tool that allows us to:</p>
+    <ul>
+      <li>Send HTTP requests (GET, POST, PUT, DELETE, etc.)</li>
+      <li>Specify the endpoint URL</li>
+      <li>Add parameters, headers and body</li>
+      <li>Analyze the server response (data, time, size, status)</li>
+    </ul>
+    <p>All this <strong>without writing code</strong>, using a graphical interface.</p>
+
+    <h3>🧰 Most used tools</h3>
+
+    <h4>🔹 Postman</h4>
+    <p>Postman is one of the most popular tools for working with APIs.</p>
+    <p>With Postman you can:</p>
+    <ul>
+      <li>Choose the HTTP method (GET, POST, PUT, etc.)</li>
+      <li>Enter the API URL</li>
+      <li>Send parameters and headers</li>
+      <li>See the complete result of the request</li>
+      <li>Know if the operation was created correctly or not</li>
+    </ul>
+
+    <p><strong>It's ideal for:</strong></p>
+    <ul>
+      <li>Manual testing</li>
+      <li>Learning how an API responds</li>
+      <li>Testing different scenarios quickly</li>
+    </ul>
+
+    <h4>🔹 APIDog</h4>
+    <p>APIDog stands out especially for its focus on documentation.</p>
+    <p>It allows:</p>
+    <ul>
+      <li>Testing requests like Postman</li>
+      <li>Importing API specifications (OpenAPI / Swagger)</li>
+      <li>Having live documentation connected to real endpoints</li>
+    </ul>
+
+    <p>This is very common in professional teams:</p>
+    <blockquote>
+      "I give you the documentation + the specification so you can test the API directly in your tool."
+    </blockquote>
+
+    <h4>🔹 Thunder Client</h4>
+    <p>Thunder Client is an extension that integrates directly into Visual Studio Code.</p>
+    <p><strong>Advantages:</strong></p>
+    <ul>
+      <li>You don't need to leave the editor</li>
+      <li>Works as a lightweight HTTP client</li>
+      <li>Ideal for frontend developers</li>
+    </ul>
+
+    <p>From Thunder Client you can:</p>
+    <ul>
+      <li>Create a new request</li>
+      <li>Choose HTTP method</li>
+      <li>Add headers (like Content-Type)</li>
+      <li>Send data in JSON format</li>
+      <li>See the response immediately</li>
+    </ul>
+
+    <h3>📥 Mental flow example (without code)</h3>
+    <ol>
+      <li>You select an API URL</li>
+      <li>You make a <code>GET</code></li>
+      <li>The server responds with <code>200 OK</code></li>
+      <li>You see the JSON response</li>
+      <li>You switch to <code>POST</code></li>
+      <li>You send a JSON in the body</li>
+      <li>The server responds with <code>201 Created</code></li>
+      <li>You try an incorrect URL</li>
+      <li>The server responds with <code>404 Not Found</code></li>
+    </ol>
+
+    <p>This allows you to understand the <strong>real behavior of the API</strong> before using <code>fetch</code> or <code>axios</code>.</p>
+
+    <h3>📊 Interpreting server responses</h3>
+    <p>When using these tools, it's key to look at the <strong>HTTP status codes</strong>:</p>
+    <ul>
+      <li><strong>200 OK</strong> → The request went well</li>
+      <li><strong>201 Created</strong> → A new resource was created</li>
+      <li><strong>404 Not Found</strong> → The endpoint doesn't exist</li>
+      <li><strong>400 / 500</strong> → Client or server errors</li>
+    </ul>
+
+    <p>This helps you validate:</p>
+    <ul>
+      <li>If the API does what it promises</li>
+      <li>If you're sending the data correctly</li>
+      <li>If the endpoint actually exists</li>
+    </ul>
+
+    <h3>✅ Why you should always use them</h3>
+    <ul>
+      <li>✔️ They speed up development</li>
+      <li>✔️ They avoid unnecessary errors in code</li>
+      <li>✔️ They facilitate debugging</li>
+      <li>✔️ They're standard in professional teams</li>
+    </ul>
+
+    <h3>👉 Recommendation</h3>
+    <p>
+      Use these tools <strong>before writing code</strong> and during development to check changes.
+    </p>
+
+    <h3>Additional Resources</h3>
+    <ul>
+      <li>
+        <a
+          href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/696fa9a6-9198-8325-8cb0-6e3891c3f385"
+          target="_blank"
+          rel="noopener noreferrer"
+          >ChatGPT - API Tools Discussion</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>

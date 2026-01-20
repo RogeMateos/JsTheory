@@ -1,0 +1,135 @@
+<section class="box">
+  <h2>Herramientas para consumir APIs</h2>
+  <article>
+    <p>
+      Cuando desarrollamos una aplicación, no siempre queremos probar la API desde código.<br>
+      Durante el desarrollo, el testing o la exploración inicial de una API, es mucho más cómodo usar <strong>clientes HTTP visuales</strong>.
+    </p>
+
+    <p>Estas herramientas nos permiten:</p>
+    <ul>
+      <li>Probar endpoints rápidamente</li>
+      <li>Enviar peticiones sin escribir JavaScript</li>
+      <li>Ver respuestas del servidor en tiempo real</li>
+      <li>Validar que una API funciona correctamente antes de integrarla en el frontend</li>
+    </ul>
+
+    <h3>🎯 ¿Qué es un cliente HTTP visual?</h3>
+    <p>Un cliente HTTP es una herramienta que nos permite:</p>
+    <ul>
+      <li>Enviar peticiones HTTP (GET, POST, PUT, DELETE, etc.)</li>
+      <li>Indicar la URL del endpoint</li>
+      <li>Añadir parámetros, cabeceras (headers) y cuerpo (body)</li>
+      <li>Analizar la respuesta del servidor (datos, tiempo, tamaño, estado)</li>
+    </ul>
+    <p>Todo esto <strong>sin escribir código</strong>, usando una interfaz gráfica.</p>
+
+    <h3>🧰 Herramientas más utilizadas</h3>
+
+    <h4>🔹 Postman</h4>
+    <p>Postman es una de las herramientas más populares para trabajar con APIs.</p>
+    <p>Con Postman puedes:</p>
+    <ul>
+      <li>Elegir el método HTTP (GET, POST, PUT, etc.)</li>
+      <li>Introducir la URL de la API</li>
+      <li>Enviar parámetros y headers</li>
+      <li>Ver el resultado completo de la petición</li>
+      <li>Saber si la operación se ha creado correctamente o no</li>
+    </ul>
+
+    <p><strong>Es ideal para:</strong></p>
+    <ul>
+      <li>Testing manual</li>
+      <li>Aprender cómo responde una API</li>
+      <li>Probar distintos escenarios rápidamente</li>
+    </ul>
+
+    <h4>🔹 APIDog</h4>
+    <p>APIDog destaca especialmente por su enfoque en documentación.</p>
+    <p>Permite:</p>
+    <ul>
+      <li>Probar peticiones como Postman</li>
+      <li>Importar especificaciones de API (OpenAPI / Swagger)</li>
+      <li>Tener documentación viva y conectada a los endpoints reales</li>
+    </ul>
+
+    <p>Esto es muy común en equipos profesionales:</p>
+    <blockquote>
+      "Te doy la documentación + la especificación para que puedas probar la API directamente en tu herramienta."
+    </blockquote>
+
+    <h4>🔹 Thunder Client</h4>
+    <p>Thunder Client es una extensión que se integra directamente en Visual Studio Code.</p>
+    <p><strong>Ventajas:</strong></p>
+    <ul>
+      <li>No necesitas salir del editor</li>
+      <li>Funciona como un cliente HTTP ligero</li>
+      <li>Ideal para desarrolladores frontend</li>
+    </ul>
+
+    <p>Desde Thunder Client puedes:</p>
+    <ul>
+      <li>Crear una nueva petición</li>
+      <li>Elegir método HTTP</li>
+      <li>Añadir headers (como Content-Type)</li>
+      <li>Enviar datos en formato JSON</li>
+      <li>Ver la respuesta inmediatamente</li>
+    </ul>
+
+    <h3>📥 Ejemplo mental de flujo (sin código)</h3>
+    <ol>
+      <li>Seleccionas una URL de la API</li>
+      <li>Haces un <code>GET</code></li>
+      <li>El servidor responde con <code>200 OK</code></li>
+      <li>Ves el JSON de respuesta</li>
+      <li>Cambias a <code>POST</code></li>
+      <li>Envías un JSON en el body</li>
+      <li>El servidor responde con <code>201 Created</code></li>
+      <li>Pruebas una URL incorrecta</li>
+      <li>El servidor responde con <code>404 Not Found</code></li>
+    </ol>
+
+    <p>Esto te permite entender el <strong>comportamiento real de la API</strong> antes de usar <code>fetch</code> o <code>axios</code>.</p>
+
+    <h3>📊 Interpretar respuestas del servidor</h3>
+    <p>Al usar estas herramientas, es clave fijarse en los <strong>códigos de estado HTTP</strong>:</p>
+    <ul>
+      <li><strong>200 OK</strong> → La petición ha ido bien</li>
+      <li><strong>201 Created</strong> → Se ha creado un recurso nuevo</li>
+      <li><strong>404 Not Found</strong> → El endpoint no existe</li>
+      <li><strong>400 / 500</strong> → Errores del cliente o del servidor</li>
+    </ul>
+
+    <p>Esto te ayuda a validar:</p>
+    <ul>
+      <li>Si la API hace lo que promete</li>
+      <li>Si estás enviando bien los datos</li>
+      <li>Si el endpoint existe realmente</li>
+    </ul>
+
+    <h3>✅ Por qué deberías usarlas siempre</h3>
+    <ul>
+      <li>✔️ Aceleran el desarrollo</li>
+      <li>✔️ Evitan errores innecesarios en el código</li>
+      <li>✔️ Facilitan el debugging</li>
+      <li>✔️ Son estándar en equipos profesionales</li>
+    </ul>
+
+    <h3>👉 Recomendación</h3>
+    <p>
+      Usa estas herramientas <strong>antes de escribir código</strong> y durante el desarrollo para comprobar cambios.
+    </p>
+
+    <h3>Recursos adicionales</h3>
+    <ul>
+      <li>
+        <a
+          href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/696fa9a6-9198-8325-8cb0-6e3891c3f385"
+          target="_blank"
+          rel="noopener noreferrer"
+          >ChatGPT - Discusión sobre Herramientas para APIs</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>

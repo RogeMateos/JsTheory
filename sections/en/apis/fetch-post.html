@@ -1,0 +1,281 @@
+<section class="box">
+  <h2>Creating a POST with fetch</h2>
+  <p class="subtitle">Step-by-step tutorial (as you would in a real project)</p>
+  <article>
+    <h3>Step 0) What you will achieve</h3>
+    <p>You will send data to a server to create a resource (a "post") using:</p>
+    <ul>
+      <li><code>fetch(url, { method: "POST", headers, body })</code></li>
+      <li><code>JSON.stringify()</code> to convert your JS object to JSON</li>
+      <li><code>response.ok + response.json()</code> to handle the response properly</li>
+    </ul>
+
+    <h3>1) Let's clarify concepts (to avoid confusion)</h3>
+
+    <h4>✅ "JSON" vs "JavaScript Object"</h4>
+    <ul>
+      <li><strong>JS Object:</strong> lives in memory <code>{ title: '...' }</code></li>
+      <li><strong>JSON:</strong> is a string with a specific format <code>'{"title":"..."}'</code></li>
+    </ul>
+    <p>That's why in the request body, you almost always send <code>JSON.stringify(obj)</code>.</p>
+
+    <h4>✅ "Content-Type" is not "content"</h4>
+    <ul>
+      <li><strong>Header:</strong> <code>Content-Type</code></li>
+      <li><strong>Typical value:</strong> <code>application/json</code></li>
+    </ul>
+
+    <p><strong>Mental example:</strong></p>
+    <ul>
+      <li><code>Content-Type</code> = "I'm sending you the body in JSON format"</li>
+      <li><code>Accept</code> = "I prefer you to respond in JSON" (optional but good practice)</li>
+    </ul>
+
+    <h3>2) Understand the idea: same URL, different method</h3>
+    <p>In a REST API, the URL represents the resource and the HTTP method represents the action.</p>
+    <ul>
+      <li><code>GET /posts</code> → list posts</li>
+      <li><code>POST /posts</code> → create a post</li>
+      <li><code>GET /posts/101</code> → get one</li>
+      <li><code>PUT /posts/101</code> → replace</li>
+      <li><code>PATCH /posts/101</code> → partial update</li>
+      <li><code>DELETE /posts/101</code> → delete</li>
+    </ul>
+    <p>📌 The URL represents a resource (posts) and the HTTP method represents the action.</p>
+    <p><strong>Same URL, different behavior by method.</strong></p>
+
+    <h3>3) Define the resource URL</h3>
+    <p>We'll use JSONPlaceholder (test API):</p>
+    <pre><code class="language-javascript">const URL = "https://jsonplaceholder.typicode.com/posts";
+    </code></pre>
+
+    <h3>4) Create the "post" object in JavaScript (this is NOT JSON yet)</h3>
+    <p>Normally the backend generates the id, so you send the basics:</p>
+    <pre><code class="language-javascript">const newPost = {
+  userId: 1,
+  title: "This is my post title",
+  body: "This is my post body",
+};
+    </code></pre>
+
+    <h4>Why don't I send the id?</h4>
+    <p>In a POST, normally the backend creates the ID (autoincrement / UUID).</p>
+    <p>In a real API, the backend responds with:</p>
+    <ul>
+      <li>the created resource</li>
+      <li>and/or a Location header (e.g. <code>/posts/101</code>)</li>
+      <li>typical status: <code>201 Created</code></li>
+    </ul>
+    <p>📌 JSONPlaceholder returns <code>id: 101</code> as a simulation.</p>
+
+    <h3>5) Convert that object to JSON to send it in the body</h3>
+    <p>
+      The body of an HTTP request is text (normally).<br>
+      To send JSON, you convert your object to a JSON string:
+    </p>
+    <pre><code class="language-javascript">const bodyAsJson = JSON.stringify(newPost);
+    </code></pre>
+
+    <h3>6) Prepare the fetch with method, headers and body</h3>
+    <h4>Why headers</h4>
+    <p><code>"Content-Type": "application/json"</code> means: "I'm sending you JSON".</p>
+
+    <pre><code class="language-javascript">const response = await fetch(URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+  },
+  body: bodyAsJson,
+});
+    </code></pre>
+
+    <h3>7) Very important: control HTTP errors with response.ok</h3>
+    <p>
+      <code>fetch</code> does NOT fail just because the server responds with 400/500.<br>
+      You have to check it yourself.
+    </p>
+    <pre><code class="language-javascript">if (!response.ok) {
+  throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+}
+    </code></pre>
+
+    <p><strong>Justification (senior):</strong></p>
+    <ul>
+      <li>If you don't control <code>response.ok</code>, your app can treat a 400 response as "success".</li>
+      <li>This then translates to UI bugs ("it was created" when it wasn't).</li>
+    </ul>
+
+    <h3>8) Read the JSON from the response (what the server "created")</h3>
+    <pre><code class="language-javascript">const createdPost = await response.json();
+console.log(createdPost);
+    </code></pre>
+
+    <h3>9) Complete code (good version for tutorial)</h3>
+    <pre><code class="language-javascript">async function createPost() {
+  const URL = "https://jsonplaceholder.typicode.com/posts";
+
+  const newPost = {
+    userId: 1,
+    title: "This is my post title",
+    body: "This is my post body",
+  };
+
+  const response = await fetch(URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    },
+    body: JSON.stringify(newPost),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+  }
+
+  const createdPost = await response.json();
+  return createdPost;
+}
+
+// Try it
+createPost()
+  .then((data) => console.log("Created:", data))
+  .catch((err) => console.error("Error:", err.message));
+    </code></pre>
+
+    <h3>10) What you should see in console (and why id: 101 appears)</h3>
+    <p>You'll see an object like:</p>
+    <ul>
+      <li><code>userId: 1</code></li>
+      <li><code>title: ...</code></li>
+      <li><code>body: ...</code></li>
+      <li><code>id: 101</code></li>
+    </ul>
+    <p>JSONPlaceholder simulates that it creates it and returns a "new" id.</p>
+
+    <h3>11) Important note: JSONPlaceholder does NOT save changes (fake API)</h3>
+    <p>
+      Even though it returns <code>id: 101</code>, if you then do <code>GET /posts</code> you'll still see up to 100.
+    </p>
+    <p><strong>It's not your bug:</strong> it's the test API that doesn't persist data.</p>
+
+    <p><strong>It's a test API:</strong></p>
+    <ul>
+      <li>Responds as if it had created it.</li>
+      <li>But doesn't actually write to a database.</li>
+      <li>That's why a subsequent GET doesn't show it.</li>
+    </ul>
+
+    <h3>12) Minimum validation before sending the POST</h3>
+    <p>Validation is not optional if you want quality:</p>
+    <pre><code class="language-javascript">function validatePostInput(post) {
+  if (!post.userId) throw new Error("userId is required");
+  if (!post.title?.trim()) throw new Error("title is required");
+  if (!post.body?.trim()) throw new Error("body is required");
+}
+    </code></pre>
+
+    <p>And you use it:</p>
+    <pre><code class="language-javascript">validatePostInput(newPost);
+    </code></pre>
+
+    <p><strong>Justification:</strong></p>
+    <p>Better to fail fast on the frontend than send garbage to the backend and wait.</p>
+
+    <h3>13) Robust version with complete error handling</h3>
+    <pre><code class="language-javascript">async function createPostSafe() {
+  const URL = "https://jsonplaceholder.typicode.com/posts";
+
+  const newPost = {
+    userId: 1,
+    title: "Title",
+    body: "Body",
+  };
+
+  const response = await fetch(URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newPost),
+  });
+
+  // 👇 key: control HTTP errors
+  if (!response.ok) {
+    // try to read error body if it exists
+    let errorBody = null;
+    try { errorBody = await response.json(); } catch {}
+    throw new Error(
+      `HTTP Error ${response.status} ${response.statusText} - ${JSON.stringify(errorBody)}`
+    );
+  }
+
+  return response.json();
+}
+    </code></pre>
+
+    <h3>14) "Real" example of UI usage (typical pattern)</h3>
+    <p>This helps a junior a lot: seeing how it's used with loading states.</p>
+    <pre><code class="language-javascript">async function onSubmit() {
+  try {
+    setLoading(true);
+    setError(null);
+
+    const created = await createPostSafe();
+    setResult(created);
+  } catch (e) {
+    setError(e.message);
+  } finally {
+    setLoading(false);
+  }
+}
+    </code></pre>
+
+    <p><strong>Justification:</strong></p>
+    <ul>
+      <li>Requests have 3 states: loading / success / error.</li>
+      <li>If you don't model these states, the UI becomes inconsistent.</li>
+    </ul>
+
+    <h3>15) Details that elevate the code (senior extras)</h3>
+
+    <h4>a) Timeout (fetch doesn't come with timeout by default)</h4>
+    <p>A request can hang. Use AbortController:</p>
+    <pre><code class="language-javascript">async function fetchWithTimeout(url, options = {}, ms = 8000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), ms);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    return response;
+  } finally {
+    clearTimeout(id);
+  }
+}
+    </code></pre>
+
+    <h4>b) Security/privacy</h4>
+    <ul>
+      <li>Don't log tokens to console</li>
+      <li>Don't send sensitive data in logs</li>
+    </ul>
+
+    <h4>c) Real headers</h4>
+    <ul>
+      <li><code>Authorization: Bearer ...</code> (if there's auth)</li>
+      <li><code>Accept-Language</code> (if i18n)</li>
+      <li>Correct <code>Content-Type</code></li>
+    </ul>
+
+    <h3>16) Summary of key concepts</h3>
+    <ul>
+      <li><strong>JSON.stringify()</strong> converts JS objects to JSON strings</li>
+      <li><strong>Content-Type</strong> indicates the body format</li>
+      <li><strong>response.ok</strong> is crucial to detect HTTP errors</li>
+      <li><strong>Early validation</strong> prevents unnecessary errors</li>
+      <li><strong>UI states</strong> (loading/error/success) improve experience</li>
+    </ul>
+  </article>
+</section>
