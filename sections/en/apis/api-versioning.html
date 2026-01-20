@@ -1,0 +1,185 @@
+<section class="box">
+  <h2>🔢 API Versioning</h2>
+  <article>
+    <h3>Why does API versioning exist?</h3>
+    <p>
+      When an API is already in use by other applications (web, mobile, third parties…), you can't just change it.
+      If you do, you break all applications that depend on it.
+    </p>
+    <p>👉 Versioning exists to <strong>evolve an API without breaking what already works</strong>.</p>
+
+    <h3>📌 The real problem</h3>
+    <p>Imagine this API:</p>
+    <pre><code class="language-javascript">https://example.com/api/resources
+    </code></pre>
+
+    <p>Many applications use it and expect:</p>
+    <ul>
+      <li>A specific data structure</li>
+      <li>A specific response format</li>
+      <li>Stable behavior</li>
+    </ul>
+
+    <p>Now the team decides to:</p>
+    <ul>
+      <li>Change fields</li>
+      <li>Change names</li>
+      <li>Change business rules</li>
+    </ul>
+
+    <p>
+      ❌ If you modify the API directly, everything stops working.<br>
+      ✅ The solution: <strong>version the API</strong>
+    </p>
+
+    <h3>✅ The solution: version the API</h3>
+    <p>Instead of breaking what exists, you create a new version.</p>
+
+    <p><strong>Classic example:</strong></p>
+    <pre><code class="language-javascript">https://example.com/api/v1/resources
+    </code></pre>
+
+    <ul>
+      <li><code>v1</code> represents the first stable version</li>
+      <li>That version <strong>doesn't change</strong></li>
+      <li>Guarantees long-term compatibility</li>
+    </ul>
+
+    <h3>🚀 Evolving without breaking anything</h3>
+    <p>Now the team wants to make important changes (breaking changes).</p>
+    <p>Instead of modifying v1, they create:</p>
+    <pre><code class="language-javascript">https://example.com/api/v2/resources
+    </code></pre>
+
+    <p><strong>Result:</strong></p>
+    <ul>
+      <li><code>v1</code> keeps working for old apps</li>
+      <li><code>v2</code> includes the new changes</li>
+      <li>Each client decides when to update</li>
+    </ul>
+
+    <h3>🔁 Maintaining multiple versions</h3>
+    <p>It's very common for an API to maintain several active versions:</p>
+    <ul>
+      <li><code>/api/v1/...</code> → old applications</li>
+      <li><code>/api/v2/...</code> → new applications</li>
+      <li><code>/api/v3/...</code> → future evolution</li>
+    </ul>
+
+    <p><strong>This allows:</strong></p>
+    <ul>
+      <li>Progressive migrations</li>
+      <li>Fewer errors</li>
+      <li>Better developer experience</li>
+    </ul>
+
+    <h3>📐 What an API version guarantees</h3>
+    <p>When you use a specific version (v1, v2…), you know that:</p>
+    <ul>
+      <li>The data structure will be the same</li>
+      <li>Fields won't change unexpectedly</li>
+      <li>Behavior is stable</li>
+      <li>It fulfills a <strong>contract</strong> (API contract)</li>
+    </ul>
+
+    <h3>🧠 Key idea to remember</h3>
+    <p>
+      A versioned API is like a <strong>signed contract</strong>.<br>
+      If you want to change the rules, you sign a new contract, you don't break the previous one.
+    </p>
+
+    <h3>🔧 Common ways to version an API</h3>
+
+    <h4>1️⃣ Version in the URL (most common)</h4>
+    <pre><code class="language-javascript">https://api.example.com/v1/users
+https://api.example.com/v2/users
+    </code></pre>
+    <p>✅ Advantages:</p>
+    <ul>
+      <li>Very visible and explicit</li>
+      <li>Easy to test in the browser</li>
+      <li>De facto standard in REST</li>
+    </ul>
+
+    <h4>2️⃣ Version in the header</h4>
+    <pre><code class="language-javascript">GET https://api.example.com/users
+Headers:
+  Accept: application/vnd.example.v2+json
+    </code></pre>
+    <p>✅ Advantages:</p>
+    <ul>
+      <li>Clean URL</li>
+      <li>More "pure" according to REST</li>
+    </ul>
+    <p>❌ Disadvantages:</p>
+    <ul>
+      <li>Less visible</li>
+      <li>Harder to test manually</li>
+    </ul>
+
+    <h4>3️⃣ Version in query string</h4>
+    <pre><code class="language-javascript">https://api.example.com/users?version=2
+    </code></pre>
+    <p>⚠️ Less common, but seen in some public APIs</p>
+
+    <h3>📝 Practical example with fetch</h3>
+
+    <h4>Using v1:</h4>
+    <pre><code class="language-javascript">const response = await fetch("https://api.example.com/v1/users");
+const data = await response.json();
+
+// Expected v1 response:
+// { id: 1, name: "John" }
+    </code></pre>
+
+    <h4>Using v2 (with changes):</h4>
+    <pre><code class="language-javascript">const response = await fetch("https://api.example.com/v2/users");
+const data = await response.json();
+
+// Expected v2 response:
+// { id: 1, firstName: "John", lastName: "Doe" }
+    </code></pre>
+
+    <p>👉 Note how <code>v2</code> changed <code>name</code> to <code>firstName</code> and <code>lastName</code>, but <code>v1</code> remains the same.</p>
+
+    <h3>⏰ Deprecation of old versions</h3>
+    <p>Over time, old versions can be deprecated:</p>
+    <ul>
+      <li><strong>Deprecation:</strong> notification that the version will stop working in X months</li>
+      <li><strong>Sunset:</strong> date when the version is definitively shut down</li>
+    </ul>
+
+    <p><strong>Example of deprecation header:</strong></p>
+    <pre><code class="language-javascript">Deprecation: Sun, 01 Jan 2026 00:00:00 GMT
+Sunset: Sun, 01 Jul 2026 00:00:00 GMT
+    </code></pre>
+
+    <p>This gives developers time to migrate without surprises.</p>
+
+    <h3>✅ Quick summary</h3>
+    <ul>
+      <li><strong>API versioning</strong> is very common in production</li>
+      <li>Used to <strong>avoid breaking existing applications</strong></li>
+      <li>Normally done <strong>in the URL</strong> (<code>/v1</code>, <code>/v2</code>)</li>
+      <li>Allows <strong>safe API evolution</strong></li>
+      <li>It's a <strong>best practice</strong> in professional REST APIs</li>
+      <li>Old versions can be <strong>deprecated</strong> with prior notice</li>
+    </ul>
+
+    <h3>🎯 When to version an API</h3>
+    <p>You should create a new version when:</p>
+    <ul>
+      <li>You change the response structure (breaking change)</li>
+      <li>You remove fields that existed before</li>
+      <li>You change the data type of a field</li>
+      <li>You modify expected behavior</li>
+    </ul>
+
+    <p>❌ A new version is NOT needed when:</p>
+    <ul>
+      <li>You add new (optional) fields</li>
+      <li>You fix bugs</li>
+      <li>You improve performance</li>
+    </ul>
+  </article>
+</section>

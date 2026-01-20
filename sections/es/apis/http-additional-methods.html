@@ -1,0 +1,273 @@
+<section class="box">
+  <h2>Métodos HTTP adicionales: PATCH y OPTIONS</h2>
+  <article>
+    <p>Hasta ahora hemos visto los métodos HTTP más comunes:</p>
+    <ul>
+      <li><strong>GET</strong> → Obtener datos</li>
+      <li><strong>POST</strong> → Crear un recurso</li>
+      <li><strong>PUT</strong> → Actualizar un recurso completo</li>
+      <li><strong>DELETE</strong> → Eliminar un recurso</li>
+    </ul>
+
+    <p>Pero el protocolo HTTP define más métodos, y dos de los más importantes que también se usan en APIs REST son:</p>
+    <ul>
+      <li><strong>PATCH</strong></li>
+      <li><strong>OPTIONS</strong></li>
+    </ul>
+
+    <p>Vamos a ver qué hacen y cuándo usarlos, con un ejemplo sencillo.</p>
+
+    <h3>1️⃣ PATCH – Actualizar parcialmente un recurso</h3>
+
+    <h4>¿Qué significa "actualizar parcialmente"?</h4>
+    <p>
+      Actualizar parcialmente un recurso significa modificar <strong>solo una parte concreta del recurso</strong>, sin tener que enviar todos sus datos.
+    </p>
+
+    <p>📌 <strong>Ejemplo real:</strong></p>
+    <p>Tienes un post con muchos campos:</p>
+    <ul>
+      <li>id</li>
+      <li>title</li>
+      <li>body</li>
+      <li>author</li>
+      <li>date</li>
+    </ul>
+
+    <p>Y solo quieres cambiar el <strong>título</strong>.</p>
+
+    <h3>PATCH vs PUT (diferencia clave)</h3>
+
+    <h4>PUT (actualización completa)</h4>
+    <ul>
+      <li>Se envía todo el objeto</li>
+      <li>Si falta un campo, puede sobrescribirse o perderse</li>
+      <li>Ideal cuando reemplazas el recurso entero</li>
+    </ul>
+
+    <h4>PATCH (actualización parcial)</h4>
+    <ul>
+      <li>Se envía solo lo que cambia</li>
+      <li>El resto del recurso permanece igual</li>
+      <li>Ideal para cambios pequeños y específicos</li>
+    </ul>
+
+    <p>👉 Esta diferencia también ayuda a los desarrolladores a entender la intención de la operación solo viendo el método HTTP.</p>
+
+    <h3>2️⃣ Ejemplo práctico: actualizar solo el título de un post</h3>
+
+    <h4>Paso 1: URL correcta</h4>
+    <p>Cuando actualizamos un recurso, ya no usamos solo <code>/posts</code>, sino:</p>
+    <p><code>/posts/10</code> → para actualizar el post con id 10</p>
+
+    <h4>Paso 2: Método HTTP</h4>
+    <p>Usamos <strong>PATCH</strong>, porque la actualización es parcial.</p>
+
+    <h4>Paso 3: Body de la petición</h4>
+    <p>Como solo queremos cambiar el título, no enviamos el objeto completo.</p>
+    <p><strong>Ejemplo conceptual del body:</strong></p>
+    <pre><code class="language-javascript">{
+  "title": "Nuevo título del post"
+}
+    </code></pre>
+
+    <p>Eso es todo.<br>
+    No enviamos <code>body</code>, ni <code>author</code>, ni nada más.</p>
+
+    <h4>Paso 4: Respuesta del servidor</h4>
+    <p>El servidor:</p>
+    <ul>
+      <li>Mantiene todos los datos originales</li>
+      <li>Actualiza únicamente el campo <code>title</code></li>
+      <li>Devuelve el recurso completo ya actualizado</li>
+    </ul>
+
+    <p>📌 <strong>Resultado esperado:</strong></p>
+    <ul>
+      <li>El post sigue teniendo el mismo contenido</li>
+      <li>El título ahora es el nuevo</li>
+    </ul>
+
+    <h3>3️⃣ Código completo con fetch (PATCH)</h3>
+    <pre><code class="language-javascript">async function updatePostTitle(postId, newTitle) {
+  const url = `https://jsonplaceholder.typicode.com/posts/${postId}`;
+
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: newTitle
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error ${response.status}`);
+  }
+
+  const updatedPost = await response.json();
+  console.log('Post actualizado:', updatedPost);
+  return updatedPost;
+}
+
+// Usar la función
+updatePostTitle(1, 'Mi nuevo título increíble');
+    </code></pre>
+
+    <h3>4️⃣ OPTIONS – Descubrir qué métodos acepta un endpoint</h3>
+
+    <h4>¿Qué hace OPTIONS?</h4>
+    <p>
+      <strong>OPTIONS</strong> es un método que pregunta al servidor:<br>
+      "¿Qué operaciones puedo hacer en este endpoint?"
+    </p>
+
+    <p>No modifica datos, solo devuelve información sobre:</p>
+    <ul>
+      <li>Qué métodos HTTP están permitidos (GET, POST, PUT, PATCH, DELETE...)</li>
+      <li>Qué headers son aceptados</li>
+      <li>Si permite CORS</li>
+    </ul>
+
+    <h4>¿Cuándo se usa?</h4>
+    <ul>
+      <li><strong>CORS preflight:</strong> El navegador envía automáticamente una petición OPTIONS antes de hacer POST/PUT/DELETE desde otro dominio</li>
+      <li><strong>Exploración de API:</strong> Para saber qué puedes hacer sin tener que probar</li>
+      <li><strong>Debugging:</strong> Para validar configuración de CORS</li>
+    </ul>
+
+    <h3>5️⃣ Ejemplo con OPTIONS</h3>
+    <pre><code class="language-javascript">async function checkEndpointOptions(url) {
+  const response = await fetch(url, {
+    method: 'OPTIONS'
+  });
+
+  // Ver qué métodos están permitidos
+  const allowedMethods = response.headers.get('Allow');
+  console.log('Métodos permitidos:', allowedMethods);
+
+  // Ver headers CORS
+  const corsHeaders = response.headers.get('Access-Control-Allow-Methods');
+  console.log('CORS permite:', corsHeaders);
+}
+
+checkEndpointOptions('https://jsonplaceholder.typicode.com/posts/1');
+    </code></pre>
+
+    <h4>Respuesta típica de OPTIONS:</h4>
+    <pre><code class="language-javascript">Allow: GET, POST, PUT, PATCH, DELETE, OPTIONS
+Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE
+Access-Control-Allow-Headers: Content-Type, Authorization
+    </code></pre>
+
+    <h3>6️⃣ Tabla resumen de métodos HTTP</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Método</th>
+          <th>Propósito</th>
+          <th>Body</th>
+          <th>Idempotente</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>GET</strong></td>
+          <td>Leer datos</td>
+          <td>No</td>
+          <td>Sí</td>
+        </tr>
+        <tr>
+          <td><strong>POST</strong></td>
+          <td>Crear recurso</td>
+          <td>Sí</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td><strong>PUT</strong></td>
+          <td>Reemplazar completo</td>
+          <td>Sí</td>
+          <td>Sí</td>
+        </tr>
+        <tr>
+          <td><strong>PATCH</strong></td>
+          <td>Actualizar parcial</td>
+          <td>Sí</td>
+          <td>No*</td>
+        </tr>
+        <tr>
+          <td><strong>DELETE</strong></td>
+          <td>Eliminar</td>
+          <td>No</td>
+          <td>Sí</td>
+        </tr>
+        <tr>
+          <td><strong>OPTIONS</strong></td>
+          <td>Consultar métodos</td>
+          <td>No</td>
+          <td>Sí</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><small>* PATCH puede ser idempotente dependiendo de la implementación</small></p>
+
+    <h3>7️⃣ Cuándo usar cada método (guía práctica)</h3>
+
+    <h4>Usa GET cuando:</h4>
+    <ul>
+      <li>Solo quieres leer información</li>
+      <li>No vas a modificar nada en el servidor</li>
+    </ul>
+
+    <h4>Usa POST cuando:</h4>
+    <ul>
+      <li>Creas un recurso nuevo</li>
+      <li>Ejecutas una acción que no es idempotente</li>
+    </ul>
+
+    <h4>Usa PUT cuando:</h4>
+    <ul>
+      <li>Reemplazas un recurso completo</li>
+      <li>Tienes todos los datos del recurso</li>
+    </ul>
+
+    <h4>Usa PATCH cuando:</h4>
+    <ul>
+      <li>Solo modificas algunos campos</li>
+      <li>No quieres enviar el objeto completo</li>
+    </ul>
+
+    <h4>Usa DELETE cuando:</h4>
+    <ul>
+      <li>Quieres eliminar un recurso</li>
+    </ul>
+
+    <h4>Usa OPTIONS cuando:</h4>
+    <ul>
+      <li>Necesitas saber qué métodos acepta un endpoint</li>
+      <li>Debugueas problemas de CORS</li>
+    </ul>
+
+    <h3>8️⃣ Resumen clave</h3>
+    <ul>
+      <li><strong>PATCH</strong> es ideal para actualizaciones parciales (solo envías lo que cambia)</li>
+      <li><strong>PUT</strong> es para reemplazar el recurso completo</li>
+      <li><strong>OPTIONS</strong> te dice qué puedes hacer en un endpoint</li>
+      <li>Usar el método correcto hace tu código más claro y semántico</li>
+    </ul>
+
+    <h3>Recursos adicionales</h3>
+    <ul>
+      <li>
+        <a
+          href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/696face4-2584-8329-ba5d-4cfb31ccaae7"
+          target="_blank"
+          rel="noopener noreferrer"
+          >ChatGPT - Discusión sobre Métodos HTTP adicionales</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>

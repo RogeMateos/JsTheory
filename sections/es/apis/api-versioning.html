@@ -1,0 +1,185 @@
+<section class="box">
+  <h2>🔢 Versionado de APIs (API Versioning)</h2>
+  <article>
+    <h3>¿Por qué existe el versionado de una API?</h3>
+    <p>
+      Cuando una API ya está en uso por otras aplicaciones (webs, móviles, terceros…), no se puede cambiar sin más.
+      Si lo haces, rompes todas las aplicaciones que dependen de ella.
+    </p>
+    <p>👉 El versionado existe para <strong>evolucionar una API sin romper lo que ya funciona</strong>.</p>
+
+    <h3>📌 El problema real</h3>
+    <p>Imagina esta API:</p>
+    <pre><code class="language-javascript">https://example.com/api/resources
+    </code></pre>
+
+    <p>Muchas aplicaciones la usan y esperan:</p>
+    <ul>
+      <li>Una estructura concreta de datos</li>
+      <li>Un formato de respuesta específico</li>
+      <li>Un comportamiento estable</li>
+    </ul>
+
+    <p>Ahora el equipo decide:</p>
+    <ul>
+      <li>Cambiar campos</li>
+      <li>Cambiar nombres</li>
+      <li>Cambiar reglas de negocio</li>
+    </ul>
+
+    <p>
+      ❌ Si modificas la API directamente, todo deja de funcionar.<br>
+      ✅ La solución: <strong>versionar la API</strong>
+    </p>
+
+    <h3>✅ La solución: versionar la API</h3>
+    <p>En lugar de romper lo existente, se crea una nueva versión.</p>
+
+    <p><strong>Ejemplo clásico:</strong></p>
+    <pre><code class="language-javascript">https://example.com/api/v1/resources
+    </code></pre>
+
+    <ul>
+      <li><code>v1</code> representa la primera versión estable</li>
+      <li>Esa versión <strong>no cambia</strong></li>
+      <li>Garantiza compatibilidad a largo plazo</li>
+    </ul>
+
+    <h3>🚀 Evolucionar sin romper nada</h3>
+    <p>Ahora el equipo quiere hacer cambios importantes (breaking changes).</p>
+    <p>En lugar de modificar v1, se crea:</p>
+    <pre><code class="language-javascript">https://example.com/api/v2/resources
+    </code></pre>
+
+    <p><strong>Resultado:</strong></p>
+    <ul>
+      <li><code>v1</code> sigue funcionando para apps antiguas</li>
+      <li><code>v2</code> incluye los cambios nuevos</li>
+      <li>Cada cliente decide cuándo actualizar</li>
+    </ul>
+
+    <h3>🔁 Mantener varias versiones</h3>
+    <p>Es muy común que una API mantenga varias versiones activas:</p>
+    <ul>
+      <li><code>/api/v1/...</code> → aplicaciones antiguas</li>
+      <li><code>/api/v2/...</code> → aplicaciones nuevas</li>
+      <li><code>/api/v3/...</code> → futura evolución</li>
+    </ul>
+
+    <p><strong>Esto permite:</strong></p>
+    <ul>
+      <li>Migraciones progresivas</li>
+      <li>Menos errores</li>
+      <li>Mejor experiencia para desarrolladores</li>
+    </ul>
+
+    <h3>📐 Qué garantiza una versión de API</h3>
+    <p>Cuando usas una versión concreta (v1, v2…), sabes que:</p>
+    <ul>
+      <li>La estructura de datos será la misma</li>
+      <li>Los campos no cambiarán inesperadamente</li>
+      <li>El comportamiento es estable</li>
+      <li>Cumple un <strong>contrato</strong> (API contract)</li>
+    </ul>
+
+    <h3>🧠 Idea clave para recordar</h3>
+    <p>
+      Una API versionada es como un <strong>contrato firmado</strong>.<br>
+      Si quieres cambiar las reglas, firmas un contrato nuevo, no rompes el anterior.
+    </p>
+
+    <h3>🔧 Formas comunes de versionar una API</h3>
+
+    <h4>1️⃣ Versión en la URL (más común)</h4>
+    <pre><code class="language-javascript">https://api.example.com/v1/users
+https://api.example.com/v2/users
+    </code></pre>
+    <p>✅ Ventajas:</p>
+    <ul>
+      <li>Muy visible y explícito</li>
+      <li>Fácil de testear en el navegador</li>
+      <li>Estándar de facto en REST</li>
+    </ul>
+
+    <h4>2️⃣ Versión en el header</h4>
+    <pre><code class="language-javascript">GET https://api.example.com/users
+Headers:
+  Accept: application/vnd.example.v2+json
+    </code></pre>
+    <p>✅ Ventajas:</p>
+    <ul>
+      <li>URL limpia</li>
+      <li>Más "pura" según REST</li>
+    </ul>
+    <p>❌ Desventajas:</p>
+    <ul>
+      <li>Menos visible</li>
+      <li>Más difícil de probar manualmente</li>
+    </ul>
+
+    <h4>3️⃣ Versión en query string</h4>
+    <pre><code class="language-javascript">https://api.example.com/users?version=2
+    </code></pre>
+    <p>⚠️ Menos común, pero se ve en algunas APIs públicas</p>
+
+    <h3>📝 Ejemplo práctico con fetch</h3>
+
+    <h4>Usando v1:</h4>
+    <pre><code class="language-javascript">const response = await fetch("https://api.example.com/v1/users");
+const data = await response.json();
+
+// Respuesta esperada v1:
+// { id: 1, name: "John" }
+    </code></pre>
+
+    <h4>Usando v2 (con cambios):</h4>
+    <pre><code class="language-javascript">const response = await fetch("https://api.example.com/v2/users");
+const data = await response.json();
+
+// Respuesta esperada v2:
+// { id: 1, firstName: "John", lastName: "Doe" }
+    </code></pre>
+
+    <p>👉 Nota cómo <code>v2</code> cambió <code>name</code> por <code>firstName</code> y <code>lastName</code>, pero <code>v1</code> sigue igual.</p>
+
+    <h3>⏰ Deprecación de versiones antiguas</h3>
+    <p>Con el tiempo, las versiones antiguas se pueden deprecar:</p>
+    <ul>
+      <li><strong>Deprecación:</strong> se avisa que la versión dejará de funcionar en X meses</li>
+      <li><strong>Sunset:</strong> fecha en la que la versión se apaga definitivamente</li>
+    </ul>
+
+    <p><strong>Ejemplo de header de deprecación:</strong></p>
+    <pre><code class="language-javascript">Deprecation: Sun, 01 Jan 2026 00:00:00 GMT
+Sunset: Sun, 01 Jul 2026 00:00:00 GMT
+    </code></pre>
+
+    <p>Esto da tiempo a los desarrolladores para migrar sin sorpresas.</p>
+
+    <h3>✅ Resumen rápido</h3>
+    <ul>
+      <li>El <strong>versionado de APIs</strong> es muy común en producción</li>
+      <li>Se usa para <strong>evitar romper aplicaciones existentes</strong></li>
+      <li>Normalmente se hace <strong>en la URL</strong> (<code>/v1</code>, <code>/v2</code>)</li>
+      <li>Permite <strong>evolucionar la API de forma segura</strong></li>
+      <li>Es una <strong>buena práctica</strong> en APIs REST profesionales</li>
+      <li>Las versiones antiguas se pueden <strong>deprecar</strong> con aviso previo</li>
+    </ul>
+
+    <h3>🎯 Cuándo versionar una API</h3>
+    <p>Debes crear una nueva versión cuando:</p>
+    <ul>
+      <li>Cambias la estructura de respuesta (breaking change)</li>
+      <li>Eliminas campos que existían antes</li>
+      <li>Cambias el tipo de datos de un campo</li>
+      <li>Modificas el comportamiento esperado</li>
+    </ul>
+
+    <p>❌ NO hace falta nueva versión cuando:</p>
+    <ul>
+      <li>Añades campos nuevos (opcionales)</li>
+      <li>Corriges bugs</li>
+      <li>Mejoras el rendimiento</li>
+    </ul>
+  </article>
+</section>

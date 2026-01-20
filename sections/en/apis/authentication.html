@@ -1,0 +1,268 @@
+<section class="box">
+  <h2>Authentication in REST APIs: API Key, Bearer Token and JWT</h2>
+  <p class="subtitle">Step-by-step tutorial</p>
+  <article>
+    <h3>Objective</h3>
+    <p>
+      Understand how many modern APIs authenticate and how to send credentials correctly from JavaScript (fetch), avoiding common errors and security holes.
+    </p>
+
+    <h3>1) First: Authentication vs Authorization (mental foundation)</h3>
+    <p>Before talking about keys and tokens, remember this:</p>
+    <ul>
+      <li><strong>Authentication (AuthN):</strong> Who are you?</li>
+      <li><strong>Authorization (AuthZ):</strong> What can you do?</li>
+    </ul>
+
+    <p><strong>Quick example:</strong></p>
+    <ul>
+      <li>You log in → authentication ✅</li>
+      <li>You try to view <code>/admin</code> → authorization ✅/❌ depending on role</li>
+    </ul>
+
+    <h3>2) Why does an API need authentication?</h3>
+    <p>Because the API must be able to:</p>
+    <ul>
+      <li>Protect resources (private data)</li>
+      <li>Apply permissions (roles/scopes)</li>
+      <li>Limit abuse (rate limiting)</li>
+      <li>Identify the client or user</li>
+    </ul>
+    <p>Without authentication, anyone could call sensitive endpoints.</p>
+
+    <h3>3) API Key: what it is and when to use it</h3>
+
+    <h4>What it is</h4>
+    <p>An <strong>API Key</strong> is a text string that identifies a client (app/project).</p>
+    <p><strong>Example (fictitious):</strong></p>
+    <pre><code class="language-javascript">X-API-Key: 123abc...
+    </code></pre>
+
+    <h4>When it makes sense</h4>
+    <p>✅ Useful for:</p>
+    <ul>
+      <li>Public APIs with quotas</li>
+      <li>Identifying the application (not necessarily end user)</li>
+      <li>Server-to-server (backend to backend)</li>
+    </ul>
+
+    <h4>Typical risk</h4>
+    <p>
+      ❌ If you put it in the frontend, it can be copied (DevTools, network, etc.).<br>
+      So an API Key in the frontend can't be a "real secret", only quota/usage control.
+    </p>
+
+    <h3>4) Where to send credentials? (important)</h3>
+
+    <h4>Never in the URL</h4>
+    <p>Avoid things like:</p>
+    <pre><code class="language-javascript">https://api.com/data?apiKey=MY_KEY
+    </code></pre>
+
+    <p>Because the URL easily leaks in:</p>
+    <ul>
+      <li>Browser history</li>
+      <li>Logs</li>
+      <li>Analytics</li>
+      <li>Proxies</li>
+      <li>Referer headers</li>
+    </ul>
+
+    <h4>The correct way: headers (or cookies)</h4>
+    <p>The standard practice is to use headers for tokens:</p>
+    <pre><code class="language-javascript">Authorization: Bearer &lt;token&gt;
+    </code></pre>
+
+    <h3>5) Token: what it is in real life</h3>
+    <p>A token is usually a string that represents a session/user or permission.</p>
+    <p>There are two main types:</p>
+    <ul>
+      <li><strong>Opaque token:</strong> you don't "understand" it, the server does.</li>
+      <li><strong>JWT:</strong> token with structure (you can see it and it has claims).</li>
+    </ul>
+    <p>In both cases, it's normal to send it in the <code>Authorization</code> header using <code>Bearer</code>.</p>
+    <p><strong>Note:</strong> it's not "beer token", it's <strong>Bearer token</strong>.</p>
+
+    <h3>6) Bearer Token: the practical standard</h3>
+    <p>"Bearer" means:</p>
+    <p><em>If you present this token, I treat you as the associated user/client.</em></p>
+    <p><strong>HTTP Example:</strong></p>
+    <pre><code class="language-javascript">Authorization: Bearer eyJhbGciOi...
+    </code></pre>
+
+    <h3>7) JWT: what it is and what it is NOT</h3>
+
+    <h4>What it means</h4>
+    <p>JWT = <strong>JSON Web Token</strong></p>
+    <p>Usually has 3 parts separated by dots:</p>
+    <pre><code class="language-javascript">header.payload.signature
+    </code></pre>
+    <p><strong>Example:</strong></p>
+    <pre><code class="language-javascript">xxxxx.yyyyy.zzzzz
+    </code></pre>
+
+    <h4>JWT is normally signed, not encrypted</h4>
+    <p>This is where many people get confused:</p>
+    <ul>
+      <li>✅ <strong>Signed (signature):</strong> prevents tampering without the server noticing.</li>
+      <li>❌ <strong>Not encrypted by default:</strong> the payload can be read (base64).</li>
+    </ul>
+
+    <p><strong>Golden rule:</strong></p>
+    <p>Don't put secrets in the JWT payload.</p>
+
+    <h4>Why JWT is used</h4>
+    <p>Because you can include useful data (claims), such as:</p>
+    <ul>
+      <li>user id</li>
+      <li>roles/scopes</li>
+      <li>expiration <code>exp</code></li>
+    </ul>
+    <p>And the server can validate the signature without always going to the database (depending on architecture).</p>
+
+    <h3>8) Example: consuming an API with Bearer token (fetch)</h3>
+    <p>Imagine you already have a token (from login or OAuth). You call a protected endpoint:</p>
+    <pre><code class="language-javascript">const token = getAccessToken(); // ideally from memory
+const res = await fetch("https://api.myapp.com/profile", {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+
+if (!res.ok) throw new Error("Unauthorized or error");
+const data = await res.json();
+console.log(data);
+    </code></pre>
+
+    <h3>9) Complete typical flow (the real authentication cycle)</h3>
+
+    <h4>Step A: Login</h4>
+    <ol>
+      <li>User enters credentials</li>
+      <li>Backend validates</li>
+      <li>Backend returns an access token (and sometimes refresh token)</li>
+    </ol>
+
+    <h4>Step B: Protected requests</h4>
+    <p>On each request:</p>
+    <ol>
+      <li>The frontend sends <code>Authorization: Bearer &lt;accessToken&gt;</code></li>
+      <li>The backend validates the token</li>
+      <li>Responds 200 if ok, 401 if not</li>
+    </ol>
+
+    <h4>Step C: Token expired</h4>
+    <p>If it expires:</p>
+    <ol>
+      <li>Request a new one with refresh token</li>
+      <li>Retry the request</li>
+    </ol>
+
+    <h3>10) Access token vs Refresh token (very common in modern systems)</h3>
+
+    <h4>Access token</h4>
+    <ul>
+      <li>Short-lived (minutes)</li>
+      <li>Always sent in <code>Authorization</code></li>
+    </ul>
+
+    <h4>Refresh token</h4>
+    <ul>
+      <li>Longer-lived (days/weeks)</li>
+      <li>Used to request new access tokens</li>
+      <li>Usually stored in HttpOnly cookie (more secure)</li>
+    </ul>
+
+    <p><strong>Advantage:</strong></p>
+    <p>If the access token is stolen, the damage is time-limited.</p>
+
+    <h3>11) Basic 401 handling (expiration) in fetch</h3>
+    <p>Simple version: if 401, try to refresh and retry.</p>
+    <pre><code class="language-javascript">async function fetchWithAuth(url, options = {}) {
+  const token = getAccessToken();
+
+  let res = await fetch(url, {
+    ...options,
+    headers: {
+      ...(options.headers || {}),
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (res.status !== 401) return res;
+
+  // 401 -> token expired or invalid
+  const refreshed = await refreshAccessToken();
+  if (!refreshed) throw new Error("Session expired. Please log in again.");
+
+  const newToken = getAccessToken();
+  return fetch(url, {
+    ...options,
+    headers: {
+      ...(options.headers || {}),
+      Authorization: `Bearer ${newToken}`,
+    },
+  });
+}
+    </code></pre>
+
+    <p><code>refreshAccessToken()</code> normally calls <code>/auth/refresh</code> and the refresh token goes in HttpOnly cookie.</p>
+
+    <h3>12) Where to store tokens (practical decision)</h3>
+    <p>This makes the difference between "works" and "is secure".</p>
+
+    <h4>Recommended option (common pattern)</h4>
+    <ul>
+      <li><strong>Access token</strong> in memory (not localStorage)</li>
+      <li><strong>Refresh token</strong> in HttpOnly + Secure cookie</li>
+    </ul>
+    <p>✅ Reduces theft by XSS<br>
+    ⚠️ Requires well-designed refresh endpoint</p>
+
+    <h4>Simple option (but more dangerous)</h4>
+    <ul>
+      <li><strong>Access token</strong> in localStorage</li>
+    </ul>
+    <p>✅ Easy<br>
+    ❌ If there's XSS, they steal it</p>
+
+    <h3>13) Best practices checklist (senior level)</h3>
+    <ul>
+      <li>✅ Always HTTPS</li>
+      <li>✅ Never tokens in URL</li>
+      <li>✅ Access token with short expiration</li>
+      <li>✅ Refresh token with rotation and revocation</li>
+      <li>✅ Don't store secrets in JWT payload</li>
+      <li>✅ Clear scopes/roles</li>
+      <li>✅ Rate limiting on backend</li>
+      <li>✅ Logs without exposing tokens</li>
+      <li>✅ Handle 401/403 properly:
+        <ul>
+          <li>401: not authenticated / invalid token</li>
+          <li>403: authenticated but without permissions</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>14) Final summary</h3>
+    <ul>
+      <li><strong>API Key:</strong> identifies the app (not ideal for end user; in frontend it's not secret).</li>
+      <li><strong>Bearer token:</strong> standard way to send tokens in Authorization.</li>
+      <li><strong>JWT:</strong> token with claims, normally signed (not encrypted), useful for distributed auth.</li>
+      <li><strong>The right way:</strong> tokens in headers (or cookies), never in URL.</li>
+      <li><strong>Professional:</strong> short access token + refresh token to renew.</li>
+    </ul>
+
+    <h3>Additional Resources</h3>
+    <ul>
+      <li>
+        <a
+          href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/696fadae-3f60-832e-9a8e-20cecdf8a2fd"
+          target="_blank"
+          rel="noopener noreferrer"
+          >ChatGPT - Authentication Discussion</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>

@@ -1,0 +1,299 @@
+<section class="box">
+  <h2>Tutorial paso a paso: consumir la PokeAPI con JavaScript (fetch + async/await)</h2>
+  <p class="subtitle">Proyecto práctico completo</p>
+  <article>
+    <h3>Qué vas a aprender</h3>
+    <ul>
+      <li>Cómo funciona un endpoint REST con versionado (<code>/api/v2</code>)</li>
+      <li>Cómo hacer una petición GET con fetch</li>
+      <li>Cómo convertir la respuesta a JSON</li>
+      <li>Cómo navegar un JSON (propiedades y arrays)</li>
+      <li>Cómo extraer y mostrar <code>name</code> y <code>abilities</code></li>
+      <li>Cómo manejar errores de verdad (404, 429, red)</li>
+      <li>Cómo mejorar la UX con validación, cancelación (AbortController) y transformación de datos</li>
+    </ul>
+
+    <h3>1) Preparación rápida: qué endpoint vamos a usar</h3>
+    <p>La PokeAPI funciona por endpoints. El que nos interesa para buscar un Pokémon es:</p>
+    <pre><code class="language-javascript">GET https://pokeapi.co/api/v2/pokemon/{name-or-id}/
+    </code></pre>
+
+    <p><strong>Ejemplos:</strong></p>
+    <ul>
+      <li><code>.../pokemon/pikachu/</code></li>
+      <li><code>.../pokemon/25/</code></li>
+    </ul>
+
+    <p><strong>Nota:</strong> No necesitas autenticación (sin API key) para este endpoint.</p>
+
+    <h3>2) Paso 1 — Tu primera petición con fetch (la versión "mínima")</h3>
+    <p>Esto es lo más básico:</p>
+    <pre><code class="language-javascript">async function getPokemonBasic() {
+  const res = await fetch("https://pokeapi.co/api/v2/pokemon/pikachu/");
+  const data = await res.json();
+  console.log(data);
+}
+
+getPokemonBasic();
+    </code></pre>
+
+    <p><strong>Qué está pasando:</strong></p>
+    <ul>
+      <li><code>fetch(...)</code> hace la petición HTTP</li>
+      <li><code>res.json()</code> transforma el body a un objeto JavaScript (JSON)</li>
+      <li><code>console.log(data)</code> te deja ver el "tocho" de información</li>
+    </ul>
+
+    <h3>3) Paso 2 — Entender el JSON: navegar por propiedades (dot notation)</h3>
+    <p>Una vez tienes <code>data</code>, puedes acceder a propiedades con el punto:</p>
+    <pre><code class="language-javascript">async function showName() {
+  const res = await fetch("https://pokeapi.co/api/v2/pokemon/pikachu/");
+  const data = await res.json();
+
+  console.log("Nombre:", data.name); // "pikachu"
+}
+
+showName();
+    </code></pre>
+
+    <p><strong>Idea clave:</strong></p>
+    <p>Si el JSON tiene una propiedad <code>name</code>, en JS accedes con <code>data.name</code>.</p>
+
+    <h3>4) Paso 3 — Acceder a arrays: abilities y forEach</h3>
+    <p>En el JSON, <code>abilities</code> es un array. Cada elemento tiene estructura parecida a:</p>
+    <ul>
+      <li><code>ability.name</code> (dentro de cada item)</li>
+    </ul>
+
+    <p><strong>Ejemplo:</strong></p>
+    <pre><code class="language-javascript">async function showAbilities() {
+  const res = await fetch("https://pokeapi.co/api/v2/pokemon/pikachu/");
+  const data = await res.json();
+
+  console.log("Habilidades de:", data.name);
+
+  data.abilities.forEach((item) => {
+    console.log("-", item.ability.name);
+  });
+}
+
+showAbilities();
+    </code></pre>
+
+    <p><strong>Qué aprendes aquí:</strong></p>
+    <ul>
+      <li><code>data.abilities</code> es un array</li>
+      <li><code>forEach</code> recorre cada elemento</li>
+      <li>dentro del elemento navegas a <code>item.ability.name</code></li>
+    </ul>
+
+    <h3>5) Paso 4 — Convertirlo en una función reutilizable (base "pro")</h3>
+    <p>En un tutorial serio, no queremos repetir fetch por todas partes. Creamos una función reutilizable:</p>
+    <pre><code class="language-javascript">const API_BASE = "https://pokeapi.co/api/v2";
+
+function normalizePokemonQuery(value) {
+  return value.trim().toLowerCase();
+}
+
+async function getPokemon(rawQuery) {
+  const query = normalizePokemonQuery(rawQuery);
+
+  if (!query) {
+    throw new Error("Introduce el nombre o id de un Pokémon.");
+  }
+
+  const url = `${API_BASE}/pokemon/${encodeURIComponent(query)}/`;
+  const res = await fetch(url);
+
+  // Importante: fetch NO lanza error por 404/500 automáticamente
+  if (!res.ok) {
+    if (res.status === 404) throw new Error(`No existe "${query}" en la PokeAPI.`);
+    if (res.status === 429) throw new Error("Demasiadas peticiones. Espera y vuelve a intentar.");
+    throw new Error(`Error HTTP ${res.status} (${res.statusText})`);
+  }
+
+  return res.json();
+}
+    </code></pre>
+
+    <p><strong>Por qué esto es mejor:</strong></p>
+    <ul>
+      <li><code>trim()</code> y <code>toLowerCase()</code> evitan fallos por escribir "Pikachu " o "PIKACHU"</li>
+      <li><code>encodeURIComponent</code> evita problemas con caracteres raros</li>
+      <li><code>res.ok</code> es la diferencia entre "demo" y "producción"</li>
+      <li><code>throw new Error(...)</code> te deja controlarlo con try/catch</li>
+    </ul>
+
+    <h3>6) Paso 5 — Usar try/catch (manejo de errores real)</h3>
+    <p>Ahora consumimos la función:</p>
+    <pre><code class="language-javascript">async function demo() {
+  try {
+    const data = await getPokemon("Pikachu");
+
+    console.log("Nombre:", data.name);
+    console.log("Habilidades:");
+    data.abilities.forEach((item) => console.log("-", item.ability.name));
+  } catch (err) {
+    console.error("Falló la petición:", err.message);
+  }
+}
+
+demo();
+    </code></pre>
+
+    <p><strong>Diferencias importantes:</strong></p>
+    <ul>
+      <li>404 → lo mostramos como error "humano"</li>
+      <li>429 → "estás haciendo demasiadas peticiones"</li>
+      <li>error de red → también cae aquí (ej: sin internet)</li>
+    </ul>
+
+    <h3>7) Paso 6 — No acoples tu UI a un JSON enorme (transformación)</h3>
+    <p>En apps reales, no quieres pasar el "tocho" completo a tu UI. Mejor crear un "view model" (objeto limpio):</p>
+    <pre><code class="language-javascript">function mapPokemonToViewModel(pokemon) {
+  return {
+    id: pokemon.id,
+    name: pokemon.name,
+    height: pokemon.height,
+    weight: pokemon.weight,
+    abilities: pokemon.abilities.map((a) => a.ability.name),
+    sprite: pokemon.sprites?.front_default ?? null,
+  };
+}
+    </code></pre>
+
+    <p><strong>Uso:</strong></p>
+    <pre><code class="language-javascript">async function demoViewModel() {
+  try {
+    const data = await getPokemon("pikachu");
+    const pokemon = mapPokemonToViewModel(data);
+
+    console.log(pokemon);
+    // pokemon.abilities ya es un array de strings
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+
+demoViewModel();
+    </code></pre>
+
+    <p><strong>Esto te da:</strong></p>
+    <ul>
+      <li>datos mínimos y claros</li>
+      <li>menos riesgo de "romper" UI si cambia algo</li>
+      <li>código más fácil para un junior</li>
+    </ul>
+
+    <h3>8) Paso 7 — Extra: cancelar peticiones (AbortController)</h3>
+    <p>Si haces un buscador y el usuario escribe rápido, puede pasar esto:</p>
+    <ul>
+      <li>pides "pi"</li>
+      <li>luego "pika"</li>
+      <li>pero "pi" responde después y pisa el resultado correcto</li>
+    </ul>
+
+    <p><strong>Solución:</strong> cancelar la petición anterior.</p>
+    <pre><code class="language-javascript">let controller = null;
+
+async function searchPokemon(query) {
+  try {
+    if (controller) controller.abort();
+    controller = new AbortController();
+
+    const data = await getPokemonWithSignal(query, controller.signal);
+    return mapPokemonToViewModel(data);
+  } catch (err) {
+    if (err.name === "AbortError") return null; // ignorar
+    throw err;
+  }
+}
+
+async function getPokemonWithSignal(rawQuery, signal) {
+  const query = normalizePokemonQuery(rawQuery);
+
+  if (!query) throw new Error("Introduce el nombre o id de un Pokémon.");
+
+  const url = `${API_BASE}/pokemon/${encodeURIComponent(query)}/`;
+  const res = await fetch(url, { signal });
+
+  if (!res.ok) {
+    if (res.status === 404) throw new Error(`No existe "${query}" en la PokeAPI.`);
+    if (res.status === 429) throw new Error("Demasiadas peticiones. Espera y vuelve a intentar.");
+    throw new Error(`Error HTTP ${res.status} (${res.statusText})`);
+  }
+
+  return res.json();
+}
+    </code></pre>
+
+    <h3>9) Errores típicos (y cómo evitarlos)</h3>
+
+    <h4>❌ "Mi catch no se ejecuta con 404"</h4>
+    <p><strong>Causa:</strong> Porque fetch no hace throw por 404.</p>
+    <p><strong>Solución:</strong> <code>if (!res.ok) throw ...</code></p>
+
+    <h4>❌ "Me da undefined en sprites"</h4>
+    <p><strong>Causa:</strong> Algunos campos pueden ser null.</p>
+    <p><strong>Solución:</strong> <code>pokemon.sprites?.front_default ?? null</code></p>
+
+    <h4>❌ "El usuario escribe con espacios o mayúsculas y falla"</h4>
+    <p><strong>Solución:</strong> <code>trim()</code> + <code>toLowerCase()</code></p>
+
+    <h4>❌ "Demasiadas peticiones"</h4>
+    <p><strong>Causa:</strong> Puede aparecer 429 si spameas.</p>
+    <p><strong>Solución:</strong> debounce, cache, paginar, o esperar.</p>
+
+    <h3>10) Mini ejercicio final (para tu tutorial)</h3>
+    <p>Crea una aplicación que:</p>
+    <ol>
+      <li>Pide un Pokémon por input (nombre o id)</li>
+      <li>Muestra:
+        <ul>
+          <li>nombre</li>
+          <li>sprite</li>
+          <li>lista de habilidades</li>
+        </ul>
+      </li>
+      <li>Añade:
+        <ul>
+          <li>loading ("Cargando…")</li>
+          <li>manejo de error (404)</li>
+          <li>abort (si el usuario busca de nuevo antes de terminar)</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>✅ Resumen de conceptos clave</h3>
+    <ul>
+      <li><strong>Endpoint versionado:</strong> <code>/api/v2/pokemon/</code></li>
+      <li><strong>fetch + async/await:</strong> forma moderna de hacer peticiones</li>
+      <li><strong>res.ok:</strong> verifica que la respuesta sea exitosa (200-299)</li>
+      <li><strong>Normalización:</strong> trim() y toLowerCase() para inputs de usuario</li>
+      <li><strong>View Model:</strong> transforma datos complejos en objetos simples para UI</li>
+      <li><strong>AbortController:</strong> cancela peticiones pendientes</li>
+      <li><strong>Manejo de errores específicos:</strong> 404, 429, errores de red</li>
+    </ul>
+
+    <h3>🎯 Próximos pasos</h3>
+    <p>Después de dominar este tutorial, puedes:</p>
+    <ul>
+      <li>Implementar paginación para listar múltiples Pokémon</li>
+      <li>Añadir cache para no repetir peticiones</li>
+      <li>Usar debounce para búsquedas en tiempo real</li>
+      <li>Explorar otros endpoints de PokeAPI (tipos, evoluciones, etc.)</li>
+    </ul>
+
+    <h3>Recursos adicionales</h3>
+    <ul>
+      <li>
+        <a
+          href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/696faf3f-bfa8-832d-855e-099fba068f1e"
+          target="_blank"
+          rel="noopener noreferrer"
+          >ChatGPT - Discusión sobre PokeAPI Tutorial</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>
