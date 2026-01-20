@@ -1,0 +1,282 @@
+<section class="box">
+  <h2>HTTP y Métodos (GET, POST, PUT, PATCH, DELETE) para APIs</h2>
+  <article>
+    <h3>1) Qué es HTTP (modelo mental request/response)</h3>
+    <p>
+      HTTP es el "idioma" que usan cliente (navegador/app) y servidor para hablar.
+    </p>
+    <ul>
+      <li>El cliente envía una <strong>request</strong> (petición).</li>
+      <li>El servidor devuelve una <strong>response</strong> (respuesta).</li>
+    </ul>
+
+    <p><strong>Ejemplo mental:</strong></p>
+    <p><strong>Request</strong></p>
+    <ul>
+      <li>Método: <code>GET</code></li>
+      <li>URL: <code>/users/42</code></li>
+      <li>Headers: <code>Accept: application/json</code></li>
+    </ul>
+
+    <p><strong>Response</strong></p>
+    <ul>
+      <li>Status: <code>200 OK</code></li>
+      <li>Headers: <code>Content-Type: application/json</code></li>
+      <li>Body: <code>{ "id": 42, "name": "Roge" }</code></li>
+    </ul>
+
+    <p>📌 <strong>Idea clave:</strong> HTTP no es "solo para webs", es para cualquier comunicación cliente-servidor.</p>
+
+    <h3>2) URL: path y query params (lo que "pides" y cómo lo filtras)</h3>
+    <p>Una URL suele tener:</p>
+    <ul>
+      <li><strong>Path:</strong> el recurso que quieres (<code>/users</code>, <code>/users/42</code>)</li>
+      <li><strong>Query params:</strong> filtros/paginación (<code>?role=admin&page=2</code>)</li>
+    </ul>
+
+    <p><strong>Ejemplos:</strong></p>
+    <ul>
+      <li><code>GET /users</code> → "dame todos los usuarios"</li>
+      <li><code>GET /users/42</code> → "dame el usuario 42"</li>
+      <li><code>GET /users?role=admin&page=2</code> → "dame admins, página 2"</li>
+    </ul>
+
+    <p>📌 <strong>Regla práctica:</strong> los query params se usan mucho en GET para buscar/filtrar sin enviar body.</p>
+
+    <h3>3) Partes de una request (qué viaja del cliente al servidor)</h3>
+    <p>Una request suele incluir:</p>
+
+    <h4>a) Método</h4>
+    <p>Define la intención:</p>
+    <ul>
+      <li><strong>GET</strong> → leer</li>
+      <li><strong>POST</strong> → crear/acción</li>
+      <li><strong>PUT</strong> → reemplazar</li>
+      <li><strong>PATCH</strong> → modificar parcialmente</li>
+      <li><strong>DELETE</strong> → eliminar</li>
+    </ul>
+
+    <h4>b) Headers (metadatos)</h4>
+    <p>Los más típicos:</p>
+    <ul>
+      <li><code>Accept</code>: qué formato esperas recibir (ej: JSON)</li>
+      <li><code>Content-Type</code>: qué formato envías (ej: JSON)</li>
+      <li><code>Authorization</code>: token/cookies (si aplica)</li>
+    </ul>
+
+    <h4>c) Body (contenido)</h4>
+    <p>
+      Solo en métodos que envían datos (POST/PUT/PATCH).<br>
+      En GET normalmente no se manda body.
+    </p>
+
+    <h3>4) Partes de una response (lo que vuelve del servidor)</h3>
+    <p>Una response trae:</p>
+
+    <h4>a) Status code (lo más importante)</h4>
+    <p>Te dice si salió bien o qué falló.</p>
+
+    <h4>b) Headers</h4>
+    <p>Ej: <code>Content-Type: application/json</code></p>
+
+    <h4>c) Body</h4>
+    <p>Puede ser JSON, HTML o vacío (por ejemplo en 204).</p>
+
+    <h3>5) Métodos HTTP (con ejemplos reales)</h3>
+    <p>Usaremos un recurso típico: <strong>users</strong></p>
+    <p>Convención REST común:</p>
+    <ul>
+      <li>Colección: <code>/users</code></li>
+      <li>Elemento: <code>/users/:id</code></li>
+    </ul>
+
+    <h3>5.1 GET (leer datos)</h3>
+    <p>
+      Se usa para obtener información.<br>
+      No debería cambiar nada en el servidor.
+    </p>
+
+    <p><strong>Ejemplos:</strong></p>
+    <ul>
+      <li><code>GET /users</code> (lista)</li>
+      <li><code>GET /users/42</code> (detalle)</li>
+      <li><code>GET /users?role=admin&page=2</code> (filtro/paginación)</li>
+    </ul>
+
+    <p><strong>Ejemplo con fetch:</strong></p>
+    <pre><code class="language-javascript">const res = await fetch('/api/users?role=admin&page=2', {
+  headers: { Accept: 'application/json' }
+});
+
+if (!res.ok) throw new Error('Error al cargar usuarios');
+
+const users = await res.json();
+console.log(users);
+    </code></pre>
+
+    <h3>5.2 POST (crear recurso o ejecutar una acción)</h3>
+    <p>Se usa para:</p>
+    <ul>
+      <li>Crear un nuevo recurso en una colección: <code>POST /users</code></li>
+      <li>O ejecutar acciones no idempotentes: <code>POST /login</code>, <code>POST /payments</code></li>
+    </ul>
+
+    <p><strong>Ejemplo: crear usuario</strong></p>
+    <pre><code class="language-javascript">const res = await fetch('/api/users', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: 'Ana', email: 'ana@mail.com' })
+});
+
+if (res.status === 201) {
+  const createdUser = await res.json();
+  console.log('Creado:', createdUser);
+} else {
+  const error = await res.json().catch(() => null);
+  throw new Error(error?.message ?? 'No se pudo crear');
+}
+    </code></pre>
+
+    <p>📌 <strong>Nota senior:</strong> si creas, lo típico es <code>201 Created</code>.</p>
+
+    <h3>5.3 PUT vs PATCH (la diferencia que más bugs evita)</h3>
+
+    <h4>PUT = reemplazo completo (conceptualmente)</h4>
+    <p>"Te envío el recurso entero y tú lo dejas así".</p>
+    <p><code>PUT /users/42</code></p>
+
+    <pre><code class="language-javascript">await fetch('/api/users/42', {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    id: 42,
+    name: 'Roge',
+    email: 'roge@mail.com',
+    role: 'admin'
+  })
+});
+    </code></pre>
+
+    <p>✅ Útil cuando tu UI edita "el formulario completo".</p>
+
+    <h4>PATCH = actualización parcial (muy común en frontend)</h4>
+    <p>"Te envío solo lo que cambia".</p>
+    <p><code>PATCH /users/42</code></p>
+
+    <pre><code class="language-javascript">await fetch('/api/users/42', {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ role: 'admin' })
+});
+    </code></pre>
+
+    <p>📌 <strong>Regla práctica:</strong></p>
+    <ul>
+      <li>Si mandas todo: <strong>PUT</strong></li>
+      <li>Si mandas solo lo modificado: <strong>PATCH</strong></li>
+    </ul>
+
+    <h3>5.4 DELETE (eliminar)</h3>
+    <p><code>DELETE /users/42</code></p>
+
+    <pre><code class="language-javascript">const res = await fetch('/api/users/42', { method: 'DELETE' });
+
+if (res.status === 204) {
+  console.log('Eliminado');
+} else if (res.status === 404) {
+  console.log('No existía');
+} else {
+  throw new Error('No se pudo eliminar');
+}
+    </code></pre>
+
+    <p>📌 Muy común: <code>204 No Content</code> (sin body).</p>
+
+    <h3>6) Status codes típicos (mini "chuleta")</h3>
+    <ul>
+      <li><strong>200 OK</strong> → todo bien (GET normal)</li>
+      <li><strong>201 Created</strong> → creado (POST)</li>
+      <li><strong>204 No Content</strong> → ok pero sin body (DELETE/PUT a veces)</li>
+      <li><strong>400 Bad Request</strong> → datos inválidos</li>
+      <li><strong>401 Unauthorized</strong> → no autenticado</li>
+      <li><strong>403 Forbidden</strong> → autenticado pero sin permisos</li>
+      <li><strong>404 Not Found</strong> → no existe</li>
+      <li><strong>409 Conflict</strong> → conflicto (duplicado, versión, etc.)</li>
+      <li><strong>500</strong> → error del servidor</li>
+    </ul>
+
+    <p>📌 <strong>Senior tip:</strong> <code>res.ok</code> (200–299) es útil, pero a veces necesitas tratar 401/403/409 distinto.</p>
+
+    <h3>7) Ejemplo completo CRUD con fetch (patrón reutilizable)</h3>
+
+    <h4>a) Helper para manejar errores</h4>
+    <pre><code class="language-javascript">async function request(url, options) {
+  const res = await fetch(url, {
+    headers: { Accept: 'application/json', ...(options?.headers ?? {}) },
+    ...options
+  });
+
+  // Intentar leer JSON si existe
+  const contentType = res.headers.get('Content-Type') || '';
+  const isJson = contentType.includes('application/json');
+  const payload = isJson ? await res.json().catch(() => null) : null;
+
+  if (!res.ok) {
+    throw new Error(payload?.message ?? `HTTP Error ${res.status}`);
+  }
+
+  return payload; // puede ser null si 204
+}
+    </code></pre>
+
+    <h4>b) Funciones de API (users)</h4>
+    <pre><code class="language-javascript">export const api = {
+  listUsers: (query = '') => request(`/api/users${query}`),
+
+  getUser: (id) => request(`/api/users/${id}`),
+
+  createUser: (data) =>
+    request('/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }),
+
+  updateUserPut: (id, data) =>
+    request(`/api/users/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }),
+
+  updateUserPatch: (id, partial) =>
+    request(`/api/users/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(partial)
+    }),
+
+  deleteUser: (id) =>
+    request(`/api/users/${id}`, { method: 'DELETE' })
+};
+    </code></pre>
+
+    <h3>8) Buenas prácticas + errores comunes (la parte "senior")</h3>
+
+    <h4>Buenas prácticas</h4>
+    <ul>
+      <li>Usa <code>Accept</code> y <code>Content-Type</code> correctamente.</li>
+      <li>Trata status codes importantes (sobre todo 401/403/409).</li>
+      <li>Separa "capa API" (fetch) de tu UI (React components).</li>
+      <li>Usa PUT/PATCH con intención clara.</li>
+    </ul>
+
+    <h4>Errores típicos</h4>
+    <ul>
+      <li>Mandar <code>PUT</code> con solo un campo y pisar el resto del recurso.</li>
+      <li>Olvidar <code>Content-Type: application/json</code> y el servidor no parsea el body.</li>
+      <li>Asumir que siempre hay JSON en la respuesta (ej: 204).</li>
+      <li>Ignorar <code>res.status</code> y no manejar casos como 401.</li>
+    </ul>
+  </article>
+</section>
