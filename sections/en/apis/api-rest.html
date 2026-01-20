@@ -1,0 +1,250 @@
+<section class="box">
+  <h2>Introduction to REST APIs (Step by Step)</h2>
+  <article>
+    <p>
+      When we start developing applications, we quickly encounter a reality:
+      there are many languages, many frameworks, and many tools.
+    </p>
+    <p>Then a key question arises:</p>
+    <p>👉 <strong>How do different systems communicate with each other?</strong></p>
+    <p>This is where APIs come into play.</p>
+
+    <h3>1. What is an API?</h3>
+    <p>
+      An <strong>API</strong> (Application Programming Interface) is a contract that allows two systems to communicate with each other.
+    </p>
+    <ul>
+      <li>A frontend (for example, a JavaScript app)</li>
+      <li>A backend (for example, in Python, Java, or Node.js)</li>
+    </ul>
+    <p>
+      They don't need to be written in the same language.<br>
+      They only need to speak the same language.
+    </p>
+    <p><strong>That language is standards.</strong></p>
+
+    <h3>2. Types of APIs (overview)</h3>
+    <p>There are different types of APIs:</p>
+    <ul>
+      <li>SOAP (widely used 15–20 years ago)</li>
+      <li>REST (the most common in web development)</li>
+      <li>GraphQL</li>
+      <li>gRPC</li>
+    </ul>
+    <p>In this tutorial we will focus on <strong>REST APIs</strong>, because they are the most used in modern web applications.</p>
+
+    <h3>3. What is a REST API?</h3>
+    <p>REST is not a specific technology, it is an <strong>architectural style</strong>.</p>
+    <p>In practice, a REST API usually meets these characteristics:</p>
+    <ul>
+      <li>Uses the <strong>HTTP</strong> protocol</li>
+      <li>Accesses data through <strong>URLs</strong></li>
+      <li>Works with <strong>resources</strong> (not with actions)</li>
+      <li>Is <strong>stateless</strong></li>
+      <li>Normally exchanges data in <strong>JSON</strong> format</li>
+    </ul>
+
+    <h3>4. HTTP and URLs: the foundation</h3>
+    <p>When you visit a website, you're already using HTTP:</p>
+    <ul>
+      <li>Protocol: <code>https://</code></li>
+      <li>Address: <code>www.example.com</code></li>
+    </ul>
+    <p>REST APIs use exactly the same thing.</p>
+
+    <p><strong>Examples of URLs in an API:</strong></p>
+    <ul>
+      <li><code>/users</code></li>
+      <li><code>/users/42</code></li>
+      <li><code>/products</code></li>
+      <li><code>/orders/123</code></li>
+    </ul>
+    <p>Each URL represents a <strong>resource</strong>.</p>
+
+    <h3>5. What is a resource (key concept)</h3>
+    <p>A very common mistake when starting is to think that a URL is a function.</p>
+    <p>In REST, a URL represents a <strong>noun</strong>, not a verb.</p>
+
+    <p><strong>Correct examples:</strong></p>
+    <ul>
+      <li><code>/users</code></li>
+      <li><code>/users/10</code></li>
+      <li><code>/todos</code></li>
+    </ul>
+
+    <p><strong>Incorrect examples:</strong></p>
+    <ul>
+      <li><code>/getUsers</code></li>
+      <li><code>/createUser</code></li>
+      <li><code>/deleteProduct</code></li>
+    </ul>
+
+    <p>👉 Actions are defined by the <strong>HTTP method</strong>, not the URL name.</p>
+
+    <h3>6. HTTP Methods and their meaning</h3>
+    <p>HTTP methods indicate what we want to do with the resource.</p>
+    <p><strong>The most important ones:</strong></p>
+    <ul>
+      <li><strong>GET</strong> → Retrieve data</li>
+      <li><strong>POST</strong> → Create a resource</li>
+      <li><strong>PUT</strong> → Replace a complete resource</li>
+      <li><strong>PATCH</strong> → Partially modify</li>
+      <li><strong>DELETE</strong> → Delete a resource</li>
+    </ul>
+
+    <p><strong>Examples:</strong></p>
+    <ul>
+      <li><code>GET /users</code> → get all users</li>
+      <li><code>GET /users/5</code> → get user 5</li>
+      <li><code>POST /users</code> → create a user</li>
+      <li><code>PATCH /users/5</code> → modify user 5</li>
+      <li><code>DELETE /users/5</code> → delete user 5</li>
+    </ul>
+
+    <h3>7. JSON: the format for data exchange</h3>
+    <p>
+      REST APIs usually exchange data using <strong>JSON</strong><br>
+      (JSON = JavaScript Object Notation).
+    </p>
+
+    <p>JSON is:</p>
+    <ul>
+      <li>Plain text</li>
+      <li>Lightweight</li>
+      <li>Easy to read</li>
+      <li>Language independent</li>
+    </ul>
+
+    <p><strong>JSON example:</strong></p>
+    <pre><code class="language-javascript">{
+  "id": 1,
+  "name": "Roge",
+  "email": "roge@email.com"
+}
+    </code></pre>
+
+    <p>Although it looks like a JavaScript object, <strong>it's not a JS object</strong>, it's text with rules.</p>
+
+    <h3>8. Request and Response (how communication flows)</h3>
+    <p>REST communication always follows this flow:</p>
+    <ol>
+      <li>The client sends a <strong>request</strong></li>
+      <li>The server processes the request</li>
+      <li>The server responds with a <strong>response</strong></li>
+    </ol>
+
+    <p><strong>Real example</strong></p>
+
+    <p><strong>Request:</strong></p>
+    <ul>
+      <li>Method: <code>GET</code></li>
+      <li>URL: <code>/users/1</code></li>
+    </ul>
+
+    <p><strong>Response:</strong></p>
+    <ul>
+      <li>Status: <code>200 OK</code></li>
+      <li>Body:</li>
+    </ul>
+    <pre><code class="language-javascript">{
+  "id": 1,
+  "name": "Roge"
+}
+    </code></pre>
+
+    <h3>9. Status Codes (very important)</h3>
+    <p>Status codes indicate what happened with the request.</p>
+    <p><strong>Some essential ones:</strong></p>
+    <ul>
+      <li><strong>200 OK</strong> → Everything correct</li>
+      <li><strong>201 Created</strong> → Resource created</li>
+      <li><strong>204 No Content</strong> → Success without content</li>
+      <li><strong>400 Bad Request</strong> → Incorrect data</li>
+      <li><strong>401 Unauthorized</strong> → Not authenticated</li>
+      <li><strong>403 Forbidden</strong> → No permissions</li>
+      <li><strong>404 Not Found</strong> → Doesn't exist</li>
+      <li><strong>500 Internal Server Error</strong> → Server error</li>
+    </ul>
+    <p>👉 The frontend shouldn't guess what happened: the status code tells it.</p>
+
+    <h3>10. Stateless</h3>
+    <p>A REST API is usually <strong>stateless</strong>.</p>
+    <p>This means that:</p>
+    <ul>
+      <li>Each request is independent</li>
+      <li>The server doesn't "remember" previous requests</li>
+      <li>All necessary information travels in each request</li>
+    </ul>
+
+    <p><strong>Example:</strong></p>
+    <ul>
+      <li>The authentication token is sent in each request</li>
+      <li>The server doesn't depend on a session in memory</li>
+    </ul>
+    <p>This makes REST APIs <strong>scalable</strong> and <strong>simple</strong>.</p>
+
+    <h3>11. Common headers</h3>
+    <p>In addition to the body, requests include <strong>headers</strong>.</p>
+    <p><strong>Some very common ones:</strong></p>
+    <ul>
+      <li><code>Content-Type: application/json</code></li>
+      <li><code>Accept: application/json</code></li>
+      <li><code>Authorization: Bearer TOKEN</code></li>
+    </ul>
+    <p>Many real problems come from misconfigured headers.</p>
+
+    <h3>12. Complete REST API example</h3>
+
+    <h4>Get tasks</h4>
+    <p><code>GET /todos</code></p>
+    <p><strong>Response:</strong></p>
+    <pre><code class="language-javascript">[
+  { "id": 1, "title": "Buy bread", "done": false },
+  { "id": 2, "title": "Study REST", "done": true }
+]
+    </code></pre>
+
+    <h4>Create a task</h4>
+    <p><code>POST /todos</code></p>
+    <p><strong>Request body:</strong></p>
+    <pre><code class="language-javascript">{
+  "title": "Go to gym",
+  "done": false
+}
+    </code></pre>
+
+    <p><strong>Response:</strong></p>
+    <ul>
+      <li>Status: <code>201 Created</code></li>
+    </ul>
+    <pre><code class="language-javascript">{
+  "id": 3,
+  "title": "Go to gym",
+  "done": false
+}
+    </code></pre>
+
+    <h3>13. Why REST works so well</h3>
+    <p>REST has become the de facto standard because:</p>
+    <ul>
+      <li>It's based on HTTP (already existing)</li>
+      <li>It's simple to understand</li>
+      <li>It's flexible</li>
+      <li>It works the same across any language</li>
+      <li>It's ideal for web and mobile applications</li>
+    </ul>
+    <p>
+      A JavaScript frontend can communicate without problems with a backend in Python, Java, or Go thanks to these standards.
+    </p>
+
+    <h3>14. Final summary</h3>
+    <ul>
+      <li>An API is a contract between systems</li>
+      <li>REST is a style for designing APIs</li>
+      <li>Uses HTTP, URLs and standard methods</li>
+      <li>Works with resources</li>
+      <li>Normally exchanges data in JSON</li>
+      <li>It's simple, scalable and widely used in the modern web</li>
+    </ul>
+  </article>
+</section>
