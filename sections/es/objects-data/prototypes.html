@@ -1,0 +1,417 @@
+<!-- PROTOTYPES IN JAVASCRIPT -->
+<section id="prototypes" class="box">
+  <h2>Prototipos en JavaScript</h2>
+  <p class="subtitle">Entendiendo el mecanismo de herencia y lookup de propiedades</p>
+
+  <article>
+    <h3>1️⃣ ¿Qué Problema Resuelven los Prototipos?</h3>
+    <p>Cuando accedes a <code>obj.algo</code>, el motor de JavaScript hace un lookup:</p>
+
+    <div class="key-concept">
+      <h4>Proceso de Búsqueda:</h4>
+      <ol>
+        <li>¿Existe <code>algo</code> en el objeto?</li>
+        <li>Si no, mira en su prototipo (<code>[[Prototype]]</code>)</li>
+        <li>Si no, sube por la cadena (prototype chain)</li>
+        <li>Si no aparece, devuelve <code>undefined</code></li>
+      </ol>
+    </div>
+
+    <h4>Ejemplo Claro</h4>
+    <pre><code class="language-javascript">
+const person = { name: "Bryce" };
+
+console.log(person.name);       // "Bryce" (propiedad propia)
+console.log(person.toString);   // function... (viene de Object.prototype)
+console.log(person.xyz);        // undefined
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>💡 La Idea Potente</h4>
+      <p>Hay métodos que "no están" en el objeto pero funcionan. Vienen del prototipo.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>2️⃣ Todo Objeto Tiene [[Prototype]]</h3>
+    <p>Todo objeto en JavaScript tiene un prototipo interno llamado <code>[[Prototype]]</code>.</p>
+
+    <h4>Ver el Prototipo (Forma Moderna)</h4>
+    <pre><code class="language-javascript">
+const person = { name: "Bryce" };
+
+console.log(Object.getPrototypeOf(person) === Object.prototype);
+// true
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>👉 Importante</h4>
+      <p><code>Object.prototype</code> es como la "base" de objetos normales en JavaScript.</p>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚠️ Sobre __proto__</h4>
+      <p><code>__proto__</code> es legacy (heredado). Funciona, pero no se recomienda.</p>
+      <p><strong>Forma moderna:</strong></p>
+      <ul>
+        <li><code>Object.getPrototypeOf(obj)</code> para obtener el prototipo</li>
+        <li><code>Object.setPrototypeOf(obj, proto)</code> para establecerlo (con cautela)</li>
+        <li><code>Object.create(proto)</code> para crear objetos con un prototipo dado</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>3️⃣ De Dónde Salen los Métodos "Mágicos"</h3>
+
+    <pre><code class="language-javascript">
+const person = { name: "Bryce", age: 37 };
+
+console.log(person.toString());
+// "[object Object]"
+
+console.log(person.hasOwnProperty("name"));
+// true
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Explicación</h4>
+      <p>Estos métodos no están en <code>person</code>, están en <code>Object.prototype</code>.</p>
+      <p>El motor los encuentra siguiendo la cadena de prototipos.</p>
+    </div>
+
+    <h4>Verificar Propiedades Propias</h4>
+    <pre><code class="language-javascript">
+console.log(person.hasOwnProperty("toString"));
+// false (viene del prototipo)
+
+console.log(person.hasOwnProperty("name"));
+// true (propiedad propia)
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>4️⃣ Herencia Real con Object.create</h3>
+    <p>Aquí es donde los prototipos muestran su verdadero poder.</p>
+
+    <pre><code class="language-javascript">
+const personProto = {
+  greet() {
+    return `Hola, soy ${this.name}`;
+  }
+};
+
+const bryce = Object.create(personProto);
+bryce.name = "Bryce";
+bryce.age = 37;
+
+console.log(bryce.greet());
+// "Hola, soy Bryce"
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Esto SÍ es Prototipos</h4>
+      <p><code>greet</code> no está en <code>bryce</code>, está en <code>personProto</code>, pero se encuentra por la cadena.</p>
+    </div>
+
+    <h4>Verificar</h4>
+    <pre><code class="language-javascript">
+console.log(bryce.hasOwnProperty("greet"));
+// false
+
+console.log(Object.getPrototypeOf(bryce) === personProto);
+// true
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>5️⃣ Compartir Métodos (La Razón Práctica)</h3>
+    <p>Si creas 1000 personas:</p>
+
+    <div class="problem-box">
+      <h4>❌ Sin prototipos:</h4>
+      <p>Si defines <code>greet</code> dentro de cada objeto → 1000 funciones en memoria</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Con prototipos:</h4>
+      <p>Si <code>greet</code> vive en el prototipo → 1 función compartida</p>
+    </div>
+
+    <pre><code class="language-javascript">
+const personProto = {
+  greet() {
+    return `Hola, soy ${this.name}`;
+  }
+};
+
+const a = Object.create(personProto);
+a.name = "A";
+
+const b = Object.create(personProto);
+b.name = "B";
+
+console.log(a.greet === b.greet);
+// true (¡misma función compartida!)
+    </code></pre>
+
+    <div class="interview-box">
+      <h4>💡 El "Click" para Juniors</h4>
+      <p>Ese <code>true</code> demuestra que ambos objetos comparten el mismo método en memoria.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>6️⃣ Entendiendo <code>this</code> en Métodos del Prototipo</h3>
+
+    <p>Muchos juniors se preguntan: "¿cómo sabe el método quién es <code>this</code>?"</p>
+
+    <pre><code class="language-javascript">
+const personProto = {
+  greet() {
+    return `Hola, soy ${this.name}`;
+  }
+};
+
+const bryce = Object.create(personProto);
+bryce.name = "Bryce";
+
+const ana = Object.create(personProto);
+ana.name = "Ana";
+
+console.log(bryce.greet()); // "Hola, soy Bryce"
+console.log(ana.greet());   // "Hola, soy Ana"
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Justificación</h4>
+      <p>El método se ejecuta con el "receiver":</p>
+      <ul>
+        <li><code>bryce.greet()</code> → <code>this === bryce</code></li>
+        <li><code>ana.greet()</code> → <code>this === ana</code></li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>7️⃣ Conectar con <code>class</code> (Forma Moderna)</h3>
+
+    <p>Hoy en día escribimos esto con <code>class</code>, que es azúcar sintáctico sobre prototipos.</p>
+
+    <pre><code class="language-javascript">
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  greet() {
+    return `Hola, soy ${this.name}`;
+  }
+}
+
+const bryce = new Person("Bryce", 37);
+
+console.log(bryce.greet());
+// "Hola, soy Bryce"
+
+console.log(Object.getPrototypeOf(bryce) === Person.prototype);
+// true
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>👉 Importante</h4>
+      <p>Los métodos en una <code>class</code> viven en <code>Person.prototype</code>.</p>
+      <p>JavaScript sigue siendo prototipal, pero hoy lo escribimos con <code>class</code>.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>8️⃣ Diferencia Clave: <code>prototype</code> vs <code>[[Prototype]]</code></h3>
+
+    <div class="warning-box">
+      <h4>⚠️ Muy Importante (Confusión Común)</h4>
+      <p><code>prototype</code> NO es una propiedad de cualquier objeto.</p>
+      <p><code>prototype</code> es una propiedad de las <strong>funciones</strong> (cuando se usan como constructor) y de las <strong>clases</strong>.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Diferencias Claras</h4>
+      <ul>
+        <li><strong>Person.prototype</strong> → objeto usado como prototipo para instancias creadas con <code>new Person()</code></li>
+        <li><strong>bryce.__proto__</strong> / <strong>Object.getPrototypeOf(bryce)</strong> → el prototipo real de esa instancia</li>
+      </ul>
+    </div>
+
+    <h4>Demostración</h4>
+    <pre><code class="language-javascript">
+function Person(name) {
+  this.name = name;
+}
+
+Person.prototype.greet = function() {
+  return `Hola, soy ${this.name}`;
+};
+
+const bryce = new Person("Bryce");
+
+console.log(Object.getPrototypeOf(bryce) === Person.prototype);
+// true
+
+console.log(Person.prototype.hasOwnProperty("greet"));
+// true
+
+console.log(bryce.hasOwnProperty("greet"));
+// false
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>9️⃣ Caso Especial: Object.create(null)</h3>
+
+    <p>A veces "prototipo nulo" es intencional.</p>
+
+    <pre><code class="language-javascript">
+const dict = Object.create(null);
+dict.apple = 1;
+dict.orange = 2;
+
+console.log(dict.toString);
+// undefined (no hereda de Object.prototype)
+
+console.log(Object.getPrototypeOf(dict));
+// null
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Casos de Uso</h4>
+      <ul>
+        <li>Objetos usados como "diccionarios puros"</li>
+        <li>Evitar colisiones con nombres de métodos heredados</li>
+        <li>Mejor rendimiento en lookups cuando no necesitas métodos heredados</li>
+      </ul>
+    </div>
+
+    <h4>Comparación</h4>
+    <pre><code class="language-javascript">
+const normalObj = {};
+const pureDict = Object.create(null);
+
+console.log(normalObj.toString);   // function
+console.log(pureDict.toString);    // undefined
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>🔟 Advertencias y Mejores Prácticas</h3>
+
+    <div class="warning-box">
+      <h4>⚠️ Object.setPrototypeOf (Performance)</h4>
+      <p>Cambiar el prototipo en caliente puede afectar rendimiento/optimizaciones del motor.</p>
+      <pre><code class="language-javascript">
+// ❌ Evitar esto
+const obj = { name: "test" };
+Object.setPrototypeOf(obj, someProto);
+      </code></pre>
+      <p><strong>✅ Mejor:</strong> Crear con el prototipo correcto desde el inicio.</p>
+      <pre><code class="language-javascript">
+// ✅ Forma recomendada
+const obj = Object.create(someProto);
+obj.name = "test";
+      </code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>👉 Recomendaciones</h4>
+      <ul>
+        <li>Usa <code>class</code> para definir "tipos" (es más clara)</li>
+        <li>Usa <code>Object.create()</code> cuando necesites herencia explícita</li>
+        <li>Usa <code>Object.getPrototypeOf()</code> en lugar de <code>__proto__</code></li>
+        <li>Evita <code>Object.setPrototypeOf()</code> en código de producción</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣1️⃣ Cadena de Prototipos Completa</h3>
+
+    <pre><code class="language-javascript">
+class Animal {
+  eat() {
+    return "eating...";
+  }
+}
+
+class Dog extends Animal {
+  bark() {
+    return "woof!";
+  }
+}
+
+const myDog = new Dog();
+
+console.log(myDog.bark());  // "woof!"
+console.log(myDog.eat());   // "eating..."
+
+// Cadena completa:
+console.log(Object.getPrototypeOf(myDog) === Dog.prototype);
+// true
+
+console.log(Object.getPrototypeOf(Dog.prototype) === Animal.prototype);
+// true
+
+console.log(Object.getPrototypeOf(Animal.prototype) === Object.prototype);
+// true
+
+console.log(Object.getPrototypeOf(Object.prototype));
+// null
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 La Cadena Completa</h4>
+      <p><code>myDog</code> → <code>Dog.prototype</code> → <code>Animal.prototype</code> → <code>Object.prototype</code> → <code>null</code></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣2️⃣ Resumen Mental Final</h3>
+
+    <div class="interview-box">
+      <h4>Conceptos Clave</h4>
+
+      <p><strong>Todo objeto tiene [[Prototype]]</strong></p>
+      <ul>
+        <li>Se accede con <code>Object.getPrototypeOf(obj)</code></li>
+        <li>Normalmente apunta a <code>Object.prototype</code></li>
+      </ul>
+
+      <p><strong>prototype es propiedad de funciones/clases</strong></p>
+      <ul>
+        <li>Define qué prototipo tendrán las instancias</li>
+        <li><code>new Person()</code> → instancia con <code>[[Prototype]] = Person.prototype</code></li>
+      </ul>
+
+      <p><strong>Ventajas de prototipos</strong></p>
+      <ul>
+        <li>Compartir métodos entre instancias</li>
+        <li>Ahorro de memoria</li>
+        <li>Herencia y reutilización de código</li>
+      </ul>
+
+      <p><strong>Forma moderna</strong></p>
+      <ul>
+        <li>Usa <code>class</code> para claridad</li>
+        <li>Usa <code>Object.create()</code> cuando necesites control</li>
+        <li>Evita <code>__proto__</code> y <code>setPrototypeOf</code></li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain" target="_blank">MDN: Inheritance and the prototype chain</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf" target="_blank">MDN: Object.getPrototypeOf()</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create" target="_blank">MDN: Object.create()</a>
+    <a href="https://javascript.info/prototype-inheritance" target="_blank">JavaScript.info: Prototypal inheritance</a>
+    <a href="https://chatgpt.com/c/69617f24-b70c-8326-9999-b7b19622512d" target="_blank">ChatGPT: Prototypes Explained</a>
+  </div>
+</section>

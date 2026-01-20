@@ -1,0 +1,250 @@
+<!-- INSTANCES IN JAVASCRIPT -->
+<section id="instances" class="box">
+  <h2>Instances in JavaScript (new, instanceof, prototypes)</h2>
+
+  <article>
+    <h3>0) Objective</h3>
+
+    <div class="solution-box">
+      <p>Understand two different things:</p>
+      <ul>
+        <li>How instances (objects) are created</li>
+        <li>How to check if an object is an instance of a class (<code>instanceof</code>)</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>1) Create an instance with <code>new</code></h3>
+
+    <p>When you do <code>new</code>, 2 things happen:</p>
+
+    <ul>
+      <li>✅ A new object is created</li>
+      <li>✅ The <code>constructor()</code> is executed</li>
+    </ul>
+
+    <pre><code class="language-javascript">
+class Car {
+  constructor(brand) {
+    this.brand = brand;
+  }
+}
+
+const car = new Car("BMW");
+console.log(car); // Car { brand: "BMW" }
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>📌 Meaning</h4>
+      <p><code>new Car()</code> = "create a real car from the Car template".</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>2) Why <code>car === Car</code> is incorrect</h3>
+
+    <p>This is a typical mistake:</p>
+
+    <pre><code class="language-javascript">
+console.log(car === Car); // false
+    </code></pre>
+
+    <p>Because you're comparing:</p>
+
+    <ul>
+      <li><code>car</code> → object (instance)</li>
+      <li><code>Car</code> → class (constructor function / template)</li>
+    </ul>
+
+    <div class="solution-box">
+      <h4>🧠 Mental example</h4>
+      <ul>
+        <li><code>car</code> is a cookie 🍪</li>
+        <li><code>Car</code> is the mold 🧩</li>
+      </ul>
+      <p>You can't compare them as if they were the same thing.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>3) The correct check: <code>instanceof</code></h3>
+
+    <p>To know if <code>car</code> is a <code>Car</code>, use:</p>
+
+    <pre><code class="language-javascript">
+console.log(car instanceof Car); // true
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>✅ What does instanceof mean?</h4>
+      <p>It means:</p>
+      <p>"Does <code>Car.prototype</code> exist within the prototype chain of <code>car</code>?"</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>4) The prototype chain (very important)</h3>
+
+    <p>JavaScript inherits like this:</p>
+
+    <pre><code class="language-javascript">
+car → Car.prototype → Object.prototype → null
+    </code></pre>
+
+    <p>When you do this:</p>
+
+    <pre><code class="language-javascript">
+console.log(car instanceof Car);
+    </code></pre>
+
+    <p>JavaScript looks if <code>Car.prototype</code> is within that chain.</p>
+  </article>
+
+  <article>
+    <h3>5) Create "instances" without <code>new</code>: <code>Object.create</code></h3>
+
+    <p>Now this is important:</p>
+
+    <pre><code class="language-javascript">
+const anotherCar = Object.create(Car.prototype);
+    </code></pre>
+
+    <ul>
+      <li>✅ Creates an object whose prototype is <code>Car.prototype</code></li>
+      <li>❌ Does NOT execute the constructor</li>
+    </ul>
+
+    <h4>Example:</h4>
+
+    <pre><code class="language-javascript">
+class Car {
+  constructor() {
+    this.wheels = 4;
+  }
+}
+
+const anotherCar = Object.create(Car.prototype);
+
+console.log(anotherCar instanceof Car); // true ✅
+console.log(anotherCar.wheels);         // undefined ❗️
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>📌 Why undefined?</h4>
+      <p>Because the constructor was never executed.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>6) Quick comparison: <code>new</code> vs <code>Object.create</code></h3>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+      <thead>
+        <tr style="background-color: #f0f0f0;">
+          <th style="border: 1px solid #ddd; padding: 8px;">Method</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Creates object</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Links prototype</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Executes constructor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="border: 1px solid #ddd; padding: 8px;"><code>new Car()</code></td>
+          <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">✅</td>
+          <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">✅</td>
+          <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">✅</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ddd; padding: 8px;"><code>Object.create(Car.prototype)</code></td>
+          <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">✅</td>
+          <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">✅</td>
+          <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">❌</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="interview-box">
+      <h4>👉 Quick rule</h4>
+      <ul>
+        <li>I want a complete object → <code>new</code></li>
+        <li>I want to create a clone / prototype → <code>Object.create</code></li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>7) "Stricter" check (exact prototype)</h3>
+
+    <p>Sometimes you want to verify this:</p>
+
+    <p>✅ "Is exactly a Car (not just inheritance)"</p>
+
+    <pre><code class="language-javascript">
+console.log(Object.getPrototypeOf(car) === Car.prototype); // true
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>📌 Difference</h4>
+      <ul>
+        <li><code>instanceof</code> → accepts inheritance</li>
+        <li><code>getPrototypeOf === prototype</code> → exact</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>8) Real example with inheritance</h3>
+
+    <pre><code class="language-javascript">
+class Vehicle {}
+class Car extends Vehicle {}
+
+const c = new Car();
+
+console.log(c instanceof Car);     // true
+console.log(c instanceof Vehicle); // true
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Result</h4>
+      <p>Because <code>Car</code> inherits from <code>Vehicle</code></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>✅ Summary</h3>
+
+    <div class="interview-box">
+      <h4>What you must remember</h4>
+      <ul>
+        <li>✅ <code>new</code> creates complete instances</li>
+        <li>✅ <code>instanceof</code> checks instances using prototypes</li>
+        <li>✅ <code>Object.create</code> creates objects without constructor</li>
+        <li>✅ The key is the prototype chain</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Common Errors Checklist</h3>
+
+    <div class="warning-box">
+      <h4>⚠️ Typical errors to avoid</h4>
+      <ul>
+        <li>❌ Comparing instance with class using <code>===</code></li>
+        <li>❌ Confusing <code>instanceof</code> with <code>typeof</code></li>
+        <li>❌ Expecting <code>Object.create</code> to execute the constructor</li>
+        <li>❌ Not understanding the prototype chain</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new" target="_blank">MDN: new operator</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof" target="_blank">MDN: instanceof</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create" target="_blank">MDN: Object.create()</a>
+    <a href="https://javascript.info/instanceof" target="_blank">JavaScript.info: Class checking instanceof</a>
+    <a href="https://chatgpt.com/c/6962a194-7fd8-8326-ba31-a5ee9a2d8c11" target="_blank">ChatGPT: Instances Explained</a>
+  </div>
+</section>

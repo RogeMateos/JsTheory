@@ -1,0 +1,93 @@
+<section class="box">
+  <h2>APIs</h2>
+  <article>
+    <h3>What is an API?</h3>
+    <p>
+      An <strong>API</strong> (Application Programming Interface) is a communication interface that allows one application to talk to another in a controlled, secure, and predictable way.
+    </p>
+    <p>
+      <strong>Simply put:</strong><br>
+      👉 an API is a contract that defines how to request something and what you'll receive in return, without needing to know how the system behind it is built.
+    </p>
+
+    <h3>Why do we need APIs?</h3>
+    <p>When we develop an application (web, mobile, desktop, video games, etc.), we almost always need to interact with external systems, for example:</p>
+    <ul>
+      <li>A backend that manages users</li>
+      <li>A remote server</li>
+      <li>A payment service</li>
+      <li>A data provider</li>
+      <li>An AI service like ChatGPT</li>
+    </ul>
+    <p>
+      The problem is that we can't talk directly "raw" with those systems.
+      Each one can be built with different languages, technologies, and architectures.
+    </p>
+    <p><strong>This is where the API comes in.</strong></p>
+
+    <h3>The API as a contract</h3>
+    <p>An API acts as a communication contract between two parties:</p>
+    <ul>
+      <li>🟦 <strong>Client</strong> (frontend, mobile app, etc.)</li>
+      <li>🟥 <strong>Server / external system</strong></li>
+    </ul>
+
+    <p>This contract defines, for example:</p>
+    <ul>
+      <li>What actions I can perform</li>
+      <li>What data I need to send</li>
+      <li>In what format</li>
+      <li>What response I will receive</li>
+      <li>What errors can occur</li>
+    </ul>
+
+    <p>Thanks to this contract:</p>
+    <ul>
+      <li>✅ The client doesn't need to know how the system works internally</li>
+      <li>✅ The server controls what it exposes and how</li>
+    </ul>
+
+    <h3>Security and standardization</h3>
+    <p>APIs exist so that communication is:</p>
+    <ul>
+      <li><strong>Secure</strong> → access control, authentication, permissions</li>
+      <li><strong>Consistent</strong> → always responds in the same way</li>
+      <li><strong>Predictable</strong> → you know what to expect if you make a correct or incorrect request</li>
+    </ul>
+    <p>
+      In most modern cases, this communication is done using common standards (like <strong>HTTP</strong> and <strong>JSON</strong>), which allows applications written in different technologies to understand each other without problems.
+    </p>
+
+    <h3>Practical example</h3>
+    <p>Imagine that your application needs user data.</p>
+    <p>Instead of saying:</p>
+    <blockquote>"Server, give me the user data"</blockquote>
+
+    <p>The API defines something like:</p>
+    <ul>
+      <li>What request you must make</li>
+      <li>What data to send</li>
+      <li>What format you will receive</li>
+    </ul>
+
+    <p>If you follow that contract, the server returns the information.<br>
+    If not, the request fails.</p>
+
+    <h3>APIs in everyday life</h3>
+    <p>When an application:</p>
+    <ul>
+      <li>Gets data from a backend</li>
+      <li>Consumes external services</li>
+      <li>Connects with third-party platforms</li>
+      <li>Integrates advanced functionalities (like AI)</li>
+    </ul>
+    <p>👉 <strong>It's using an API</strong>, even though we often don't notice it.</p>
+
+    <h3>💡 Key idea of this lesson</h3>
+    <p>
+      <strong>An API is not the system itself,<br>
+      it's the official and controlled way to communicate with it.</strong>
+    </p>
+    <p>If this didn't exist, integrating modern applications would be practically impossible.</p>
+  </article>
+</section>

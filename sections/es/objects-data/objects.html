@@ -78,6 +78,782 @@
     </code></pre>
   </article>
 
+  <article>
+    <h3>Funciones Constructoras y prototype (Era Pre-ES6)</h3>
+
+    <div class="key-concept">
+      <h4>🏭 La Metáfora: Persona es una fábrica</h4>
+      <p><strong>Métodos estáticos:</strong> son herramientas de la fábrica</p>
+      <ul>
+        <li>Se usan así: <code>Persona.crearDesdeJSON(...)</code></li>
+        <li>No dependen de una persona concreta</li>
+      </ul>
+      <p><strong>Métodos de instancia:</strong> son habilidades que tienen todas las personas fabricadas</p>
+      <ul>
+        <li>Se usan así: <code>bruce.saludar()</code></li>
+        <li>Dependen de <code>this</code> (del objeto concreto)</li>
+      </ul>
+    </div>
+
+    <h4>A) Constructor (propiedades por instancia)</h4>
+    <pre><code class="language-javascript">
+function Persona(nombre, edad) {
+  this.nombre = nombre;
+  this.edad = edad;
+}
+    </code></pre>
+
+    <h4>B) Método de instancia (compartido) → va en prototype</h4>
+    <pre><code class="language-javascript">
+Persona.prototype.saludar = function () {
+  return `Hola, soy ${this.nombre}`;
+};
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Por qué en prototype</h4>
+      <p><code>Persona.prototype.saludar</code> → lo encuentran las instancias por la cadena de prototipos</p>
+      <p>Todas las instancias <strong>comparten la misma función</strong> (ahorro de memoria)</p>
+    </div>
+
+    <h4>C) Método estático → va en la función Persona</h4>
+    <pre><code class="language-javascript">
+Persona.crearAnonimo = function () {
+  return new Persona("Anónimo", 0);
+};
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Método estático</h4>
+      <p><code>Persona.crearAnonimo</code> → es de la "fábrica", no de los "productos"</p>
+    </div>
+
+    <h4>D) Uso</h4>
+    <pre><code class="language-javascript">
+const bruce = new Persona("Bruce", 30);
+
+console.log(bruce.saludar());        // ✅ "Hola, soy Bruce" (método de instancia)
+console.log(Persona.crearAnonimo()); // ✅ Persona { nombre: 'Anónimo', edad: 0 }
+
+console.log(bruce.crearAnonimo);     // ❌ undefined (no es de instancia)
+console.log(Persona.saludar);        // ❌ undefined (saludar no es estático)
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>⚠️ Error típico: "puse el método y no aparece"</h4>
+      <p>Si haces esto:</p>
+      <pre><code class="language-javascript">
+Persona.saludar = function () { ... }  // ❌ Estático (error común)
+      </code></pre>
+      <p>Entonces:</p>
+      <pre><code class="language-javascript">
+bruce.saludar() // ❌ TypeError: bruce.saludar is not a function
+      </code></pre>
+      <p><strong>Solución:</strong> Debe ir en <code>Persona.prototype.saludar</code></p>
+    </div>
+
+    <h4>Regla simple</h4>
+    <div class="key-concept">
+      <ul>
+        <li><code>Persona.algo</code> = estático</li>
+        <li><code>Persona.prototype.algo</code> = instancia</li>
+      </ul>
+    </div>
+
+    <h4>E) prototype vs __proto__ (entender la conexión)</h4>
+    <pre><code class="language-javascript">
+const bruce = new Persona("Bruce", 30);
+
+// Verificación:
+console.log(Object.getPrototypeOf(bruce) === Persona.prototype);
+// true
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Mini-diagrama</h4>
+      <ul>
+        <li><code>Persona.prototype</code> → el objeto que será el "padre" (prototipo) de las instancias creadas con <code>new Persona()</code></li>
+        <li><code>Object.getPrototypeOf(bruce)</code> → apunta a <code>Persona.prototype</code></li>
+      </ul>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚠️ Evita __proto__</h4>
+      <p><code>__proto__</code> se considera legado/compat</p>
+      <p><strong>Usa en su lugar:</strong></p>
+      <ul>
+        <li><code>Object.getPrototypeOf(obj)</code> para obtener el prototipo</li>
+        <li><code>Object.setPrototypeOf(obj, proto)</code> para establecerlo (con cuidado, es lento)</li>
+      </ul>
+    </div>
+
+    <h4>F) Por qué poner métodos en prototype (performance/memoria)</h4>
+
+    <h5>❌ Definir dentro del constructor:</h5>
+    <pre><code class="language-javascript">
+function Persona(nombre) {
+  this.nombre = nombre;
+  this.saludar = function () {
+    return `Hola, soy ${this.nombre}`;
+  };
+}
+
+const a = new Persona("A");
+const b = new Persona("B");
+
+console.log(a.saludar === b.saludar); // false
+// 👉 Cada instancia crea una copia nueva de saludar (más memoria)
+    </code></pre>
+
+    <h5>✅ Definir en prototype:</h5>
+    <pre><code class="language-javascript">
+function Persona(nombre) {
+  this.nombre = nombre;
+}
+
+Persona.prototype.saludar = function () {
+  return `Hola, soy ${this.nombre}`;
+};
+
+const a = new Persona("A");
+const b = new Persona("B");
+
+console.log(a.saludar === b.saludar); // true
+// 👉 Todas las instancias comparten la misma función
+    </code></pre>
+
+    <div class="interview-box">
+      <h4>💡 Este true es el "click" para muchos juniors</h4>
+      <p>Prueba que ambos objetos usan la misma función en memoria.</p>
+    </div>
+
+    <h4>G) Versión moderna (class) y equivalencias</h4>
+    <pre><code class="language-javascript">
+class Persona {
+  constructor(nombre, edad) {
+    this.nombre = nombre;
+    this.edad = edad;
+  }
+
+  saludar() { // ✅ método de instancia (vive en Persona.prototype)
+    return `Hola, soy ${this.nombre}`;
+  }
+
+  static crearAnonimo() { // ✅ método estático (vive en Persona)
+    return new Persona("Anónimo", 0);
+  }
+}
+
+const bruce = new Persona("Bruce", 30);
+console.log(bruce.saludar());        // "Hola, soy Bruce"
+console.log(Persona.crearAnonimo()); // Persona { nombre: 'Anónimo', edad: 0 }
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Equivalencias reales</h4>
+      <ul>
+        <li><code>saludar()</code> en class → va al <code>prototype</code></li>
+        <li><code>static crearAnonimo()</code> → va al constructor/clase</li>
+      </ul>
+      <p><strong>class es azúcar sintáctico sobre el mismo sistema de prototipos</strong></p>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚠️ Importante: NO está deprecado</h4>
+      <p>Funciones constructoras y <code>prototype</code> <strong>NO están deprecados</strong></p>
+      <ul>
+        <li>Hoy se prefiere <code>class</code> por legibilidad y estándar</li>
+        <li>Pero <code>prototype</code> sigue siendo el motor real por debajo</li>
+        <li>En proyectos legacy verás funciones constructoras constantemente</li>
+      </ul>
+    </div>
+
+    <h4>H) Ejercicios prácticos</h4>
+    <div class="key-concept">
+      <h4>1️⃣ Crea <code>Persona.desdeObjeto({nombre, edad})</code> como método estático</h4>
+      <pre><code class="language-javascript">
+// Tu código aquí
+Persona.desdeObjeto = function(obj) {
+  return new Persona(obj.nombre, obj.edad);
+};
+
+// Prueba:
+const p = Persona.desdeObjeto({nombre: "Ana", edad: 25});
+console.log(p.saludar()); // "Hola, soy Ana"
+      </code></pre>
+
+      <h4>2️⃣ Añade <code>esMayorDeEdad()</code> como método de instancia</h4>
+      <pre><code class="language-javascript">
+// Tu código aquí
+Persona.prototype.esMayorDeEdad = function() {
+  return this.edad >= 18;
+};
+
+// Prueba:
+const menor = new Persona("Luis", 15);
+const mayor = new Persona("Ana", 25);
+console.log(menor.esMayorDeEdad()); // false
+console.log(mayor.esMayorDeEdad()); // true
+      </code></pre>
+
+      <h4>3️⃣ Demuestra que el método de instancia es compartido</h4>
+      <pre><code class="language-javascript">
+const a = new Persona("A", 20);
+const b = new Persona("B", 30);
+
+console.log(a.saludar === b.saludar); // true (si está en prototype)
+console.log(a.esMayorDeEdad === b.esMayorDeEdad); // true
+      </code></pre>
+    </div>
+
+    <h4>I) Checklist mental (3 reglas de oro)</h4>
+    <div class="interview-box">
+      <ul>
+        <li>✅ Propiedades únicas por instancia → dentro del constructor</li>
+        <li>✅ Métodos compartidos → en <code>prototype</code></li>
+        <li>✅ Métodos/propiedades de la "fábrica" → estáticos (en la función/clase)</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Clases en JavaScript (ES6+)</h3>
+
+    <h4>Paso 1 — El Problema Real</h4>
+    <p>Imagina que necesitas crear múltiples personas con las mismas propiedades y métodos:</p>
+
+    <pre><code class="language-javascript">
+// ❌ Con objetos literales, repites lógica
+const p1 = {
+  name: "Bryce",
+  age: 37,
+  greet() {
+    return `Hola, soy ${this.name}`;
+  }
+};
+
+const p2 = {
+  name: "Ana",
+  age: 22,
+  greet() {
+    return `Hola, soy ${this.name}`;
+  }
+};
+
+// Problema: estás duplicando el método greet
+    </code></pre>
+
+    <div class="problem-box">
+      <h4>El dolor del objeto literal</h4>
+      <ul>
+        <li>Sirve para un objeto</li>
+        <li>Si necesitas muchas personas con mismas propiedades y métodos, repites lógica</li>
+        <li>Difícil de mantener cuando cambias el comportamiento</li>
+      </ul>
+    </div>
+
+    <h4>Paso 2 — Solución Antigua: Función Constructora + prototype</h4>
+    <p>Aquí es de dónde venimos y por qué existe <code>prototype</code>:</p>
+
+    <pre><code class="language-javascript">
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+Person.prototype.greet = function () {
+  return `Hola, soy ${this.name}`;
+};
+
+const person = new Person("Bryce", 37);
+console.log(person.greet()); // "Hola, soy Bryce"
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>Punto clave</h4>
+      <p><code>greet</code> está en <code>Person.prototype</code>, no duplicado por instancia.</p>
+      <p>Esto ahorra memoria cuando tienes 1000 personas.</p>
+    </div>
+
+    <h4>Paso 3 — Solución Moderna: class (Misma Idea, Más Legible)</h4>
+    <p>ES6 introdujo la sintaxis <code>class</code>, que es azúcar sintáctico sobre prototipos:</p>
+
+    <pre><code class="language-javascript">
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  greet() {
+    return `Hola, soy ${this.name}`;
+  }
+}
+
+const person = new Person("Bryce", 37);
+console.log(person.greet()); // "Hola, soy Bryce"
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Frase importante</h4>
+      <p><strong><code>Person.prototype.greet</code> existe igualmente.</strong></p>
+      <p>La sintaxis <code>class</code> es solo una forma más clara de escribir el mismo patrón de prototipos.</p>
+    </div>
+
+    <h4>Paso 4 — Demostración: class == prototype Debajo</h4>
+    <p>Ejemplo que "abre ojos":</p>
+
+    <pre><code class="language-javascript">
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  greet() {
+    return `Hola, soy ${this.name}`;
+  }
+}
+
+// Revelando la verdad:
+console.log(typeof Person); // "function" ← ¡es una función!
+console.log(Person.prototype.hasOwnProperty("greet")); // true
+
+const person = new Person("Bryce", 37);
+console.log(Object.getPrototypeOf(person) === Person.prototype); // true
+    </code></pre>
+
+    <div class="interview-box">
+      <h4>💡 Explicación</h4>
+      <p>"Una clase en JS es una función especial, y sus métodos van al <code>prototype</code>."</p>
+      <p>No es como Java o C#. JavaScript sigue siendo prototipal.</p>
+    </div>
+
+    <h4>Paso 5 — Getters/Setters con un Caso Real</h4>
+    <p>No lo menciono "por mencionar". Veamos un caso de negocio: <strong>impedir edades negativas</strong>.</p>
+
+    <pre><code class="language-javascript">
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age; // activará el setter
+  }
+
+  get age() {
+    return this._age;
+  }
+
+  set age(value) {
+    if (value < 0) {
+      throw new Error("Age cannot be negative");
+    }
+    this._age = value;
+  }
+
+  greet() {
+    return `Hola, soy ${this.name}`;
+  }
+}
+
+const person = new Person("Bryce", 37);
+console.log(person.age); // 37 (usa el getter)
+
+person.age = 40; // usa el setter
+console.log(person.age); // 40
+
+person.age = -5; // Error: Age cannot be negative
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Senior tip</h4>
+      <ul>
+        <li>Usa <code>_age</code> como backing field (convención de "privado")</li>
+        <li>Explica que <code>age</code> "parece propiedad" pero es método</li>
+        <li>Los getters/setters permiten validación sin cambiar la API externa</li>
+      </ul>
+    </div>
+
+    <h4>Paso 6 — Privacidad: Lo Que Sí Funciona Hoy</h4>
+    <p>Hay 2 vías más comunes para campos privados:</p>
+
+    <h5>1) Campos privados reales (moderno) #</h5>
+    <pre><code class="language-javascript">
+class Person {
+  #ssn; // privado real
+
+  constructor(name, age, ssn) {
+    this.name = name;
+    this.age = age;
+    this.#ssn = ssn;
+  }
+
+  getSSNMasked() {
+    return "****-" + this.#ssn.slice(-4);
+  }
+}
+
+const person = new Person("Bryce", 37, "123-45-6789");
+console.log(person.getSSNMasked()); // "****-6789"
+console.log(person.#ssn); // SyntaxError: Private field '#ssn'
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Ventajas de #privateField</h4>
+      <ul>
+        <li>Privacidad <strong>real</strong>, no convención</li>
+        <li>Error en tiempo de ejecución si intentas acceder desde fuera</li>
+        <li>Soporte en navegadores modernos (2022+)</li>
+      </ul>
+    </div>
+
+    <h5>2) Convención _underscore (semi-privado)</h5>
+    <pre><code class="language-javascript">
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this._age = age; // convención: "no toques esto"
+  }
+
+  get age() {
+    return this._age;
+  }
+}
+
+const person = new Person("Bryce", 37);
+console.log(person._age); // 37 (accesible, pero "no deberías")
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>⚠️ Importante</h4>
+      <p>El <code>_underscore</code> es solo convención, NO es privado de verdad.</p>
+      <p>Cualquiera puede acceder a <code>person._age</code>.</p>
+    </div>
+
+    <h4>Diferencia Clave: Método en Clase vs Función en Constructor</h4>
+    <p>Muchos juniors cometen este error:</p>
+
+    <h5>❌ Esto duplica función por instancia (MAL)</h5>
+    <pre><code class="language-javascript">
+class Person {
+  constructor(name) {
+    this.name = name;
+    this.greet = () => `Hola ${this.name}`; // ❌ copia por instancia
+  }
+}
+
+const a = new Person("A");
+const b = new Person("B");
+
+console.log(a.greet === b.greet); // false ← cada instancia tiene su copia
+    </code></pre>
+
+    <h5>✅ Esto comparte método (BIEN)</h5>
+    <pre><code class="language-javascript">
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+
+  greet() {
+    return `Hola ${this.name}`; // ✅ en prototype, compartido
+  }
+}
+
+const a = new Person("A");
+const b = new Person("B");
+
+console.log(a.greet === b.greet); // true ← ambos usan la misma función
+    </code></pre>
+
+    <div class="interview-box">
+      <h4>💡 Por qué importa (memoria/performance)</h4>
+      <p>Si creas 1000 instancias:</p>
+      <ul>
+        <li>❌ Versión mala: 1000 copias de <code>greet</code> en memoria</li>
+        <li>✅ Versión buena: 1 sola copia de <code>greet</code> en <code>Person.prototype</code></li>
+      </ul>
+    </div>
+
+    <h4>instanceof y Cadena Prototípica</h4>
+    <p>Muy útil para entender instancias:</p>
+
+    <pre><code class="language-javascript">
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+const person = new Person("Bryce");
+
+console.log(person instanceof Person); // true
+console.log(person instanceof Object); // true
+console.log(person instanceof Array);  // false
+
+// Verificar la cadena prototípica
+console.log(Object.getPrototypeOf(person) === Person.prototype); // true
+console.log(Object.getPrototypeOf(Person.prototype) === Object.prototype); // true
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>Cadena completa</h4>
+      <p><code>person</code> → <code>Person.prototype</code> → <code>Object.prototype</code> → <code>null</code></p>
+    </div>
+
+    <h4>Cuándo NO Usar Clases (JS Moderno Real)</h4>
+    <p>En React/Frontend actual:</p>
+
+    <div class="solution-box">
+      <h4>✅ Realidad del desarrollo moderno</h4>
+      <ul>
+        <li>Muchas veces usas <strong>funciones puras + objetos</strong></li>
+        <li>Clases existen, pero no modelas todo como "entidad"</li>
+        <li>React Hooks usa funciones, no clases (desde 2019)</li>
+        <li>Programación funcional está más de moda que OOP clásico</li>
+      </ul>
+    </div>
+
+    <h5>Ejemplo: estilo funcional moderno</h5>
+    <pre><code class="language-javascript">
+// En lugar de una clase Person, podrías usar:
+const createPerson = (name, age) => ({
+  name,
+  age,
+  greet: () => `Hola, soy ${name}`
+});
+
+const person = createPerson("Bryce", 37);
+console.log(person.greet()); // "Hola, soy Bryce"
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>⚠️ Cuándo SÍ usar clases</h4>
+      <ul>
+        <li>Cuando modelás "entidades" con estado mutable</li>
+        <li>Cuando necesitas herencia (extends)</li>
+        <li>Cuando trabajas con librerías que las usan (algunos frameworks)</li>
+        <li>Cuando el equipo prefiere estilo OOP</li>
+      </ul>
+    </div>
+
+    <h4>Mini Resumen (Estilo Senior)</h4>
+
+    <div class="interview-box">
+      <h4>La verdad sobre clases en JavaScript</h4>
+      <ul>
+        <li>"Antes creábamos instancias con funciones constructoras y prototipos."</li>
+        <li>"Hoy usamos <code>class</code>, que es más legible, pero sigue usando prototipos por debajo."</li>
+        <li>"<code>constructor</code> inicializa estado con <code>this</code>."</li>
+        <li>"Los métodos en <code>class</code> se guardan en <code>Person.prototype</code>, así que se comparten."</li>
+        <li>"Se puede añadir métodos al <code>prototype</code> después, pero en apps reales intentamos evitarlo."</li>
+        <li>"Getters/setters sirven para validar o controlar acceso como si fuera una propiedad."</li>
+        <li>"Privacidad moderna: <code>#privateField</code>."</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Herencia a través de Prototipos (Object.create)</h3>
+
+    <div class="key-concept">
+      <h4>🧬 PASO 1: Qué significa "heredar" en JavaScript</h4>
+      <p>En JavaScript, heredar <strong>NO significa copiar propiedades</strong>.</p>
+      <p>Significa <strong>apuntarse a otro objeto para reutilizarlo</strong>.</p>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚠️ Esto es clave</h4>
+      <p>No se copian datos, se comparten a través del prototipo.</p>
+    </div>
+
+    <h4>🧩 PASO 2: Objeto base (persona)</h4>
+    <pre><code class="language-javascript">
+const persona = {
+  name: "Bryce",
+  age: 37,
+  saludar() {
+    console.log(`Hola, soy ${this.name}`);
+  },
+  decirEdad() {
+    console.log(`Tengo ${this.age} años`);
+  }
+};
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Hasta aquí:</h4>
+      <ul>
+        <li>Un objeto normal</li>
+        <li>Propiedades + métodos</li>
+        <li>Nada de herencia aún</li>
+      </ul>
+    </div>
+
+    <h4>🧬 PASO 3: Crear un objeto que hereda (Object.create)</h4>
+    <pre><code class="language-javascript">
+const programador = Object.create(persona);
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>👉 Importante</h4>
+      <p>Esto <strong>NO copia</strong> persona</p>
+      <p>Esto crea un objeto vacío cuyo prototipo es persona</p>
+    </div>
+
+    <p><strong>Visualmente:</strong></p>
+    <pre><code class="language-javascript">
+programador
+   ↓ prototype
+persona
+    </code></pre>
+
+    <h4>🔍 PASO 4: ¿Por qué parece "vacío"?</h4>
+    <pre><code class="language-javascript">
+console.log(programador); // {}
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>⚠️ Esto confunde mucho</h4>
+      <p>El objeto está vacío, pero tiene acceso a las propiedades del prototipo.</p>
+    </div>
+
+    <p><strong>Probemos:</strong></p>
+    <pre><code class="language-javascript">
+programador.saludar();    // Hola, soy Bryce
+programador.decirEdad(); // Tengo 37 años
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✔️ Funciona</h4>
+      <p>Porque JS busca en la cadena de prototipos</p>
+    </div>
+
+    <h4>🔗 PASO 5: Cómo funciona la búsqueda (prototype chain)</h4>
+    <p>Cuando haces:</p>
+    <pre><code class="language-javascript">
+programador.name
+    </code></pre>
+
+    <p><strong>JavaScript hace esto:</strong></p>
+    <ol>
+      <li>¿<code>name</code> existe en <code>programador</code>? ❌</li>
+      <li>¿Existe en su prototipo (<code>persona</code>)? ✅</li>
+      <li>→ Se usa ese valor</li>
+    </ol>
+
+    <div class="interview-box">
+      <h4>💡 EL CORAZÓN del sistema de prototipos</h4>
+      <p>Esta búsqueda en cadena es la base de la herencia en JavaScript.</p>
+    </div>
+
+    <h4>⚠️ PASO 6: El famoso undefined (aquí hay que ser quirúrgico)</h4>
+    <p>Si haces:</p>
+    <pre><code class="language-javascript">
+console.log(programador.saludar());
+    </code></pre>
+
+    <p><strong>Obtienes:</strong></p>
+    <pre><code class="language-javascript">
+Hola, soy Bryce
+undefined
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>¿Por qué?</h4>
+      <ul>
+        <li><code>saludar()</code> hace <code>console.log</code></li>
+        <li>Pero <strong>NO retorna nada</strong></li>
+        <li>Toda función que no retorna → <code>undefined</code></li>
+      </ul>
+    </div>
+
+    <div class="key-concept">
+      <h4>💡 Importante decirle al junior:</h4>
+      <p>Esto <strong>NO es un problema de herencia</strong></p>
+      <p>Es cómo funcionan las funciones en JavaScript</p>
+    </div>
+
+    <h4>🧪 PASO 7: Añadir propiedades al hijo</h4>
+    <pre><code class="language-javascript">
+programador.lenguaje = "JavaScript";
+    </code></pre>
+
+    <p><strong>Ahora:</strong></p>
+    <pre><code class="language-javascript">
+console.log(programador.lenguaje); // JavaScript
+console.log(persona.lenguaje);     // undefined
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>👉 Las propiedades nuevas NO suben al prototipo</h4>
+      <p>Cada objeto mantiene sus propiedades propias separadas.</p>
+    </div>
+
+    <h4>🔄 PASO 8: Qué pasa si modifico el prototipo</h4>
+    <pre><code class="language-javascript">
+persona.name = "MoureDev";
+programador.saludar(); // Hola, soy MoureDev
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>¿Por qué?</h4>
+      <ul>
+        <li><code>programador</code> NO tiene <code>name</code></li>
+        <li>Sigue usando el del prototipo</li>
+        <li>Cambias el prototipo → cambia el resultado</li>
+      </ul>
+      <p><strong>⚠️ Esto es potente pero peligroso</strong></p>
+    </div>
+
+    <h4>🧠 PASO 9: Pero… ¿esto es herencia "real"?</h4>
+    <div class="interview-box">
+      <h4>Reflexión importante</h4>
+      <p>Esto <strong>NO es herencia clásica</strong>.</p>
+      <p>Es <strong>delegación a través de prototipos</strong>.</p>
+      <p><strong>Por eso:</strong></p>
+      <ul>
+        <li>No hay copia</li>
+        <li>Hay dependencia</li>
+        <li>Cambiar el padre afecta a los hijos</li>
+      </ul>
+    </div>
+
+    <h4>🏁 PASO 10: Conclusión moderna (muy importante)</h4>
+    <div class="solution-box">
+      <h4>💡 Mensaje clave</h4>
+      <ul>
+        <li>Antes de ES6, esta era la única forma de "heredar"</li>
+        <li>Hoy usamos <code>class</code>, que por debajo sigue usando prototipos</li>
+      </ul>
+      <p><strong>Entender prototipos te hace mejor desarrollador, aunque uses clases todos los días.</strong></p>
+    </div>
+
+    <h4>Ejemplo completo</h4>
+    <pre><code class="language-javascript">
+// Base
+const persona = {
+  name: "Bryce",
+  age: 37,
+  saludar() {
+    return `Hola, soy ${this.name}`;
+  }
+};
+
+// Herencia
+const programador = Object.create(persona);
+programador.lenguaje = "JavaScript";
+
+// Funcionamiento
+console.log(programador.saludar()); // "Hola, soy Bryce"
+console.log(programador.lenguaje);  // "JavaScript"
+
+// Verificar
+console.log(programador.hasOwnProperty("lenguaje")); // true
+console.log(programador.hasOwnProperty("name"));     // false
+console.log(Object.getPrototypeOf(programador) === persona); // true
+    </code></pre>
+  </article>
+
   <!-- Block of links -->
   <div class="links">
     <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures" target="_blank">MDN: tipos y estructuras de datos</a>

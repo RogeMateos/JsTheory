@@ -1,0 +1,268 @@
+<!-- CONSTRUCTOR FUNCTIONS -->
+<section id="constructors" class="box">
+  <h2>Constructor Functions and prototype (Pre-ES6 Era)</h2>
+
+  <article>
+    <h3>🏭 The Metaphor: Person is a factory</h3>
+
+    <div class="key-concept">
+      <h4>Understanding static methods vs instance methods</h4>
+      <p><strong>Static methods:</strong> are factory tools</p>
+      <ul>
+        <li>Used like: <code>Person.createFromJSON(...)</code></li>
+        <li>Don't depend on a specific person</li>
+      </ul>
+      <p><strong>Instance methods:</strong> are abilities that all manufactured persons have</p>
+      <ul>
+        <li>Used like: <code>bruce.greet()</code></li>
+        <li>Depend on <code>this</code> (the concrete object)</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>A) Constructor (properties per instance)</h3>
+    <pre><code class="language-javascript">
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>B) Instance method (shared) → goes in prototype</h3>
+    <pre><code class="language-javascript">
+Person.prototype.greet = function () {
+  return `Hello, I'm ${this.name}`;
+};
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Why in prototype</h4>
+      <p><code>Person.prototype.greet</code> → found by instances through the prototype chain</p>
+      <p>All instances <strong>share the same function</strong> (memory savings)</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>C) Static method → goes on the Person function</h3>
+    <pre><code class="language-javascript">
+Person.createAnonymous = function () {
+  return new Person("Anonymous", 0);
+};
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Static method</h4>
+      <p><code>Person.createAnonymous</code> → belongs to the "factory", not the "products"</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>D) Usage</h3>
+    <pre><code class="language-javascript">
+const bruce = new Person("Bruce", 30);
+
+console.log(bruce.greet());           // ✅ "Hello, I'm Bruce" (instance method)
+console.log(Person.createAnonymous()); // ✅ Person { name: 'Anonymous', age: 0 }
+
+console.log(bruce.createAnonymous);    // ❌ undefined (not an instance method)
+console.log(Person.greet);             // ❌ undefined (greet is not static)
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>⚠️ Common mistake: "I added the method and it doesn't appear"</h4>
+      <p>If you do this:</p>
+      <pre><code class="language-javascript">
+Person.greet = function () { ... }  // ❌ Static (common error)
+      </code></pre>
+      <p>Then:</p>
+      <pre><code class="language-javascript">
+bruce.greet() // ❌ TypeError: bruce.greet is not a function
+      </code></pre>
+      <p><strong>Solution:</strong> Must go in <code>Person.prototype.greet</code></p>
+    </div>
+
+    <h4>Simple rule</h4>
+    <div class="key-concept">
+      <ul>
+        <li><code>Person.something</code> = static</li>
+        <li><code>Person.prototype.something</code> = instance</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>E) prototype vs __proto__ (understanding the connection)</h3>
+    <pre><code class="language-javascript">
+const bruce = new Person("Bruce", 30);
+
+// Verification:
+console.log(Object.getPrototypeOf(bruce) === Person.prototype);
+// true
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Mini-diagram</h4>
+      <ul>
+        <li><code>Person.prototype</code> → the object that will be the "parent" (prototype) of instances created with <code>new Person()</code></li>
+        <li><code>Object.getPrototypeOf(bruce)</code> → points to <code>Person.prototype</code></li>
+      </ul>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚠️ Avoid __proto__</h4>
+      <p><code>__proto__</code> is considered legacy/compat</p>
+      <p><strong>Use instead:</strong></p>
+      <ul>
+        <li><code>Object.getPrototypeOf(obj)</code> to get the prototype</li>
+        <li><code>Object.setPrototypeOf(obj, proto)</code> to set it (with caution, it's slow)</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>F) Why put methods in prototype (performance/memory)</h3>
+
+    <h4>❌ Define inside the constructor:</h4>
+    <pre><code class="language-javascript">
+function Person(name) {
+  this.name = name;
+  this.greet = function () {
+    return `Hello, I'm ${this.name}`;
+  };
+}
+
+const a = new Person("A");
+const b = new Person("B");
+
+console.log(a.greet === b.greet); // false
+// 👉 Each instance creates a new copy of greet (more memory)
+    </code></pre>
+
+    <h4>✅ Define in prototype:</h4>
+    <pre><code class="language-javascript">
+function Person(name) {
+  this.name = name;
+}
+
+Person.prototype.greet = function () {
+  return `Hello, I'm ${this.name}`;
+};
+
+const a = new Person("A");
+const b = new Person("B");
+
+console.log(a.greet === b.greet); // true
+// 👉 All instances share the same function
+    </code></pre>
+
+    <div class="interview-box">
+      <h4>💡 This true is the "click" for many juniors</h4>
+      <p>Proves that both objects use the same function in memory.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>G) Modern version (class) and equivalencies</h3>
+    <pre><code class="language-javascript">
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  greet() { // ✅ instance method (lives in Person.prototype)
+    return `Hello, I'm ${this.name}`;
+  }
+
+  static createAnonymous() { // ✅ static method (lives in Person)
+    return new Person("Anonymous", 0);
+  }
+}
+
+const bruce = new Person("Bruce", 30);
+console.log(bruce.greet());           // "Hello, I'm Bruce"
+console.log(Person.createAnonymous()); // Person { name: 'Anonymous', age: 0 }
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Real equivalencies</h4>
+      <ul>
+        <li><code>greet()</code> in class → goes to <code>prototype</code></li>
+        <li><code>static createAnonymous()</code> → goes to constructor/class</li>
+      </ul>
+      <p><strong>class is syntactic sugar over the same prototype system</strong></p>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚠️ Important: NOT deprecated</h4>
+      <p>Constructor functions and <code>prototype</code> are <strong>NOT deprecated</strong></p>
+      <ul>
+        <li>Today <code>class</code> is preferred for readability and standard</li>
+        <li>But <code>prototype</code> is still the real engine underneath</li>
+        <li>In legacy projects you'll see constructor functions constantly</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>H) Practical exercises</h3>
+    <div class="key-concept">
+      <h4>1️⃣ Create <code>Person.fromObject({name, age})</code> as a static method</h4>
+      <pre><code class="language-javascript">
+// Your code here
+Person.fromObject = function(obj) {
+  return new Person(obj.name, obj.age);
+};
+
+// Test:
+const p = Person.fromObject({name: "Ana", age: 25});
+console.log(p.greet()); // "Hello, I'm Ana"
+      </code></pre>
+
+      <h4>2️⃣ Add <code>isAdult()</code> as an instance method</h4>
+      <pre><code class="language-javascript">
+// Your code here
+Person.prototype.isAdult = function() {
+  return this.age >= 18;
+};
+
+// Test:
+const minor = new Person("Luis", 15);
+const adult = new Person("Ana", 25);
+console.log(minor.isAdult()); // false
+console.log(adult.isAdult()); // true
+      </code></pre>
+
+      <h4>3️⃣ Demonstrate that the instance method is shared</h4>
+      <pre><code class="language-javascript">
+const a = new Person("A", 20);
+const b = new Person("B", 30);
+
+console.log(a.greet === b.greet); // true (if in prototype)
+console.log(a.isAdult === b.isAdult); // true
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>I) Mental checklist (3 golden rules)</h3>
+    <div class="interview-box">
+      <ul>
+        <li>✅ Unique properties per instance → inside the constructor</li>
+        <li>✅ Shared methods → in <code>prototype</code></li>
+        <li>✅ "Factory" methods/properties → static (on the function/class)</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions" target="_blank">MDN: Functions</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/prototype" target="_blank">MDN: Function.prototype</a>
+    <a href="https://javascript.info/constructor-new" target="_blank">JavaScript.info: Constructor functions</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new" target="_blank">MDN: new operator</a>
+    <a href="https://chatgpt.com/c/69618771-894c-832c-a2a6-9c025d058552" target="_blank">ChatGPT: Constructor Functions Explained</a>
+  </div>
+</section>

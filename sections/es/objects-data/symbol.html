@@ -1,0 +1,306 @@
+<!-- SYMBOL IN JAVASCRIPT -->
+<section id="symbol" class="box">
+  <h2>Symbol en clases JavaScript (pseudo-privado, colisiones y alternativa moderna con #private)</h2>
+
+  <article>
+    <h3>0) En este tutorial vas a aprender:</h3>
+
+    <div class="solution-box">
+      <ul>
+        <li>Qué es Symbol y por qué existe</li>
+        <li>Cómo usar Symbol dentro de una clase</li>
+        <li>Por qué "parece privado" pero no es privacidad real</li>
+        <li>Cómo proteger un valor con <code>Object.defineProperty</code></li>
+        <li>Qué usar hoy en día: <code>#private</code> (ES2020+)</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>1) ¿Qué es un Symbol?</h3>
+
+    <p>Symbol es un tipo de dato primitivo introducido en ES2015 (ES6).</p>
+
+    <p>Su objetivo principal es permitir crear identificadores únicos, sobre todo para usarlos como claves de propiedades sin riesgo de colisión.</p>
+
+    <h4>✅ Característica clave</h4>
+
+    <p>Cada <code>Symbol()</code> que creas es único aunque tenga la misma descripción:</p>
+
+    <pre><code class="language-javascript">
+const A = Symbol("id");
+const B = Symbol("id");
+
+console.log(A === B); // false
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>📌 Importante</h4>
+      <p>Esto significa que es perfecto para crear claves que nadie va a pisar accidentalmente con "id", "name", etc.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>2) ¿Para qué sirve realmente Symbol?</h3>
+
+    <h4>Caso real: evitar colisiones</h4>
+
+    <p>Imagina que tú y una librería queréis añadir una propiedad <code>id</code> a un objeto.</p>
+
+    <ul>
+      <li>Si ambos usáis "id" → colisión</li>
+      <li>Si tú usas <code>Symbol("id")</code> → no colisión nunca</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>3) Usando Symbol en una clase</h3>
+
+    <p>Vamos a crear una clase <code>User</code> con:</p>
+    <ul>
+      <li><code>name</code> visible</li>
+      <li><code>id</code> oculto usando Symbol</li>
+    </ul>
+
+    <h4>✅ Ejemplo completo</h4>
+
+    <pre><code class="language-javascript">
+const ID = Symbol("id"); // clave privada/simbólica
+
+class User {
+  constructor(name) {
+    this.name = name;
+    this[ID] = Math.random(); // guardamos el id usando Symbol como clave
+  }
+}
+
+const user = new User("Roge");
+
+console.log(user.name); // Roge
+console.log(user.id);   // undefined (porque NO existe "id" como string)
+console.log(user[ID]);  // ✅ sí accede (si tienes el Symbol)
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>4) ¿Por qué user.id da undefined?</h3>
+
+    <p>Porque <code>id</code> y <code>[ID]</code> son claves distintas:</p>
+
+    <ul>
+      <li><code>user.id</code> → busca una propiedad que se llame "id"</li>
+      <li><code>user[ID]</code> → busca una propiedad cuya clave es el Symbol</li>
+    </ul>
+
+    <div class="solution-box">
+      <p>Es como si fueran dos nombres diferentes.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>5) "Parece privado"... pero NO es privado de verdad</h3>
+
+    <p>Aquí viene lo importante para tu tutorial:</p>
+
+    <h4>✅ Symbol no crea privacidad real</h4>
+
+    <p>Solo crea ocultación, porque:</p>
+    <ul>
+      <li>No aparece normalmente con <code>.</code> (dot notation)</li>
+      <li>No aparece en <code>Object.keys()</code></li>
+      <li>Pero se puede descubrir</li>
+    </ul>
+
+    <h4>⚠️ Se puede ver con introspección</h4>
+
+    <pre><code class="language-javascript">
+const symbols = Object.getOwnPropertySymbols(user);
+
+console.log(symbols); // [ Symbol(id) ]
+console.log(user[symbols[0]]); // accede al id oculto
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>📌 Conclusión</h4>
+      <p>Symbol es "semi-privado": lo oculta, pero no protege.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>6) Entonces... ¿se puede modificar el valor?</h3>
+
+    <p>Sí, porque Symbol no impide reasignar el valor:</p>
+
+    <pre><code class="language-javascript">
+user[ID] = 123;
+console.log(user[ID]); // 123
+    </code></pre>
+
+    <div class="key-concept">
+      <p><strong>OJO:</strong> el Symbol es inmutable, pero el valor dentro de la propiedad NO.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>7) Cómo hacerlo más "protegido" (writable: false)</h3>
+
+    <p>Si quieres que el valor no pueda reasignarse fácilmente, define la propiedad manualmente:</p>
+
+    <pre><code class="language-javascript">
+const ID = Symbol("id");
+
+class User {
+  constructor(name) {
+    this.name = name;
+
+    Object.defineProperty(this, ID, {
+      value: Math.random(),
+      writable: false,      // ❌ no se puede reasignar
+      enumerable: false,    // no aparece en keys
+      configurable: false,  // no se puede redefinir
+    });
+  }
+
+  get id() {
+    return this[ID]; // acceso controlado
+  }
+}
+
+const user = new User("Roge");
+
+console.log(user.id); // ok
+
+user[ID] = 999;       // falla (en strict lanza error)
+console.log(user.id); // sigue igual
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Resultado</h4>
+      <p>Esto ya simula bastante bien una propiedad privada "en tiempos antiguos".</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>8) Mejor opción moderna: #private (privado real)</h3>
+
+    <p>Desde ES2020+ (y ya muy soportado) tenemos privados reales con <code>#</code>.</p>
+
+    <p>Esto SÍ es privacidad real:</p>
+
+    <pre><code class="language-javascript">
+class User {
+  #id;
+
+  constructor(name) {
+    this.name = name;
+    this.#id = crypto.randomUUID();
+  }
+
+  get id() {
+    return this.#id;
+  }
+}
+
+const user = new User("Roge");
+
+console.log(user.id);  // ✅ funciona
+console.log(user.#id); // ❌ SyntaxError: Private field '#id' must be declared in an enclosing class
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Ventajas de #private</h4>
+      <ul>
+        <li>Nadie puede acceder desde fuera</li>
+        <li>No se puede descubrir con introspección</li>
+        <li>Es el estándar moderno recomendado</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>9) Cuándo usar Symbol hoy en día</h3>
+
+    <p>Aunque ya no sea el mejor para privacidad, Symbol sigue siendo útil.</p>
+
+    <div class="interview-box">
+      <h4>✅ Úsalo cuando:</h4>
+      <ul>
+        <li>Necesitas evitar colisiones en objetos compartidos</li>
+        <li>Haces librerías/utilidades públicas</li>
+        <li>Quieres metadata invisible al usuario normal</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>10) Bonus (muy pro): Symbol.iterator</h3>
+
+    <p>Este caso es muy útil y demuestra Symbols con valor real hoy:</p>
+
+    <pre><code class="language-javascript">
+class Collection {
+  constructor(items) {
+    this.items = items;
+  }
+
+  [Symbol.iterator]() {
+    return this.items.values();
+  }
+}
+
+const c = new Collection([1, 2, 3]);
+
+for (const value of c) {
+  console.log(value);
+}
+    </code></pre>
+
+    <p><strong>Salida:</strong></p>
+    <pre><code class="language-javascript">
+1
+2
+3
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>📌 Importante</h4>
+      <p>Esto sirve para que tu clase funcione en <code>for...of</code>.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>✅ Resumen</h3>
+
+    <div class="interview-box">
+      <h4>Lo que debes recordar</h4>
+      <ul>
+        <li>✅ Symbol crea claves únicas → evita colisiones</li>
+        <li>✅ Oculta propiedades (no salen con <code>.</code> ni <code>Object.keys</code>)</li>
+        <li>⚠️ No es privacidad real: puede descubrirse con <code>getOwnPropertySymbols</code></li>
+        <li>✅ Si quieres privacidad real usa <code>#private</code></li>
+        <li>✅ Symbol sigue siendo muy útil para features como <code>Symbol.iterator</code></li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Checklist de Errores Comunes</h3>
+
+    <div class="warning-box">
+      <h4>⚠️ Errores típicos a evitar</h4>
+      <ul>
+        <li>❌ Creer que Symbol proporciona privacidad real</li>
+        <li>❌ No entender que <code>Symbol("id") !== Symbol("id")</code></li>
+        <li>❌ Usar Symbol cuando <code>#private</code> sería más apropiado</li>
+        <li>❌ Olvidar que el valor almacado en Symbol puede modificarse</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol" target="_blank">MDN: Symbol</a>
+    <a href="https://javascript.info/symbol" target="_blank">JavaScript.info: Symbol type</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields" target="_blank">MDN: Private class fields</a>
+    <a href="https://chatgpt.com/c/6962a078-7300-8333-94d9-f4cb4305b5c2" target="_blank">ChatGPT: Symbol Explained</a>
+  </div>
+</section>

@@ -1,0 +1,337 @@
+<!-- MIXINS IN JAVASCRIPT -->
+<section id="mixins" class="box">
+  <h2>Mixins en JavaScript (Composición vs Herencia) — Paso a paso</h2>
+
+  <article>
+    <h3>0) Objetivo</h3>
+
+    <div class="solution-box">
+      <h4>Aprenderás a:</h4>
+      <ul>
+        <li>Entender qué es un mixin</li>
+        <li>Aplicarlo bien (a <code>prototype</code>, no a la clase)</li>
+        <li>Reutilizar habilidades (volar, fuego...) en varias clases sin herencia extra</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Paso 0) Contexto rápido: ¿por qué mixins?</h3>
+
+    <p>Con herencia, si quieres "volar" en varias clases, acabas creando jerarquías raras:</p>
+
+    <pre><code class="language-javascript">
+Animal -> FlyingAnimal -> Bird
+Animal -> FlyingAnimal -> Dragon
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>Problema</h4>
+      <p>Eso escala mal.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Solución: Mixins</h4>
+      <p>Con mixins, tú haces "habilidades" sueltas y se las das a quien quieras.</p>
+      <p><strong>Eso es composición.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Paso 1) Creamos el "mixin" (la habilidad)</h3>
+
+    <p>Un mixin suele ser un objeto con métodos.</p>
+
+    <pre><code class="language-javascript">
+const FlyMixin = {
+  fly() {
+    console.log(`${this.name} está volando`);
+  },
+};
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>📌 Nota pro</h4>
+      <p>Usamos <code>this.name</code> porque asumimos que el objeto/clase donde lo apliquemos tendrá <code>name</code>.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Paso 2) Creamos una clase base (Animal)</h3>
+
+    <p>Ahora definimos una clase que tenga el <code>name</code>.</p>
+
+    <pre><code class="language-javascript">
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  makeSound() {
+    console.log("Sonido genérico");
+  }
+}
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Paso 3) Creamos clases concretas (Bird y Dragon)</h3>
+
+    <p>De momento, sin volar.</p>
+
+    <pre><code class="language-javascript">
+class Bird extends Animal {}
+class Dragon extends Animal {}
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Paso 4) El error típico (para que lo entiendas)</h3>
+
+    <p>Si haces esto:</p>
+
+    <pre><code class="language-javascript">
+Object.assign(Bird, FlyMixin);
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>🚨 Problema</h4>
+      <p>Estás metiendo <code>fly</code> en la clase <code>Bird</code>, no en sus instancias.</p>
+      <p>O sea:</p>
+      <ul>
+        <li>✅ <code>Bird.fly()</code> podría existir</li>
+        <li>❌ <code>new Bird().fly()</code> NO existe</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Paso 5) La forma correcta: aplicar el mixin al prototype ✅</h3>
+
+    <p>Esto es lo que se hace en la vida real cuando quieres que lo tenga cada instancia:</p>
+
+    <pre><code class="language-javascript">
+Object.assign(Bird.prototype, FlyMixin);
+    </code></pre>
+
+    <p>Ahora probamos:</p>
+
+    <pre><code class="language-javascript">
+const bird = new Bird("Mour Bird");
+bird.fly(); // Mour Bird está volando
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Funciona</h4>
+      <p>Porque <code>bird</code> busca métodos en <code>Bird.prototype</code>.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Paso 6) Reutilizar la habilidad en otra clase (Dragon)</h3>
+
+    <p>Aquí está la magia del mixin: misma habilidad, otra clase.</p>
+
+    <pre><code class="language-javascript">
+Object.assign(Dragon.prototype, FlyMixin);
+
+const dragon = new Dragon("Mour Dragon");
+dragon.fly(); // Mour Dragon está volando
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Paso 7) Añadimos otro mixin para ver composición real</h3>
+
+    <p>Ahora creamos otra habilidad: fuego.</p>
+
+    <pre><code class="language-javascript">
+const FireMixin = {
+  breatheFire() {
+    console.log(`${this.name} lanza fuego 🔥`);
+  },
+};
+    </code></pre>
+
+    <p>La aplicamos SOLO al dragón:</p>
+
+    <pre><code class="language-javascript">
+Object.assign(Dragon.prototype, FireMixin);
+
+dragon.breatheFire(); // Mour Dragon lanza fuego 🔥
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Resultado</h4>
+      <ul>
+        <li>Bird vuela</li>
+        <li>Dragon vuela + lanza fuego</li>
+      </ul>
+      <p><strong>Sin crear más clases intermedias.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Paso 8) Regla de oro (lo que tienes que recordar)</h3>
+
+    <div class="interview-box">
+      <h4>✅ Si quieres que el método exista en la instancia:</h4>
+      <p>Usa:</p>
+      <pre><code class="language-javascript">
+Object.assign(Clase.prototype, Mixin);
+      </code></pre>
+
+      <h4>❌ Si lo haces en la clase:</h4>
+      <pre><code class="language-javascript">
+Object.assign(Clase, Mixin);
+      </code></pre>
+      <p>Eso NO va a tus instancias.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Paso 9) Pitfall importante: "pisado" de métodos</h3>
+
+    <p>Si dos mixins traen el mismo nombre de método, gana el último:</p>
+
+    <pre><code class="language-javascript">
+Object.assign(Dragon.prototype, MixinA, MixinB);
+// Si ambos tienen fly(), gana MixinB.fly
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Buen hábito</h4>
+      <p>Nombres claros o composición controlada.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Código final completo (todo junto)</h3>
+
+    <pre><code class="language-javascript">
+const FlyMixin = {
+  fly() {
+    console.log(`${this.name} está volando`);
+  },
+};
+
+const FireMixin = {
+  breatheFire() {
+    console.log(`${this.name} lanza fuego 🔥`);
+  },
+};
+
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  makeSound() {
+    console.log("Sonido genérico");
+  }
+}
+
+class Bird extends Animal {}
+class Dragon extends Animal {}
+
+Object.assign(Bird.prototype, FlyMixin);
+Object.assign(Dragon.prototype, FlyMixin, FireMixin);
+
+const bird = new Bird("Mour Bird");
+bird.fly();
+
+const dragon = new Dragon("Mour Dragon");
+dragon.fly();
+dragon.breatheFire();
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Mini ejercicios (para practicar)</h3>
+
+    <div class="key-concept">
+      <h4>Ejercicio 1</h4>
+      <p>Crea un <code>SwimMixin</code> con <code>swim()</code> y aplícalo a <code>Fish</code>.</p>
+      <pre><code class="language-javascript">
+const SwimMixin = {
+  swim() {
+    console.log(`${this.name} está nadando`);
+  },
+};
+
+class Fish extends Animal {}
+Object.assign(Fish.prototype, SwimMixin);
+
+const fish = new Fish("Nemo");
+fish.swim(); // Nemo está nadando
+      </code></pre>
+
+      <h4>Ejercicio 2</h4>
+      <p>Haz que <code>Bird</code> tenga <code>fly()</code> pero también un <code>sing()</code> con un <code>SingMixin</code>.</p>
+      <pre><code class="language-javascript">
+const SingMixin = {
+  sing() {
+    console.log(`${this.name} está cantando 🎵`);
+  },
+};
+
+Object.assign(Bird.prototype, FlyMixin, SingMixin);
+
+const bird = new Bird("Tweety");
+bird.fly();  // Tweety está volando
+bird.sing(); // Tweety está cantando 🎵
+      </code></pre>
+
+      <h4>Ejercicio 3</h4>
+      <p>Crea un mixin <code>LoggerMixin</code> que tenga <code>logInfo()</code> y muestre el nombre + la clase.</p>
+      <pre><code class="language-javascript">
+const LoggerMixin = {
+  logInfo() {
+    console.log(`[${this.constructor.name}] ${this.name}`);
+  },
+};
+
+Object.assign(Dragon.prototype, LoggerMixin);
+
+const dragon = new Dragon("Smaug");
+dragon.logInfo(); // [Dragon] Smaug
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>✅ Resumen</h3>
+
+    <div class="interview-box">
+      <h4>Lo que debes recordar</h4>
+      <ul>
+        <li><strong>Mixin:</strong> objeto con métodos que se pueden "mezclar" en clases</li>
+        <li><strong>Composición > Herencia:</strong> más flexible, menos jerarquías</li>
+        <li><strong>Aplicar al prototype:</strong> <code>Object.assign(Clase.prototype, Mixin)</code></li>
+        <li><strong>Reutilización:</strong> misma habilidad en múltiples clases sin herencia</li>
+        <li><strong>Colisión de métodos:</strong> el último mixin gana si hay nombres duplicados</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Checklist de Errores Comunes</h3>
+
+    <div class="warning-box">
+      <h4>⚠️ Errores típicos a evitar</h4>
+      <ul>
+        <li>❌ Aplicar el mixin a la clase en vez del <code>prototype</code></li>
+        <li>❌ No considerar colisiones de nombres entre mixins</li>
+        <li>❌ Olvidar que los mixins dependen de propiedades como <code>this.name</code></li>
+        <li>❌ Usar mixins cuando herencia simple sería más clara</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes" target="_blank">MDN: Classes</a>
+    <a href="https://javascript.info/mixins" target="_blank">JavaScript.info: Mixins</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign" target="_blank">MDN: Object.assign()</a>
+    <a href="https://chatgpt.com/c/69629c11-7bf8-8328-9f19-70db20e59806" target="_blank">ChatGPT: Mixins Explained</a>
+  </div>
+</section>

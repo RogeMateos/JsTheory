@@ -1,0 +1,268 @@
+<!-- CONSTRUCTOR FUNCTIONS -->
+<section id="constructors" class="box">
+  <h2>Funciones Constructoras y prototype (Era Pre-ES6)</h2>
+
+  <article>
+    <h3>🏭 La Metáfora: Persona es una fábrica</h3>
+
+    <div class="key-concept">
+      <h4>Entendiendo métodos estáticos vs métodos de instancia</h4>
+      <p><strong>Métodos estáticos:</strong> son herramientas de la fábrica</p>
+      <ul>
+        <li>Se usan así: <code>Persona.crearDesdeJSON(...)</code></li>
+        <li>No dependen de una persona concreta</li>
+      </ul>
+      <p><strong>Métodos de instancia:</strong> son habilidades que tienen todas las personas fabricadas</p>
+      <ul>
+        <li>Se usan así: <code>bruce.saludar()</code></li>
+        <li>Dependen de <code>this</code> (del objeto concreto)</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>A) Constructor (propiedades por instancia)</h3>
+    <pre><code class="language-javascript">
+function Persona(nombre, edad) {
+  this.nombre = nombre;
+  this.edad = edad;
+}
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>B) Método de instancia (compartido) → va en prototype</h3>
+    <pre><code class="language-javascript">
+Persona.prototype.saludar = function () {
+  return `Hola, soy ${this.nombre}`;
+};
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Por qué en prototype</h4>
+      <p><code>Persona.prototype.saludar</code> → lo encuentran las instancias por la cadena de prototipos</p>
+      <p>Todas las instancias <strong>comparten la misma función</strong> (ahorro de memoria)</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>C) Método estático → va en la función Persona</h3>
+    <pre><code class="language-javascript">
+Persona.crearAnonimo = function () {
+  return new Persona("Anónimo", 0);
+};
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Método estático</h4>
+      <p><code>Persona.crearAnonimo</code> → es de la "fábrica", no de los "productos"</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>D) Uso</h3>
+    <pre><code class="language-javascript">
+const bruce = new Persona("Bruce", 30);
+
+console.log(bruce.saludar());        // ✅ "Hola, soy Bruce" (método de instancia)
+console.log(Persona.crearAnonimo()); // ✅ Persona { nombre: 'Anónimo', edad: 0 }
+
+console.log(bruce.crearAnonimo);     // ❌ undefined (no es de instancia)
+console.log(Persona.saludar);        // ❌ undefined (saludar no es estático)
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>⚠️ Error típico: "puse el método y no aparece"</h4>
+      <p>Si haces esto:</p>
+      <pre><code class="language-javascript">
+Persona.saludar = function () { ... }  // ❌ Estático (error común)
+      </code></pre>
+      <p>Entonces:</p>
+      <pre><code class="language-javascript">
+bruce.saludar() // ❌ TypeError: bruce.saludar is not a function
+      </code></pre>
+      <p><strong>Solución:</strong> Debe ir en <code>Persona.prototype.saludar</code></p>
+    </div>
+
+    <h4>Regla simple</h4>
+    <div class="key-concept">
+      <ul>
+        <li><code>Persona.algo</code> = estático</li>
+        <li><code>Persona.prototype.algo</code> = instancia</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>E) prototype vs __proto__ (entender la conexión)</h3>
+    <pre><code class="language-javascript">
+const bruce = new Persona("Bruce", 30);
+
+// Verificación:
+console.log(Object.getPrototypeOf(bruce) === Persona.prototype);
+// true
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Mini-diagrama</h4>
+      <ul>
+        <li><code>Persona.prototype</code> → el objeto que será el "padre" (prototipo) de las instancias creadas con <code>new Persona()</code></li>
+        <li><code>Object.getPrototypeOf(bruce)</code> → apunta a <code>Persona.prototype</code></li>
+      </ul>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚠️ Evita __proto__</h4>
+      <p><code>__proto__</code> se considera legado/compat</p>
+      <p><strong>Usa en su lugar:</strong></p>
+      <ul>
+        <li><code>Object.getPrototypeOf(obj)</code> para obtener el prototipo</li>
+        <li><code>Object.setPrototypeOf(obj, proto)</code> para establecerlo (con cuidado, es lento)</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>F) Por qué poner métodos en prototype (performance/memoria)</h3>
+
+    <h4>❌ Definir dentro del constructor:</h4>
+    <pre><code class="language-javascript">
+function Persona(nombre) {
+  this.nombre = nombre;
+  this.saludar = function () {
+    return `Hola, soy ${this.nombre}`;
+  };
+}
+
+const a = new Persona("A");
+const b = new Persona("B");
+
+console.log(a.saludar === b.saludar); // false
+// 👉 Cada instancia crea una copia nueva de saludar (más memoria)
+    </code></pre>
+
+    <h4>✅ Definir en prototype:</h4>
+    <pre><code class="language-javascript">
+function Persona(nombre) {
+  this.nombre = nombre;
+}
+
+Persona.prototype.saludar = function () {
+  return `Hola, soy ${this.nombre}`;
+};
+
+const a = new Persona("A");
+const b = new Persona("B");
+
+console.log(a.saludar === b.saludar); // true
+// 👉 Todas las instancias comparten la misma función
+    </code></pre>
+
+    <div class="interview-box">
+      <h4>💡 Este true es el "click" para muchos juniors</h4>
+      <p>Prueba que ambos objetos usan la misma función en memoria.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>G) Versión moderna (class) y equivalencias</h3>
+    <pre><code class="language-javascript">
+class Persona {
+  constructor(nombre, edad) {
+    this.nombre = nombre;
+    this.edad = edad;
+  }
+
+  saludar() { // ✅ método de instancia (vive en Persona.prototype)
+    return `Hola, soy ${this.nombre}`;
+  }
+
+  static crearAnonimo() { // ✅ método estático (vive en Persona)
+    return new Persona("Anónimo", 0);
+  }
+}
+
+const bruce = new Persona("Bruce", 30);
+console.log(bruce.saludar());        // "Hola, soy Bruce"
+console.log(Persona.crearAnonimo()); // Persona { nombre: 'Anónimo', edad: 0 }
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>📌 Equivalencias reales</h4>
+      <ul>
+        <li><code>saludar()</code> en class → va al <code>prototype</code></li>
+        <li><code>static crearAnonimo()</code> → va al constructor/clase</li>
+      </ul>
+      <p><strong>class es azúcar sintáctico sobre el mismo sistema de prototipos</strong></p>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚠️ Importante: NO está deprecado</h4>
+      <p>Funciones constructoras y <code>prototype</code> <strong>NO están deprecados</strong></p>
+      <ul>
+        <li>Hoy se prefiere <code>class</code> por legibilidad y estándar</li>
+        <li>Pero <code>prototype</code> sigue siendo el motor real por debajo</li>
+        <li>En proyectos legacy verás funciones constructoras constantemente</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>H) Ejercicios prácticos</h3>
+    <div class="key-concept">
+      <h4>1️⃣ Crea <code>Persona.desdeObjeto({nombre, edad})</code> como método estático</h4>
+      <pre><code class="language-javascript">
+// Tu código aquí
+Persona.desdeObjeto = function(obj) {
+  return new Persona(obj.nombre, obj.edad);
+};
+
+// Prueba:
+const p = Persona.desdeObjeto({nombre: "Ana", edad: 25});
+console.log(p.saludar()); // "Hola, soy Ana"
+      </code></pre>
+
+      <h4>2️⃣ Añade <code>esMayorDeEdad()</code> como método de instancia</h4>
+      <pre><code class="language-javascript">
+// Tu código aquí
+Persona.prototype.esMayorDeEdad = function() {
+  return this.edad >= 18;
+};
+
+// Prueba:
+const menor = new Persona("Luis", 15);
+const mayor = new Persona("Ana", 25);
+console.log(menor.esMayorDeEdad()); // false
+console.log(mayor.esMayorDeEdad()); // true
+      </code></pre>
+
+      <h4>3️⃣ Demuestra que el método de instancia es compartido</h4>
+      <pre><code class="language-javascript">
+const a = new Persona("A", 20);
+const b = new Persona("B", 30);
+
+console.log(a.saludar === b.saludar); // true (si está en prototype)
+console.log(a.esMayorDeEdad === b.esMayorDeEdad); // true
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>I) Checklist mental (3 reglas de oro)</h3>
+    <div class="interview-box">
+      <ul>
+        <li>✅ Propiedades únicas por instancia → dentro del constructor</li>
+        <li>✅ Métodos compartidos → en <code>prototype</code></li>
+        <li>✅ Métodos/propiedades de la "fábrica" → estáticos (en la función/clase)</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions" target="_blank">MDN: Functions</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/prototype" target="_blank">MDN: Function.prototype</a>
+    <a href="https://javascript.info/constructor-new" target="_blank">JavaScript.info: Constructor functions</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new" target="_blank">MDN: new operator</a>
+    <a href="https://chatgpt.com/c/69618771-894c-832c-a2a6-9c025d058552" target="_blank">ChatGPT: Constructor Functions Explained</a>
+  </div>
+</section>

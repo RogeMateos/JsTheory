@@ -1,0 +1,396 @@
+<!-- PROXY IN JAVASCRIPT -->
+<section id="proxy" class="box">
+  <h2>Proxy en JavaScript</h2>
+
+  <article>
+    <h3>0) ¿Qué es un Proxy en JavaScript?</h3>
+
+    <p>Un Proxy es un objeto especial que se coloca "en medio" entre tu código y un objeto real.</p>
+
+    <div class="key-concept">
+      <h4>📌 Su objetivo es interceptar operaciones como:</h4>
+      <ul>
+        <li>leer propiedades (<code>get</code>)</li>
+        <li>escribir propiedades (<code>set</code>)</li>
+        <li>borrar (<code>deleteProperty</code>)</li>
+        <li>comprobar existencia (<code>has</code>)</li>
+        <li>ejecutar funciones (<code>apply</code>)</li>
+        <li>etc.</li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>📌 Piensa en un Proxy como un guardia de seguridad</h4>
+      <p>Cada vez que alguien intenta entrar (leer/editar) el objeto, el guardia revisa si lo permite, lo bloquea o registra algo.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>1) Creamos una clase base (BankAccount)</h3>
+
+    <pre><code class="language-javascript">
+class BankAccount {
+  constructor(balance) {
+    this.balance = balance;
+  }
+}
+
+const account = new BankAccount(100);
+
+console.log(account.balance); // 100
+    </code></pre>
+
+    <p>Hasta aquí normal: sin control, cualquiera puede leer y modificar:</p>
+
+    <pre><code class="language-javascript">
+account.balance = -9999; // nadie lo impide 😬
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>2) Creamos un "handler" del Proxy</h3>
+
+    <p>El Proxy necesita un handler, un objeto con funciones especiales.</p>
+
+    <h4>🧠 Handler básico</h4>
+
+    <pre><code class="language-javascript">
+const handler = {
+  get(target, property) {
+    console.log("GET");
+  },
+  set(target, property, value) {
+    console.log("SET");
+  }
+};
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>📌 Importante</h4>
+      <p>El handler define qué hacer cuando alguien accede o cambia algo.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>3) Envolvemos el objeto real con Proxy</h3>
+
+    <p>Aquí viene lo importante:</p>
+
+    <pre><code class="language-javascript">
+const securedAccount = new Proxy(account, handler);
+    </code></pre>
+
+    <ul>
+      <li><code>account</code> = el objeto real (target)</li>
+      <li><code>handler</code> = reglas/interceptores</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>4) Probamos: interceptar lectura y escritura</h3>
+
+    <pre><code class="language-javascript">
+console.log(securedAccount.balance);
+securedAccount.balance = 50;
+    </code></pre>
+
+    <p><strong>📌 Esto imprime:</strong></p>
+    <pre><code class="language-javascript">
+"GET"
+"SET"
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>Pero... ¿por qué <code>undefined</code> al leer?</h4>
+      <p>Porque en tu <code>get()</code> no estás devolviendo el valor.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>5) Solución: devolver el valor en get()</h3>
+
+    <div class="key-concept">
+      <h4>🔑 Regla de oro</h4>
+      <p>Si interceptas un <code>get</code>, normalmente debes devolver el valor.</p>
+    </div>
+
+    <pre><code class="language-javascript">
+const handler = {
+  get(target, property) {
+    console.log("GET", property);
+    return target[property]; // 👈 devolvemos valor real
+  },
+
+  set(target, property, value) {
+    console.log("SET", property, value);
+    target[property] = value; // 👈 aplicamos cambio real
+    return true;              // 👈 obligatorio en modo estricto
+  }
+};
+
+const securedAccount = new Proxy(account, handler);
+
+console.log(securedAccount.balance); // GET balance -> 100
+securedAccount.balance = 50;         // SET balance 50
+console.log(securedAccount.balance); // GET balance -> 50
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Ya funciona perfecto</h4>
+    </div>
+  </article>
+
+  <article>
+    <h3>6) El Proxy completo: logs + validación de saldo</h3>
+
+    <p>Ahora vamos a hacer lo "pro":</p>
+
+    <div class="solution-box">
+      <h4>✅ Queremos:</h4>
+      <ul>
+        <li>Log cada vez que se accede a una propiedad</li>
+        <li>No permitir saldo negativo</li>
+      </ul>
+    </div>
+
+    <pre><code class="language-javascript">
+class BankAccount {
+  constructor(balance) {
+    this.balance = balance;
+  }
+}
+
+const handler = {
+  get(target, property) {
+    console.log(`📌 Accediendo a: ${property}`);
+    return target[property];
+  },
+
+  set(target, property, value) {
+    console.log(`✍️ Modificando: ${property} -> ${value}`);
+
+    if (property === "balance" && value < 0) {
+      throw new Error("❌ El saldo no puede ser negativo");
+    }
+
+    target[property] = value;
+    return true;
+  }
+};
+
+const account = new BankAccount(100);
+const securedAccount = new Proxy(account, handler);
+
+console.log(securedAccount.balance); // 📌 Accediendo a: balance -> 100
+
+securedAccount.balance = 50;         // ✍️ Modificando: balance -> 50
+console.log(securedAccount.balance); // -> 50
+
+securedAccount.balance = -10;        // ❌ Error: El saldo no puede ser negativo
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>🔥 Qué significan los parámetros del Proxy</h3>
+
+    <h4>get(target, property)</h4>
+
+    <ul>
+      <li><code>target</code>: el objeto real</li>
+      <li><code>property</code>: el nombre de la propiedad que se está leyendo (ej: "balance")</li>
+    </ul>
+
+    <p><strong>✅ Ejemplo:</strong></p>
+    <pre><code class="language-javascript">
+securedAccount.balance;
+    </code></pre>
+    <p>equivale a:</p>
+    <pre><code class="language-javascript">
+property = "balance"
+    </code></pre>
+
+    <h4>set(target, property, value)</h4>
+
+    <ul>
+      <li><code>target</code>: el objeto real</li>
+      <li><code>property</code>: propiedad que se quiere cambiar</li>
+      <li><code>value</code>: nuevo valor</li>
+    </ul>
+
+    <p><strong>✅ Ejemplo:</strong></p>
+    <pre><code class="language-javascript">
+securedAccount.balance = 50;
+    </code></pre>
+    <p>equivale a:</p>
+    <pre><code class="language-javascript">
+property = "balance"
+value = 50
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>✅ ¿Cuándo usar Proxy en la vida real?</h3>
+
+    <p>Muy útil cuando quieres control transversal sin ensuciar la clase.</p>
+
+    <div class="interview-box">
+      <h4>Ejemplos reales:</h4>
+
+      <h5>🔐 Seguridad</h5>
+      <ul>
+        <li>bloquear acceso a <code>password</code></li>
+        <li>evitar modificaciones externas en propiedades sensibles</li>
+      </ul>
+
+      <h5>✅ Validaciones</h5>
+      <ul>
+        <li>no permitir tipos incorrectos (string en vez de number)</li>
+        <li>no permitir negativos</li>
+        <li>no permitir null</li>
+      </ul>
+
+      <h5>📊 Auditoría / Logging</h5>
+      <ul>
+        <li>trackear lecturas/escrituras</li>
+        <li>analítica interna</li>
+      </ul>
+
+      <h5>🧊 Inmutabilidad (como Redux-style)</h5>
+      <ul>
+        <li>impedir que cambien valores</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>🧠 Best practices (como senior)</h3>
+
+    <h4>✅ 1) NO metas demasiada lógica dentro del proxy</h4>
+
+    <p>Mejor delegarlo a funciones:</p>
+
+    <pre><code class="language-javascript">
+function validateBalance(value) {
+  if (value < 0) throw new Error("Saldo negativo");
+}
+    </code></pre>
+
+    <h4>✅ 2) Usa Reflect para mantener comportamiento estándar</h4>
+
+    <p>Esto es muy pro porque respeta cosas internas:</p>
+
+    <pre><code class="language-javascript">
+const handler = {
+  get(target, prop) {
+    console.log("GET", prop);
+    return Reflect.get(target, prop);
+  },
+
+  set(target, prop, value) {
+    if (prop === "balance" && value < 0) {
+      throw new Error("Saldo negativo");
+    }
+    return Reflect.set(target, prop, value);
+  }
+};
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>🧪 Ejercicios para que lo domines</h3>
+
+    <div class="key-concept">
+      <h4>✅ Ejercicio 1</h4>
+      <p>Haz un Proxy que:</p>
+      <ul>
+        <li>loguee "Leyendo propiedad X"</li>
+        <li>loguee "Escribiendo propiedad X"</li>
+      </ul>
+
+      <h4>✅ Ejercicio 2</h4>
+      <p>Haz un Proxy para un objeto <code>user</code> que impida:</p>
+      <ul>
+        <li>leer <code>password</code></li>
+        <li>setear <code>email</code> si no incluye <code>@</code></li>
+      </ul>
+      <pre><code class="language-javascript">
+const handler = {
+  get(target, prop) {
+    if (prop === "password") {
+      throw new Error("No puedes acceder a password");
+    }
+    return target[prop];
+  },
+
+  set(target, prop, value) {
+    if (prop === "email" && !value.includes("@")) {
+      throw new Error("Email inválido");
+    }
+    target[prop] = value;
+    return true;
+  }
+};
+
+const user = { email: "test@example.com", password: "secret123" };
+const securedUser = new Proxy(user, handler);
+      </code></pre>
+
+      <h4>✅ Ejercicio 3</h4>
+      <p>Haz un Proxy que no permita borrar propiedades:</p>
+      <p>Intercepta:</p>
+      <pre><code class="language-javascript">
+delete obj.name
+      </code></pre>
+      <p>(usando <code>deleteProperty</code>)</p>
+      <pre><code class="language-javascript">
+const handler = {
+  deleteProperty(target, prop) {
+    throw new Error(`No puedes borrar la propiedad ${prop}`);
+  }
+};
+
+const obj = { name: "Roge" };
+const protected = new Proxy(obj, handler);
+
+delete protected.name; // ❌ Error: No puedes borrar la propiedad name
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>✅ Resumen</h3>
+
+    <div class="interview-box">
+      <h4>Lo que debes recordar</h4>
+      <ul>
+        <li><strong>Proxy:</strong> interceptor entre tu código y un objeto</li>
+        <li><strong>Handler:</strong> objeto con traps (<code>get</code>, <code>set</code>, <code>deleteProperty</code>, etc.)</li>
+        <li><strong>get:</strong> debe devolver el valor</li>
+        <li><strong>set:</strong> debe devolver <code>true</code></li>
+        <li><strong>Usa Reflect:</strong> para mantener comportamiento estándar</li>
+        <li><strong>Casos de uso:</strong> validación, seguridad, logging, inmutabilidad</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Checklist de Errores Comunes</h3>
+
+    <div class="warning-box">
+      <h4>⚠️ Errores típicos a evitar</h4>
+      <ul>
+        <li>❌ No devolver valor en <code>get</code></li>
+        <li>❌ No devolver <code>true</code> en <code>set</code></li>
+        <li>❌ Meter demasiada lógica en el handler</li>
+        <li>❌ No usar <code>Reflect</code> para operaciones complejas</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy" target="_blank">MDN: Proxy</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect" target="_blank">MDN: Reflect</a>
+    <a href="https://javascript.info/proxy" target="_blank">JavaScript.info: Proxy and Reflect</a>
+    <a href="https://chatgpt.com/c/6962a6c7-caf8-8327-b083-bdc04bf92721" target="_blank">ChatGPT: Proxy Explained</a>
+  </div>
+</section>

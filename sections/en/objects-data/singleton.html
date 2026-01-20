@@ -1,0 +1,304 @@
+<!-- SINGLETON PATTERN IN JAVASCRIPT -->
+<section id="singleton" class="box">
+  <h2>Singleton Pattern in JavaScript</h2>
+
+  <article>
+    <h3>1) What is a design pattern?</h3>
+
+    <div class="key-concept">
+      <p>A design pattern is a "recipe" or repeatable solution for common software design problems.</p>
+      <ul>
+        <li>It's not a library</li>
+        <li>It's not a mandatory rule</li>
+        <li>It's a well-known way to solve something that tends to repeat</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>2) What problem does Singleton solve?</h3>
+
+    <p>Singleton aims for this:</p>
+
+    <div class="solution-box">
+      <ul>
+        <li>✅ That only one single instance of a class exists during program execution</li>
+        <li>✅ And it usually also provides a single point of access to that instance</li>
+      </ul>
+    </div>
+
+    <h4>Typical examples where it makes sense:</h4>
+    <ul>
+      <li>Logger (log recording)</li>
+      <li>Global configuration (read-only)</li>
+      <li>Cache</li>
+      <li>API / DB client (with caution)</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>3) Base case: normal class (NOT Singleton)</h3>
+
+    <p>Let's simulate a very simple "session".</p>
+
+    <pre><code class="language-javascript">
+class Session {
+  constructor(username) {
+    this.user = username;
+  }
+}
+
+const s1 = new Session("Bryce");
+const s2 = new Session(); // another different instance
+
+console.log(s1.user); // "Bryce"
+console.log(s2.user); // undefined
+console.log(s1 === s2); // false
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>🔴 Problem</h4>
+      <p>If your app creates sessions in different places, you'll have different instances and the state can be inconsistent.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>4) Singleton (recommended version): getInstance()</h3>
+
+    <p>This is the clearest form for a junior because there's no magic in the constructor.</p>
+
+    <h4>Step 4.1: Create the class with a "saved" instance</h4>
+
+    <p>We use a private static property to save the unique instance:</p>
+
+    <pre><code class="language-javascript">
+class Session {
+  static #instance = null; // here we'll save the only instance
+  user = null;
+
+  constructor() {
+    // normal constructor (no tricks)
+  }
+}
+    </code></pre>
+
+    <h4>Step 4.2: Create the global access point getInstance()</h4>
+
+    <pre><code class="language-javascript">
+class Session {
+  static #instance = null;
+  user = null;
+
+  constructor() {}
+
+  static getInstance() {
+    // If it doesn't exist, we create it
+    if (!Session.#instance) {
+      Session.#instance = new Session();
+    }
+    // If it exists, we return the same one
+    return Session.#instance;
+  }
+}
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ We already have singleton</h4>
+      <p>It will always return the same instance.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>5) Add real behavior: login, read user, clear</h3>
+
+    <pre><code class="language-javascript">
+class Session {
+  static #instance = null;
+  user = null;
+
+  constructor() {}
+
+  static getInstance() {
+    if (!Session.#instance) {
+      Session.#instance = new Session();
+    }
+    return Session.#instance;
+  }
+
+  login(username) {
+    this.user = username;
+  }
+
+  clear() {
+    this.user = null;
+  }
+}
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>6) Test that it works (the key demo)</h3>
+
+    <pre><code class="language-javascript">
+const s1 = Session.getInstance();
+s1.login("Bryce");
+
+const s2 = Session.getInstance();
+
+console.log(s1.user); // "Bryce"
+console.log(s2.user); // "Bryce"
+console.log(s1 === s2); // true ✅ same instance
+    </code></pre>
+
+    <div class="interview-box">
+      <h4>✅ This demonstrates the concept</h4>
+      <p>No matter how many times you access it, it's always the same instance.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>7) "Reset" for tests or to completely restart</h3>
+
+    <p>In tests it's common to want to "start clean". We can add a static method to reset:</p>
+
+    <pre><code class="language-javascript">
+class Session {
+  static #instance = null;
+  user = null;
+
+  constructor() {}
+
+  static getInstance() {
+    if (!Session.#instance) {
+      Session.#instance = new Session();
+    }
+    return Session.#instance;
+  }
+
+  login(username) {
+    this.user = username;
+  }
+
+  clear() {
+    this.user = null;
+  }
+
+  static resetForTests() {
+    Session.#instance = null;
+  }
+}
+    </code></pre>
+
+    <p><strong>Usage:</strong></p>
+
+    <pre><code class="language-javascript">
+Session.resetForTests();
+const s = Session.getInstance();
+console.log(s.user); // null
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>8) Alternative version (classic): "return in the constructor"</h3>
+
+    <p>This is seen a lot in old examples. It works, but it's more confusing.</p>
+
+    <pre><code class="language-javascript">
+class Session {
+  static instance = null;
+
+  constructor(username) {
+    if (Session.instance) return Session.instance;
+
+    this.user = username;
+    Session.instance = this;
+  }
+}
+
+const s1 = new Session("Bryce");
+const s2 = new Session("Other");
+
+console.log(s1.user); // "Bryce"
+console.log(s2.user); // "Bryce" (ignores "Other")
+console.log(s1 === s2); // true
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>⚠️ Important</h4>
+      <p>The second time you do <code>new Session("Other")</code>, that parameter is ignored because it returns the previous instance.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>9) The most common way in modern JS: Singleton by module</h3>
+
+    <p>In real projects, you often do this:</p>
+
+    <pre><code class="language-javascript">
+// session.js
+class Session {
+  user = null;
+  login(name) { this.user = name; }
+  clear() { this.user = null; }
+}
+
+export const session = new Session();
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Advantage</h4>
+      <p>Since modules are cached, <code>session</code> will be the same object for whoever imports it.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>10) When NOT to use Singleton (senior lesson)</h3>
+
+    <div class="warning-box">
+      <h4>Singleton can be a bad idea when:</h4>
+      <ul>
+        <li>You need easy testing (global state breaks tests)</li>
+        <li>You have multiple concurrent users (backend)</li>
+        <li>You want decoupled code (dependency injection is usually better)</li>
+      </ul>
+
+      <h4>⚠️ Backend warning</h4>
+      <p>In Node/Express, a singleton lives in the process, so <strong>do NOT save "current user" globally</strong> or you'll mix users.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>✅ Summary</h3>
+
+    <div class="interview-box">
+      <h4>What you must remember</h4>
+      <ul>
+        <li><strong>Singleton = a single instance</strong></li>
+        <li>Ideal for global resources (logger, config, cache)</li>
+        <li>In modern JS: <code>getInstance()</code> or singleton by module</li>
+        <li>Avoid it if it introduces global state that's hard to test or if it's "per user" state</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Common Errors Checklist</h3>
+
+    <div class="warning-box">
+      <h4>⚠️ Typical errors to avoid</h4>
+      <ul>
+        <li>❌ Using singleton for "per user" state in backend</li>
+        <li>❌ Not providing a reset method for tests</li>
+        <li>❌ Overusing the pattern when dependency injection would be better</li>
+        <li>❌ Not documenting that a class is a singleton</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes" target="_blank">MDN: Classes</a>
+    <a href="https://refactoring.guru/design-patterns/singleton" target="_blank">Refactoring.Guru: Singleton Pattern</a>
+    <a href="https://www.patterns.dev/vanilla/singleton-pattern" target="_blank">Patterns.dev: Singleton Pattern</a>
+    <a href="https://chatgpt.com/c/69629ea3-bcb0-832d-a9e5-5d98bca9398a" target="_blank">ChatGPT: Singleton Explained</a>
+  </div>
+</section>

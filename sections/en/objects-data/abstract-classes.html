@@ -1,0 +1,386 @@
+<!-- ABSTRACT CLASSES IN JAVASCRIPT -->
+<section id="abstract-classes" class="box">
+  <h2>Abstract Classes in JavaScript (simulated) + Inheritance + Polymorphism</h2>
+
+  <article>
+    <h3>0) What you'll learn</h3>
+
+    <div class="solution-box">
+      <ul>
+        <li>What an abstract class is (concept)</li>
+        <li>Why JavaScript doesn't have a real <code>abstract class</code> (at runtime)</li>
+        <li>How to simulate:
+          <ul>
+            <li>preventing instantiation of the base class</li>
+            <li>forcing methods to be implemented in subclasses</li>
+          </ul>
+        </li>
+        <li>How to apply this with <code>extends</code>, <code>super()</code> and polymorphism</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Step 0) Quick concept (no fluff)</h3>
+
+    <div class="key-concept">
+      <h4>An abstract class serves to:</h4>
+      <ul>
+        <li>Define a base structure (common properties)</li>
+        <li>Define a contract (methods that must exist)</li>
+        <li>Prevent someone from using it as a "real" object (<code>new</code>)</li>
+      </ul>
+    </div>
+
+    <p><strong>Mental example:</strong></p>
+    <ul>
+      <li>"Animal" is not a concrete animal</li>
+      <li>"Dog" and "Cat" are</li>
+    </ul>
+  </article>
+
+  <article>
+    <h3>Step 1) Start with a normal class (and see the problem)</h3>
+
+    <pre><code class="language-javascript">
+class Animal {
+  makeSound() {
+    console.log("I make a sound");
+  }
+}
+
+const a = new Animal();
+a.makeSound();
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>The problem</h4>
+      <p>✅ This works.</p>
+      <p>❌ But if "Animal" should be abstract... this should NOT be allowed.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Step 2) Block <code>new Animal()</code> with <code>new.target</code></h3>
+
+    <p><strong>Idea:</strong> if someone tries to instantiate <code>Animal</code> exactly, we throw an error.</p>
+
+    <pre><code class="language-javascript">
+class Animal {
+  constructor() {
+    if (new.target === Animal) {
+      throw new Error("Cannot instantiate Animal directly (abstract class).");
+    }
+  }
+
+  makeSound() {
+    console.log("I make a sound");
+  }
+}
+
+// const a = new Animal(); // ❌ Error
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>What is <code>new.target</code></h4>
+      <ul>
+        <li>It's the class/function being instantiated with <code>new</code></li>
+        <li>If you do <code>new Animal()</code>, then <code>new.target === Animal</code></li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Step 3) Add shared state: <code>name</code></h3>
+
+    <p>Now yes: "all animals have a name".</p>
+
+    <pre><code class="language-javascript">
+class Animal {
+  constructor(name) {
+    if (new.target === Animal) {
+      throw new Error("Cannot instantiate Animal directly (abstract class).");
+    }
+
+    this.name = name;
+  }
+
+  makeSound() {
+    console.log("I make a sound");
+  }
+}
+    </code></pre>
+
+    <p>But something important is missing here...</p>
+  </article>
+
+  <article>
+    <h3>Step 4) Validate parameters ("pro" level but simple)</h3>
+
+    <p>A good tutorial teaches good habits:</p>
+
+    <pre><code class="language-javascript">
+class Animal {
+  constructor(name) {
+    if (new.target === Animal) {
+      throw new Error("Cannot instantiate Animal directly (abstract class).");
+    }
+
+    if (!name) {
+      throw new Error("Name is required to create an Animal.");
+    }
+
+    this.name = name;
+  }
+
+  makeSound() {
+    console.log("I make a sound");
+  }
+}
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Step 5) Convert <code>makeSound()</code> to "abstract"</h3>
+
+    <p>We want to force <code>Dog</code>/<code>Cat</code> to implement it.</p>
+
+    <p>The typical way in JS is:</p>
+
+    <pre><code class="language-javascript">
+class Animal {
+  constructor(name) {
+    if (new.target === Animal) {
+      throw new Error("Cannot instantiate Animal directly (abstract class).");
+    }
+    if (!name) {
+      throw new Error("Name is required to create an Animal.");
+    }
+    this.name = name;
+  }
+
+  makeSound() {
+    throw new Error("makeSound() must be implemented by the subclass.");
+  }
+}
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ This turns the method into a "contract"</h4>
+      <p>If you don't implement it, it breaks.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Step 6) Create a subclass: <code>Dog extends Animal</code></h3>
+
+    <p>Here 2 key concepts appear:</p>
+    <ul>
+      <li><code>extends</code> (inheritance)</li>
+      <li><code>super(name)</code> (calls the parent constructor)</li>
+    </ul>
+
+    <pre><code class="language-javascript">
+class Dog extends Animal {
+  constructor(name) {
+    super(name);
+  }
+
+  makeSound() {
+    console.log(`${this.name} says: Woof!`);
+  }
+}
+
+const dog = new Dog("Rocky");
+dog.makeSound(); // Rocky says: Woof!
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Step 7) Another subclass: <code>Cat</code></h3>
+
+    <p>Same contract (<code>makeSound()</code>), different behavior.</p>
+
+    <pre><code class="language-javascript">
+class Cat extends Animal {
+  constructor(name) {
+    super(name);
+  }
+
+  makeSound() {
+    console.log(`${this.name} says: Meow!`);
+  }
+}
+
+const cat = new Cat("Milo");
+cat.makeSound(); // Milo says: Meow!
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Step 8) Polymorphism demonstration (the really important part)</h3>
+
+    <div class="key-concept">
+      <h4>Polymorphism = same method, different implementations, uniform usage</h4>
+    </div>
+
+    <pre><code class="language-javascript">
+const animals = [new Dog("Rocky"), new Cat("Milo")];
+
+animals.forEach((a) => a.makeSound());
+    </code></pre>
+
+    <p><strong>Output:</strong></p>
+    <pre><code class="language-javascript">
+Rocky says: Woof!
+Milo says: Meow!
+    </code></pre>
+
+    <div class="interview-box">
+      <h4>💡 The important part</h4>
+      <p>You treat everyone as "Animal", but each one responds differently.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Step 9) Tests that our "abstraction" works</h3>
+
+    <h4>1) Instantiating <code>Animal</code> fails</h4>
+    <pre><code class="language-javascript">
+const a = new Animal("Base"); // ❌ Error
+    </code></pre>
+
+    <h4>2) Subclass without implementing <code>makeSound</code> fails when called</h4>
+    <pre><code class="language-javascript">
+class Fish extends Animal {
+  constructor(name) {
+    super(name);
+  }
+  // no makeSound()
+}
+
+const f = new Fish("Nemo");
+f.makeSound(); // ❌ Error: must be implemented by the subclass
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Step 10) Complete final version (production-ready)</h3>
+
+    <pre><code class="language-javascript">
+class Animal {
+  constructor(name) {
+    if (new.target === Animal) {
+      throw new Error("Cannot instantiate Animal directly (abstract class).");
+    }
+
+    if (!name) {
+      throw new Error("Name is required to create an Animal.");
+    }
+
+    this.name = name;
+  }
+
+  makeSound() {
+    throw new Error("makeSound() must be implemented by the subclass.");
+  }
+}
+
+class Dog extends Animal {
+  constructor(name) {
+    super(name);
+  }
+
+  makeSound() {
+    console.log(`${this.name} says: Woof!`);
+  }
+}
+
+class Cat extends Animal {
+  constructor(name) {
+    super(name);
+  }
+
+  makeSound() {
+    console.log(`${this.name} says: Meow!`);
+  }
+}
+
+// ✅ OK
+const dog = new Dog("Rocky");
+dog.makeSound();
+
+const cat = new Cat("Milo");
+cat.makeSound();
+
+// ✅ Polymorphism
+const animals = [dog, cat];
+animals.forEach((a) => a.makeSound());
+
+// ❌ Should fail
+// const a = new Animal("Base");
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Bonus: This is cleaner in TypeScript</h3>
+
+    <div class="solution-box">
+      <h4>📌 Note for TypeScript</h4>
+      <p>In TS there is a real <code>abstract class</code> and the compiler forces you to implement abstract methods.</p>
+      <p>Equivalent TypeScript example:</p>
+      <pre><code class="language-typescript">
+abstract class Animal {
+  constructor(public name: string) {}
+
+  abstract makeSound(): void;
+}
+
+class Dog extends Animal {
+  makeSound(): void {
+    console.log(`${this.name} says: Woof!`);
+  }
+}
+
+// const a = new Animal("Base"); // ❌ Compilation error
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>✅ Summary</h3>
+
+    <div class="interview-box">
+      <h4>What you must remember</h4>
+      <ul>
+        <li><strong>Abstract class:</strong> not instantiated directly, only serves as a base</li>
+        <li><strong>new.target:</strong> tells us which class is being instantiated</li>
+        <li><strong>extends:</strong> creates inheritance from one class to another</li>
+        <li><strong>super():</strong> calls the parent constructor</li>
+        <li><strong>Abstract methods:</strong> we throw an error if they're not implemented</li>
+        <li><strong>Polymorphism:</strong> same method, different behaviors</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Common Errors Checklist</h3>
+
+    <div class="warning-box">
+      <h4>⚠️ Typical errors to avoid</h4>
+      <ul>
+        <li>❌ Forgetting to call <code>super()</code> in the subclass constructor</li>
+        <li>❌ Calling <code>super()</code> after using <code>this</code></li>
+        <li>❌ Not validating required parameters in the constructor</li>
+        <li>❌ Not implementing "abstract" methods in subclasses</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes" target="_blank">MDN: Classes</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new.target" target="_blank">MDN: new.target</a>
+    <a href="https://javascript.info/class-inheritance" target="_blank">JavaScript.info: Class inheritance</a>
+    <a href="https://chatgpt.com/c/69629a5c-5090-832a-96a3-86fdcb70b87a" target="_blank">ChatGPT: Abstract Classes Explained</a>
+  </div>
+</section>

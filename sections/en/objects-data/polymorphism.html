@@ -1,0 +1,406 @@
+<!-- POLYMORPHISM IN JAVASCRIPT -->
+<section id="polymorphism" class="box">
+  <h2>Polymorphism in JavaScript</h2>
+
+  <article>
+    <h3>0) Chapter Objective</h3>
+    <p>By the end of this topic you will be able to:</p>
+
+    <div class="solution-box">
+      <ul>
+        <li>Understand what polymorphism really is (no fluff)</li>
+        <li>Implement it with classes and inheritance</li>
+        <li>See the most important case: real polymorphism = treating different objects the same, without if/switch</li>
+        <li>Understand how it applies in JavaScript with duck typing</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>1) What is Polymorphism?</h3>
+
+    <h4>Simple and useful definition</h4>
+    <div class="key-concept">
+      <p><strong>Polymorphism = same method, different behaviors.</strong></p>
+    </div>
+
+    <p>👉 Mental example:</p>
+    <p>All animals can <code>makeSound()</code></p>
+    <p>But each one does it differently:</p>
+    <ul>
+      <li>cat → "meow"</li>
+      <li>dog → "woof"</li>
+      <li>cow → "moo"</li>
+    </ul>
+
+    <h4>The important part (senior vision)</h4>
+    <div class="solution-box">
+      <p>Polymorphism is not "making classes for the sake of it".</p>
+      <p><strong>It's this:</strong></p>
+      <p>✅ Being able to write generic code that works with many different types, without asking for the type.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>2) The Typical Problem (without polymorphism)</h3>
+    <p>A junior usually does this:</p>
+
+    <pre><code class="language-javascript">
+function makeSound(animal) {
+  if (animal.type === "cat") return "Meow";
+  if (animal.type === "dog") return "Woof";
+  return "???";
+}
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>What's wrong here?</h4>
+      <p>Every time you add a new animal (Cow, Bird...) you have to touch this function again.</p>
+      <p>That breaks a key principle:</p>
+      <p><strong>Open for extension, closed for modification (Open/Closed Principle).</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>3) Solution with Polymorphism (with classes)</h3>
+
+    <h4>Step 1: Create a base class (simulating "abstract")</h4>
+
+    <div class="warning-box">
+      <h4>⚠️ IMPORTANT</h4>
+      <p>In JavaScript there are no real <code>abstract classes</code>, so we simulate them.</p>
+      <p><strong>Goal:</strong></p>
+      <ul>
+        <li>Don't allow <code>new Animal()</code></li>
+        <li>Force <code>makeSound()</code> to be implemented by children</li>
+      </ul>
+    </div>
+
+    <pre><code class="language-javascript">
+class Animal {
+  constructor(name) {
+    // 🔒 Block to prevent instantiating Animal directly
+    if (new.target === Animal) {
+      throw new Error("Animal is abstract and cannot be instantiated");
+    }
+
+    this.name = name;
+  }
+
+  makeSound() {
+    // Force the child to implement it
+    throw new Error("makeSound() must be implemented in the subclass");
+  }
+}
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>📌 new.target is key here:</h4>
+      <ul>
+        <li>If you try to instantiate <code>Animal</code>, it throws an error</li>
+        <li>If you instantiate a subclass like <code>Cat</code>, it doesn't fail</li>
+      </ul>
+    </div>
+
+    <h4>Step 2: Create subclasses (Cat and Dog)</h4>
+    <pre><code class="language-javascript">
+class Cat extends Animal {
+  makeSound() {
+    return "Meow 🐱";
+  }
+}
+
+class Dog extends Animal {
+  makeSound() {
+    return "Woof 🐶";
+  }
+}
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Here's the polymorphism:</h4>
+      <ul>
+        <li>same method (<code>makeSound</code>)</li>
+        <li>different behaviors (each class decides)</li>
+      </ul>
+    </div>
+
+    <h4>Step 3: Create instances</h4>
+    <pre><code class="language-javascript">
+const cat = new Cat("MoureCat");
+const dog = new Dog("MoureDog");
+
+console.log(cat.name, cat.makeSound());
+console.log(dog.name, dog.makeSound());
+    </code></pre>
+
+    <p><strong>Output:</strong></p>
+    <pre><code class="language-javascript">
+MoureCat Meow 🐱
+MoureDog Woof 🐶
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>4) Here comes REAL polymorphism (the important part)</h3>
+    <p>This is the example you must understand for sure:</p>
+
+    <pre><code class="language-javascript">
+const animals = [
+  new Cat("Luna"),
+  new Dog("Rocky"),
+  new Cat("Mimi"),
+];
+
+for (const animal of animals) {
+  console.log(animal.name, "says", animal.makeSound());
+}
+    </code></pre>
+
+    <div class="interview-box">
+      <h4>What's special about it?</h4>
+      <ul>
+        <li>Your loop DOESN'T KNOW if it's a cat or a dog</li>
+        <li>No <code>if</code>, no <code>switch</code></li>
+        <li>Just calls the same method</li>
+      </ul>
+      <p><strong>💡 That's polymorphism:</strong></p>
+      <p>the code "treats different objects uniformly".</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>5) What happens if I DON'T implement the method?</h3>
+    <p>Example:</p>
+
+    <pre><code class="language-javascript">
+class Bird extends Animal {}
+    </code></pre>
+
+    <p>Now:</p>
+    <pre><code class="language-javascript">
+const bird = new Bird("Tweety");
+console.log(bird.makeSound());
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ What should happen?</h4>
+      <p>Throws error:</p>
+      <pre><code class="language-javascript">
+makeSound() must be implemented in the subclass
+      </code></pre>
+      <p><strong>📌 This is exactly what you want:</strong></p>
+      <p>force the implementation of the contract</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>6) Real JavaScript Polymorphism (Duck Typing)</h3>
+
+    <div class="key-concept">
+      <h4>This is VERY important</h4>
+      <p>👉 In JavaScript many times you don't care about inheritance.</p>
+      <p>You care about the <strong>contract</strong>.</p>
+    </div>
+
+    <p>Example:</p>
+    <pre><code class="language-javascript">
+function playSound(entity) {
+  if (typeof entity.makeSound !== "function") {
+    throw new Error("This object doesn't implement makeSound()");
+  }
+
+  console.log(entity.makeSound());
+}
+    </code></pre>
+
+    <p>Usage:</p>
+    <pre><code class="language-javascript">
+playSound(new Cat("A"));
+playSound({
+  makeSound() {
+    return "Beep Beep 🤖";
+  }
+});
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ This object doesn't extend Animal, but it works</h4>
+      <p><strong>Senior message:</strong></p>
+      <p>In JavaScript, polymorphism is "if it has the method, it's valid".</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>7) Senior Bonus: A Professional Improvement</h3>
+    <p>If you want to avoid the <code>if</code> in <code>playSound()</code>, you can use a guard clause or fail fast with a clear error.</p>
+
+    <p>And if you want something more elegant, you can say:</p>
+    <pre><code class="language-javascript">
+const makeSoundable = (obj) => typeof obj?.makeSound === "function";
+
+function playSound(entity) {
+  if (!makeSoundable(entity)) {
+    throw new Error("This object doesn't implement makeSound()");
+  }
+  console.log(entity.makeSound());
+}
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>8) When to use polymorphism (real Front-End cases)</h3>
+
+    <div class="solution-box">
+      <h4>✅ Cases where it's worth it:</h4>
+
+      <h5>A) Component rendering by type</h5>
+      <p>Example:</p>
+      <ul>
+        <li>each block type has a <code>render()</code> method</li>
+        <li>your system doesn't ask for type → just executes <code>.render()</code></li>
+      </ul>
+
+      <h5>B) Validators</h5>
+      <p>Many validators with the same interface:</p>
+      <ul>
+        <li><code>validate()</code></li>
+        <li><code>formatError()</code></li>
+      </ul>
+
+      <h5>C) Strategies</h5>
+      <p>Different ways to calculate price:</p>
+      <ul>
+        <li><code>calculate()</code></li>
+        <li>each class implements its strategy</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>9) Exercises to Reinforce</h3>
+
+    <div class="key-concept">
+      <h4>Exercise 1 (basic)</h4>
+      <p>Create <code>Cow</code> that inherits from <code>Animal</code> and does:</p>
+      <pre><code class="language-javascript">
+class Cow extends Animal {
+  makeSound() {
+    return "Moo 🐮";
+  }
+}
+
+const cow = new Cow("Lola");
+console.log(cow.makeSound()); // "Moo 🐮"
+      </code></pre>
+
+      <h4>Exercise 2 (interview level)</h4>
+      <p>Create a function:</p>
+      <pre><code class="language-javascript">
+function playAllSounds(animals) {
+  for (const animal of animals) {
+    console.log(animal.name, "says", animal.makeSound());
+  }
+}
+
+// Usage:
+const zoo = [
+  new Cat("Luna"),
+  new Dog("Rocky"),
+  new Cow("Lola")
+];
+
+playAllSounds(zoo);
+      </code></pre>
+
+      <h4>Exercise 3 (pro)</h4>
+      <p>Create a polymorphic payment system:</p>
+      <pre><code class="language-javascript">
+// Abstract PaymentMethod (simulated)
+class PaymentMethod {
+  constructor() {
+    if (new.target === PaymentMethod) {
+      throw new Error("PaymentMethod is abstract");
+    }
+  }
+
+  pay(amount) {
+    throw new Error("pay() must be implemented");
+  }
+}
+
+class CardPayment extends PaymentMethod {
+  pay(amount) {
+    return `Paid ${amount}€ with card 💳`;
+  }
+}
+
+class PaypalPayment extends PaymentMethod {
+  pay(amount) {
+    return `Paid ${amount}€ with PayPal 🅿️`;
+  }
+}
+
+class CryptoPayment extends PaymentMethod {
+  pay(amount) {
+    return `Paid ${amount}€ with crypto ₿`;
+  }
+}
+
+// Your loop just does:
+const methods = [
+  new CardPayment(),
+  new PaypalPayment(),
+  new CryptoPayment()
+];
+
+methods.forEach((m) => console.log(m.pay(100)));
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>✅ Chapter Summary</h3>
+
+    <div class="interview-box">
+      <h4>What you must remember</h4>
+      <ul>
+        <li><strong>Polymorphism = same method, different behaviors</strong></li>
+        <li>Used to avoid <code>if/switch</code> by type</li>
+        <li>In JS it can be done with:
+          <ul>
+            <li>Inheritance + override</li>
+            <li>Duck typing (if it has the method, it works)</li>
+          </ul>
+        </li>
+        <li><strong>Real benefit:</strong>
+          <ul>
+            <li>more maintainable code</li>
+            <li>more extensible (add new classes without touching central logic)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Common Errors Checklist</h3>
+
+    <div class="warning-box">
+      <h4>⚠️ Typical errors to avoid</h4>
+      <ul>
+        <li>❌ Using <code>if (type === ...)</code> instead of polymorphism</li>
+        <li>❌ Not implementing abstract methods in subclasses</li>
+        <li>❌ Creating classes when a simple function would suffice</li>
+        <li>❌ Forgetting to validate that the object has the method (duck typing)</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes" target="_blank">MDN: Classes</a>
+    <a href="https://javascript.info/class-inheritance" target="_blank">JavaScript.info: Class inheritance</a>
+    <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)" target="_blank">Wikipedia: Polymorphism</a>
+    <a href="https://chatgpt.com/c/69628c3a-b8e8-8327-a1e5-93403d58242a" target="_blank">ChatGPT: Polymorphism Explained</a>
+  </div>
+</section>

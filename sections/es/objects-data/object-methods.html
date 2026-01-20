@@ -1,0 +1,381 @@
+<!-- OBJECT METHODS -->
+<section id="object-methods" class="box">
+  <h2>Métodos de Objetos (assign, keys, values, entries)</h2>
+
+  <article>
+    <h3>El Problema del Mundo Real</h3>
+    <p>Imagina que trabajas en un sitio de analytics y necesitas construir un payload para un evento:</p>
+
+    <pre><code class="language-javascript">
+const baseEvent = { event: "select_item", page: "Renewals" };
+const userContext = { userId: "u123", loggedIn: true };
+const itemContext = { itemId: "car_456", price: 220 };
+
+// ¿Cómo combino estos 3 objetos en uno solo?
+    </code></pre>
+
+    <div class="problem-box">
+      <h4>Desafío</h4>
+      <p>Necesitas combinar múltiples objetos en uno solo sin modificar los originales.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Solución 1: Spread Operator (Lo Moderno) ✅</h3>
+    <p>La forma más idiomática y legible en JavaScript moderno:</p>
+
+    <pre><code class="language-javascript">
+const baseEvent = { event: "select_item", page: "Renewals" };
+const userContext = { userId: "u123", loggedIn: true };
+const itemContext = { itemId: "car_456", price: 220 };
+
+const payload = { ...baseEvent, ...userContext, ...itemContext };
+
+console.log(payload);
+// {
+//   event: "select_item",
+//   page: "Renewals",
+//   userId: "u123",
+//   loggedIn: true,
+//   itemId: "car_456",
+//   price: 220
+// }
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Ventajas del Spread</h4>
+      <ul>
+        <li>Más legible y moderno</li>
+        <li>Patrón más usado en React</li>
+        <li>No modifica los objetos originales</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Solución 2: Object.assign() (Código Legacy)</h3>
+    <p><code>Object.assign()</code> copia propiedades de uno o más objetos fuente a un objeto destino.</p>
+
+    <pre><code class="language-javascript">
+const baseEvent = { event: "select_item", page: "Renewals" };
+const userContext = { userId: "u123", loggedIn: true };
+const itemContext = { itemId: "car_456", price: 220 };
+
+// ✅ Crear nuevo objeto (destino = {})
+const payload = Object.assign({}, baseEvent, userContext, itemContext);
+
+console.log(payload);
+// { event, page, userId, loggedIn, itemId, price }
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>Regla mnemónica</h4>
+      <p><strong>El primer parámetro es el que se modifica</strong> (si no usas <code>{}</code> como destino).</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>⚠️ Trampa 1: Mutación del Objeto Destino</h3>
+    <p>Esta es la trampa más peligrosa de <code>Object.assign()</code>:</p>
+
+    <pre><code class="language-javascript">
+const personCore = { name: "Roge" };
+const personDetails = { age: 30, alias: "MoureDev" };
+
+// ❌ MUTA personCore (destino = personCore)
+Object.assign(personCore, personDetails);
+console.log(personCore);
+// { name: "Roge", age: 30, alias: "MoureDev" }
+// ¡personCore se modificó!
+
+// ✅ NO muta nada (destino = {})
+const fullPerson = Object.assign({}, personCore, personDetails);
+// Ahora personCore sigue intacto
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>🔥 Por qué importa</h4>
+      <p>En aplicaciones reales, mutar objetos compartidos puede romper:</p>
+      <ul>
+        <li>React (re-renders inesperados)</li>
+        <li>Redux/Zustand (state management)</li>
+        <li>Cachés y referencias compartidas</li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Solución</h4>
+      <p>Usa siempre <code>{}</code> como primer parámetro o mejor aún, usa spread <code>{ ...obj }</code></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>⚠️ Trampa 2: Conflictos de Claves (Gana el Último)</h3>
+    <p>Si dos objetos tienen la misma propiedad, <strong>el último objeto fuente sobrescribe</strong>:</p>
+
+    <pre><code class="language-javascript">
+const a = { name: "Roge", role: "developer" };
+const b = { name: "Otro", city: "London" };
+
+const result = Object.assign({}, a, b);
+console.log(result.name); // "Otro" ← gana b
+console.log(result);
+// { name: "Otro", role: "developer", city: "London" }
+    </code></pre>
+
+    <div class="interview-box">
+      <h4>💡 Regla de Oro</h4>
+      <p>👉 Si hay colisión, el último parámetro gana.</p>
+    </div>
+
+    <h4>Mismo comportamiento con spread</h4>
+    <pre><code class="language-javascript">
+const result = { ...a, ...b };
+console.log(result.name); // "Otro"
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>⚠️ Trampa 3: Copia Superficial (Shallow Copy)</h3>
+    <p>Si hay objetos anidados, <strong>NO se clonan: se copia la referencia</strong>.</p>
+
+    <pre><code class="language-javascript">
+const core = {
+  name: "Roge",
+  address: { city: "London" }  // ← objeto anidado
+};
+
+const copy = Object.assign({}, core);
+
+// Modificamos la ciudad en la copia
+copy.address.city = "Madrid";
+
+// ¡El original también cambió! 🔥
+console.log(core.address.city); // "Madrid"
+    </code></pre>
+
+    <div class="warning-box">
+      <h4>🔥 Por qué pasa esto</h4>
+      <p>Tanto <code>Object.assign()</code> como <code>spread</code> hacen copia superficial:</p>
+      <ul>
+        <li>Las propiedades primitivas se copian</li>
+        <li>Los objetos/arrays anidados se copian <strong>por referencia</strong></li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Soluciones para copia profunda</h4>
+      <p><strong>Moderna (navegadores modernos):</strong></p>
+      <pre><code class="language-javascript">
+const deepCopy = structuredClone(core);
+deepCopy.address.city = "Madrid";
+console.log(core.address.city); // "London" ✅
+      </code></pre>
+
+      <p><strong>Legacy:</strong></p>
+      <pre><code class="language-javascript">
+// JSON (solo funciona si no hay funciones/Date/undefined)
+const deepCopy = JSON.parse(JSON.stringify(core));
+
+// O usa librerías como lodash
+import { cloneDeep } from 'lodash';
+const deepCopy = cloneDeep(core);
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>⚠️ Trampa 4: Qué Copia Exactamente</h3>
+    <p><code>Object.assign()</code> copia propiedades enumerables propias (incluye símbolos enumerables), y copia valores, no descriptores.</p>
+
+    <div class="key-concept">
+      <h4>Regla técnica</h4>
+      <p>No copia getters/setters como descriptores, copia el resultado/valor según el caso.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Inspección del Objeto: keys, values, entries</h3>
+    <p>Ahora que tienes tu objeto combinado, ¿cómo lo inspeccionas?</p>
+
+    <pre><code class="language-javascript">
+const payload = {
+  event: "select_item",
+  page: "Renewals",
+  userId: "u123",
+  loggedIn: true,
+  itemId: "car_456",
+  price: 220
+};
+
+// Obtener solo las claves
+console.log(Object.keys(payload));
+// ["event", "page", "userId", "loggedIn", "itemId", "price"]
+
+// Obtener solo los valores
+console.log(Object.values(payload));
+// ["select_item", "Renewals", "u123", true, "car_456", 220]
+
+// Obtener pares [clave, valor]
+console.log(Object.entries(payload));
+// [
+//   ["event", "select_item"],
+//   ["page", "Renewals"],
+//   ["userId", "u123"],
+//   ["loggedIn", true],
+//   ["itemId", "car_456"],
+//   ["price", 220]
+// ]
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Iteración Práctica con entries + for...of</h3>
+    <p>La forma más útil en el mundo real:</p>
+
+    <pre><code class="language-javascript">
+const payload = {
+  event: "select_item",
+  page: "Renewals",
+  userId: "u123",
+  price: 220
+};
+
+// ✅ Con destructuring (lo más idiomático)
+for (const [key, value] of Object.entries(payload)) {
+  console.log(`${key}:`, value);
+}
+
+// Output:
+// event: select_item
+// page: Renewals
+// userId: u123
+// price: 220
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Esto es oro para juniors</h4>
+      <p>En lugar de usar índices <code>[0]</code> y <code>[1]</code>, destructura directamente como <code>[key, value]</code>.</p>
+    </div>
+
+    <h4>Casos de uso reales</h4>
+    <pre><code class="language-javascript">
+// Convertir objeto a query string
+const params = { page: 1, limit: 10, sort: "name" };
+const queryString = Object.entries(params)
+  .map(([key, value]) => `${key}=${value}`)
+  .join('&');
+console.log(queryString); // "page=1&limit=10&sort=name"
+
+// Filtrar propiedades de un objeto
+const user = { name: "Roge", age: 30, password: "secret123" };
+const publicUser = Object.fromEntries(
+  Object.entries(user).filter(([key]) => key !== 'password')
+);
+console.log(publicUser); // { name: "Roge", age: 30 }
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Orden de las Claves (Matiz Real)</h3>
+    <p>El orden <strong>suele</strong> ser estable, pero no es simplemente "el orden que escribiste":</p>
+
+    <pre><code class="language-javascript">
+const obj = { 2: "b", 1: "a", name: "Roge", age: 30 };
+
+console.log(Object.keys(obj));
+// ["1", "2", "name", "age"]
+// ↑ Números primero (ordenados ascendente), luego strings (por inserción)
+    </code></pre>
+
+    <div class="key-concept">
+      <h4>📌 Regla de ordenamiento</h4>
+      <p>Las claves numéricas se ordenan primero de forma ascendente, luego strings por orden de inserción.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Diferencia con for...in</h3>
+    <p>Mucha gente confunde <code>Object.keys()</code> con <code>for...in</code>:</p>
+
+    <pre><code class="language-javascript">
+const base = { inherited: true };
+const obj = Object.create(base);
+obj.own = true;
+
+// Object.keys → solo propias
+console.log(Object.keys(obj)); // ["own"]
+
+// for...in → también recorre heredadas del prototipo
+for (const k in obj) {
+  console.log(k); // "own" y "inherited"
+}
+    </code></pre>
+
+    <div class="solution-box">
+      <h4>✅ Diferencias clave</h4>
+      <ul>
+        <li><code>Object.keys(obj)</code> → solo propiedades propias</li>
+        <li><code>for...in</code> → también recorre propiedades heredadas del prototipo</li>
+      </ul>
+    </div>
+
+    <h4>Si necesitas filtrar en for...in</h4>
+    <pre><code class="language-javascript">
+for (const k in obj) {
+  if (obj.hasOwnProperty(k)) {
+    console.log(k); // solo "own"
+  }
+}
+    </code></pre>
+  </article>
+
+  <article>
+    <h3>Resumen: Cuándo Usar Cada Uno</h3>
+
+    <div class="interview-box">
+      <h4>Combinar objetos</h4>
+      <ul>
+        <li>✅ <strong>Spread <code>{ ...a, ...b }</code></strong> → código moderno, legible</li>
+        <li>⚠️ <strong>Object.assign({}, a, b)</strong> → código legacy, menos legible</li>
+      </ul>
+
+      <h4>Inspeccionar objetos</h4>
+      <ul>
+        <li><strong>Object.keys()</strong> → obtener solo claves</li>
+        <li><strong>Object.values()</strong> → obtener solo valores</li>
+        <li><strong>Object.entries()</strong> → obtener pares [clave, valor]</li>
+      </ul>
+
+      <h4>Iterar objetos</h4>
+      <ul>
+        <li>✅ <strong>for (const [k, v] of Object.entries(obj))</strong> → moderno, con destructuring</li>
+        <li>⚠️ <strong>for...in</strong> → incluye heredados, necesita filtro con hasOwnProperty</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>Pitfalls Checklist</h3>
+
+    <div class="warning-box">
+      <h4>⚠️ Errores comunes a evitar</h4>
+      <ul>
+        <li>❌ Mutar el objeto original con <code>Object.assign(obj, ...)</code></li>
+        <li>❌ Asumir que <code>Object.assign</code> hace copia profunda</li>
+        <li>❌ No considerar colisiones de claves al combinar objetos</li>
+        <li>❌ Usar <code>for...in</code> sin filtrar con <code>hasOwnProperty</code></li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign" target="_blank">MDN: Object.assign()</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys" target="_blank">MDN: Object.keys()</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values" target="_blank">MDN: Object.values()</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries" target="_blank">MDN: Object.entries()</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/structuredClone" target="_blank">MDN: structuredClone()</a>
+    <a href="https://javascript.info/object-copy" target="_blank">JavaScript.info: Object copying</a>
+    <a href="https://chatgpt.com/c/69618d13-54b4-8328-8b95-0263bcef6af5" target="_blank">ChatGPT: Object Methods Explained</a>
+  </div>
+</section>
