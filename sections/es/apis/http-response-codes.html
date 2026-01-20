@@ -1,0 +1,219 @@
+<section class="box">
+  <h2>Códigos de respuesta HTTP</h2>
+  <p class="subtitle">Guía paso a paso para entender qué responde un servidor y por qué</p>
+  <article>
+    <h3>Paso 1: ¿Qué son los códigos de respuesta HTTP?</h3>
+    <p>
+      Cada vez que haces una petición HTTP (desde el navegador, fetch, Axios, Postman, etc.), el servidor siempre responde con un código numérico llamado <strong>status code</strong>.
+    </p>
+    <p>Ese código responde a una sola pregunta:</p>
+    <p>👉 <strong>¿Qué ha pasado con la petición que acabas de hacer?</strong></p>
+    <p>
+      No importa si la petición ha ido bien o mal:<br>
+      el servidor siempre debe contestar algo.
+    </p>
+
+    <h3>Paso 2: La idea clave (modelo mental sencillo)</h3>
+    <p>Piensa en los códigos HTTP como un semáforo:</p>
+    <ul>
+      <li>🟢 <strong>2xx</strong> → Todo ha ido bien</li>
+      <li>🟡 <strong>3xx</strong> → Redirección / caché</li>
+      <li>🔴 <strong>4xx</strong> → Error del cliente (tu petición está mal)</li>
+      <li>🔥 <strong>5xx</strong> → Error del servidor (el backend ha fallado)</li>
+    </ul>
+    <p>Con solo entender esto, ya puedes depurar el 80% de los errores.</p>
+
+    <h3>Paso 3: Las familias de códigos HTTP</h3>
+
+    <h4>1xx – Informativos</h4>
+    <p>
+      Raramente los verás en desarrollo web normal.<br>
+      No son relevantes para empezar.
+    </p>
+
+    <h4>2xx – Éxito (la petición ha ido bien)</h4>
+    <p>Todos los códigos 2xx indican que la operación ha sido correcta, pero cada uno tiene un matiz distinto.</p>
+
+    <h5>200 OK</h5>
+    <p>El más común.</p>
+    <p><strong>Significa:</strong></p>
+    <p>"He recibido tu petición y la he procesado correctamente".</p>
+    <p><strong>Ejemplos típicos:</strong></p>
+    <ul>
+      <li>Obtener datos (GET)</li>
+      <li>Actualizar un recurso (PUT)</li>
+      <li>Devolver información</li>
+    </ul>
+
+    <h5>201 Created</h5>
+    <p>Se usa cuando se ha creado un nuevo recurso.</p>
+    <p>Normalmente aparece al usar:</p>
+    <ul>
+      <li><code>POST /users</code></li>
+      <li><code>POST /orders</code></li>
+    </ul>
+    <p><strong>Significa:</strong></p>
+    <p>"Todo ha ido bien y además he creado algo nuevo".</p>
+    <p>🔑 Es más específico que 200.</p>
+
+    <h5>204 No Content</h5>
+    <p>La operación ha sido correcta, pero no hay nada que devolver.</p>
+    <p><strong>Ejemplos típicos:</strong></p>
+    <ul>
+      <li><code>DELETE /users/123</code></li>
+      <li><code>PUT</code> cuando no necesitas devolver datos</li>
+    </ul>
+    <p>👉 Es normal que el body esté vacío.</p>
+
+    <h3>Paso 4: 3xx – Redirecciones y caché</h3>
+    <p>No son tan comunes en APIs puras, pero sí en web.</p>
+
+    <h5>304 Not Modified</h5>
+    <p>Muy importante para rendimiento.</p>
+    <p><strong>Significa:</strong></p>
+    <p>"El recurso no ha cambiado, usa lo que ya tienes en caché".</p>
+    <p>Se usa con headers como <code>ETag</code> o <code>If-None-Match</code>.</p>
+
+    <h3>Paso 5: 4xx – Errores del cliente (tu petición está mal)</h3>
+    <p>Aquí el servidor funciona, pero tú has hecho algo incorrecto.</p>
+
+    <h5>400 Bad Request</h5>
+    <p>La petición está mal formada.</p>
+    <p><strong>Ejemplos:</strong></p>
+    <ul>
+      <li>JSON inválido</li>
+      <li>Campos obligatorios faltantes</li>
+      <li>Tipos de datos incorrectos</li>
+    </ul>
+    <p>👉 El servidor no puede procesar lo que enviaste.</p>
+
+    <h5>401 Unauthorized</h5>
+    <p>No estás autenticado.</p>
+    <p><strong>Ejemplo:</strong></p>
+    <ul>
+      <li>Falta el token</li>
+      <li>Token expirado</li>
+    </ul>
+    <p>👉 No es un problema de permisos, es que no has demostrado quién eres.</p>
+
+    <h5>403 Forbidden</h5>
+    <p>Estás autenticado, pero no tienes permiso.</p>
+    <p><strong>Ejemplo:</strong></p>
+    <ul>
+      <li>Usuario normal accediendo a endpoint de admin</li>
+    </ul>
+    <p>👉 "Sé quién eres, pero no puedes hacer esto".</p>
+
+    <h5>404 Not Found</h5>
+    <p>El recurso no existe.</p>
+    <p><strong>Ejemplo:</strong></p>
+    <ul>
+      <li><code>GET /users/99999</code> (no existe ese usuario)</li>
+    </ul>
+    <p>👉 El servidor está bien, el problema es que pides algo que no existe.</p>
+
+    <h5>409 Conflict</h5>
+    <p>Conflicto con el estado actual del sistema.</p>
+    <p><strong>Ejemplo:</strong></p>
+    <ul>
+      <li>Crear un usuario con un email que ya existe</li>
+    </ul>
+    <p>Muy usado en APIs reales.</p>
+
+    <h5>422 Unprocessable Entity</h5>
+    <p>La petición es correcta, pero los datos no pasan validación.</p>
+    <p><strong>Ejemplo:</strong></p>
+    <ul>
+      <li>Email con formato inválido</li>
+      <li>Password demasiado corto</li>
+    </ul>
+    <p>👉 El servidor entiende tu petición, pero no puede aceptarla.</p>
+
+    <h3>Paso 6: 5xx – Errores del servidor (no es tu culpa)</h3>
+    <p>Aquí la petición está bien hecha, pero el servidor falla.</p>
+
+    <h5>500 Internal Server Error</h5>
+    <p>Error genérico del servidor.</p>
+    <p><strong>Ejemplo:</strong></p>
+    <ul>
+      <li>Excepción no controlada</li>
+      <li>Bug en el backend</li>
+    </ul>
+
+    <h5>503 Service Unavailable</h5>
+    <p>El servidor no está disponible.</p>
+    <p><strong>Ejemplo:</strong></p>
+    <ul>
+      <li>Mantenimiento</li>
+      <li>Servidor caído</li>
+      <li>Deploy en curso</li>
+    </ul>
+
+    <h5>504 Gateway Timeout</h5>
+    <p>El servidor intermediario no obtuvo respuesta a tiempo.</p>
+    <p>Muy común con:</p>
+    <ul>
+      <li>Proxies</li>
+      <li>Gateways</li>
+      <li>Microservicios</li>
+    </ul>
+
+    <h3>Paso 7: Relación entre métodos HTTP y códigos</h3>
+    <p>Esto es lo que más verás en la práctica:</p>
+    <ul>
+      <li><strong>GET</strong> → <code>200</code> o <code>404</code></li>
+      <li><strong>POST</strong> → <code>201</code>, <code>400</code>, <code>409</code></li>
+      <li><strong>PUT / PATCH</strong> → <code>200</code> o <code>204</code></li>
+      <li><strong>DELETE</strong> → <code>204</code></li>
+    </ul>
+
+    <h3>Paso 8: Cómo debería responder una API en caso de error</h3>
+    <p>Un buen backend no solo devuelve el código, también explica el error.</p>
+    <p><strong>Ejemplo de estructura de error:</strong></p>
+    <ul>
+      <li>Código interno</li>
+      <li>Mensaje claro</li>
+      <li>Detalles del problema</li>
+      <li>Identificador para logs</li>
+    </ul>
+    <p>Esto ayuda muchísimo al frontend y al debugging.</p>
+
+    <h3>Paso 9: Detalle importante en frontend (error típico)</h3>
+    <p>En JavaScript, <strong>fetch NO lanza errores por 404 o 500</strong>.</p>
+    <ul>
+      <li>Solo falla si hay error de red</li>
+      <li>Debes comprobar el status manualmente</li>
+    </ul>
+
+    <p><strong>Regla básica:</strong></p>
+    <p>Si <code>response.ok</code> es <code>false</code>, hubo un error HTTP.</p>
+    <p>Esto es clave para manejar bien errores en la UI.</p>
+
+    <pre><code class="language-javascript">const res = await fetch('/api/users');
+
+if (!res.ok) {
+  // Aquí manejas errores 4xx y 5xx
+  console.error('Error HTTP:', res.status);
+  throw new Error(`HTTP Error: ${res.status}`);
+}
+
+const data = await res.json();
+    </code></pre>
+
+    <h3>Paso 10: Resumen rápido para memorizar</h3>
+    <ul>
+      <li><strong>2xx</strong> → Todo bien</li>
+      <li><strong>4xx</strong> → Error del cliente (revisa tu request)</li>
+      <li><strong>5xx</strong> → Error del servidor (no es tu culpa)</li>
+    </ul>
+
+    <p><strong>Códigos específicos importantes:</strong></p>
+    <ul>
+      <li><strong>201</strong> → crea</li>
+      <li><strong>204</strong> → no devuelve contenido</li>
+      <li><strong>401</strong> → no autenticado</li>
+      <li><strong>403</strong> → sin permisos</li>
+      <li><strong>404</strong> → no existe</li>
+    </ul>
+  </article>
+</section>
