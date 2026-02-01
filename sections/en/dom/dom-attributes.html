@@ -1,0 +1,318 @@
+<section class="box">
+  <h2>DOM Attribute Manipulation (JavaScript)</h2>
+  <p class="subtitle">Read, modify, check, and remove HTML attributes</p>
+  <article>
+    <h3>Tutorial objective</h3>
+    <p>
+      Learn to <strong>read, modify, check, and remove HTML attributes</strong> from JavaScript
+      using the DOM, understanding what really happens underneath and avoiding common mistakes.
+    </p>
+
+    <h3>1. What is an HTML attribute?</h3>
+    <p>An attribute is <strong>additional information</strong> that lives inside an HTML tag.</p>
+
+    <p><strong>Example:</strong></p>
+    <pre><code class="language-html">&lt;a href="/home" target="_blank"&gt;Home&lt;/a&gt;
+    </code></pre>
+
+    <p>Here:</p>
+    <ul>
+      <li><code>href</code> → indicates the link URL</li>
+      <li><code>target</code> → indicates how the link opens</li>
+    </ul>
+
+    <p>
+      From JavaScript we can <strong>read them, change them, check if they exist, or remove them</strong>.
+    </p>
+
+    <h3>2. Step 1: select the correct element</h3>
+    <p>Before touching an attribute, you first need to <strong>select the element</strong>.</p>
+
+    <h4>Select a single link</h4>
+    <pre><code class="language-javascript">const link = document.querySelector('a');
+    </code></pre>
+
+    <p>⚠️ <strong>Important:</strong></p>
+    <p><code>querySelector</code> only returns the <strong>first element</strong> that matches.</p>
+
+    <h4>Select all links</h4>
+    <pre><code class="language-javascript">const links = document.querySelectorAll('a');
+    </code></pre>
+
+    <p>This returns a <code>NodeList</code> (a list of elements).</p>
+
+    <p>👉 <strong>Best practice:</strong> use specific selectors.</p>
+    <pre><code class="language-javascript">const link = document.querySelector('.nav-link');
+    </code></pre>
+
+    <h3>3. Step 2: read an attribute (<code>getAttribute</code>)</h3>
+    <p>To get the value of an HTML attribute, we use <code>getAttribute</code>.</p>
+
+    <pre><code class="language-javascript">const link = document.querySelector('.nav-link');
+const hrefValue = link.getAttribute('href');
+
+console.log(hrefValue);
+    </code></pre>
+
+    <p>🔹 This returns a <strong>string</strong> with the attribute value.</p>
+    <p>🔹 If the attribute doesn't exist → returns <code>null</code>.</p>
+
+    <p>⚠️ <strong>Watch out for the attribute name:</strong></p>
+    <p>It's <code>href</code>, not <code>hrf</code>.</p>
+
+    <h3>4. Step 3: modify or create an attribute (<code>setAttribute</code>)</h3>
+    <p>With <code>setAttribute</code> we can <strong>create or overwrite</strong> an attribute.</p>
+
+    <pre><code class="language-javascript">link.setAttribute('href', 'https://example.com');
+    </code></pre>
+
+    <p><strong>Mental rule:</strong></p>
+    <ul>
+      <li>If it exists → overwrites it</li>
+      <li>If it doesn't exist → creates it</li>
+    </ul>
+
+    <p><strong>Practical example:</strong></p>
+    <pre><code class="language-javascript">link.setAttribute('target', '_blank');
+    </code></pre>
+
+    <h3>5. Step 4: check if an attribute exists (<code>hasAttribute</code>)</h3>
+    <p>Before touching an attribute, it's often useful to check if it exists.</p>
+
+    <pre><code class="language-javascript">const hasTarget = link.hasAttribute('target');
+console.log(hasTarget); // true or false
+    </code></pre>
+
+    <p><strong>Real example:</strong></p>
+    <pre><code class="language-javascript">if (!link.hasAttribute('target')) {
+  link.setAttribute('target', '_blank');
+}
+    </code></pre>
+
+    <p>🔹 <code>hasAttribute</code> doesn't return the value, only a <strong>boolean</strong>.</p>
+
+    <h3>6. Step 5: remove an attribute (<code>removeAttribute</code>)</h3>
+    <p>If we want to return to default behavior:</p>
+
+    <pre><code class="language-javascript">link.removeAttribute('target');
+    </code></pre>
+
+    <p>This <strong>completely removes the attribute from HTML</strong>.</p>
+
+    <h3>7. Attributes vs DOM Properties (VERY IMPORTANT)</h3>
+    <p>This is where confusion often happens.</p>
+
+    <h4>HTML Attribute</h4>
+    <pre><code class="language-javascript">link.getAttribute('href');
+    </code></pre>
+    <ul>
+      <li>Returns the value as it is in the HTML</li>
+      <li>Can be relative (<code>/home</code>)</li>
+    </ul>
+
+    <h4>DOM Property</h4>
+    <pre><code class="language-javascript">link.href;
+    </code></pre>
+    <ul>
+      <li>Returns the normalized, absolute URL</li>
+      <li>Reflects the real state of the element</li>
+    </ul>
+
+    <p><strong>Example:</strong></p>
+    <pre><code class="language-html">&lt;a href="/home"&gt;&lt;/a&gt;
+    </code></pre>
+
+    <pre><code class="language-javascript">link.getAttribute('href'); // "/home"
+link.href;                 // "https://yoursite.com/home"
+    </code></pre>
+
+    <div class="problem-box">
+      <p><strong>👉 In practice:</strong></p>
+      <ul>
+        <li>Use <strong>attributes</strong> if you want to read the "original" HTML</li>
+        <li>Use <strong>properties</strong> if you want to work with the element's real state</li>
+      </ul>
+    </div>
+
+    <h3>8. Complete real example (very work-like)</h3>
+    <h4>Objective</h4>
+    <p>All external links:</p>
+    <ul>
+      <li>Open in a new tab</li>
+      <li>Are secure (<code>rel="noopener noreferrer"</code>)</li>
+    </ul>
+
+    <pre><code class="language-javascript">document.querySelectorAll('a').forEach(link => {
+  const href = link.getAttribute('href');
+
+  if (!href) return;
+  if (href.startsWith('#')) return;
+  if (href.startsWith('/')) return;
+
+  link.setAttribute('target', '_blank');
+  link.setAttribute('rel', 'noopener noreferrer');
+});
+    </code></pre>
+
+    <p>💡 <strong>This pattern is used a lot in real projects.</strong></p>
+
+    <h3>9. Common mistakes to avoid</h3>
+    <ul>
+      <li>❌ Assuming <code>querySelector</code> returns multiple elements</li>
+      <li>❌ Not checking if the element exists (<code>null</code>)</li>
+      <li>❌ Confusing <code>href</code> with <code>hrf</code></li>
+      <li>❌ Not understanding the difference between attribute and property</li>
+    </ul>
+
+    <p><strong>Safe example:</strong></p>
+    <pre><code class="language-javascript">const link = document.querySelector('.nav-link');
+
+if (link) {
+  link.setAttribute('href', 'https://example.com');
+}
+    </code></pre>
+
+    <h3>10. Quick mental summary</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Method</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Select element</td>
+          <td><code>querySelector</code> / <code>querySelectorAll</code></td>
+        </tr>
+        <tr>
+          <td>Read attribute</td>
+          <td><code>getAttribute</code></td>
+        </tr>
+        <tr>
+          <td>Modify / create</td>
+          <td><code>setAttribute</code></td>
+        </tr>
+        <tr>
+          <td>Check existence</td>
+          <td><code>hasAttribute</code></td>
+        </tr>
+        <tr>
+          <td>Remove</td>
+          <td><code>removeAttribute</code></td>
+        </tr>
+        <tr>
+          <td>Element's real state</td>
+          <td>properties (<code>el.href</code>, <code>el.value</code>)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>11. Proposed exercises</h3>
+    <ol>
+      <li>Change all internal links (<code>/</code>) so they don't have <code>target</code>.</li>
+      <li>Detect links without <code>href</code> and mark them with an <code>invalid-link</code> class.</li>
+      <li>Automatically convert all external links to secure ones.</li>
+    </ol>
+
+    <h3>12. Common attributes and their uses</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Attribute</th>
+          <th>Element</th>
+          <th>Use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>href</code></td>
+          <td><code>&lt;a&gt;</code></td>
+          <td>Link URL</td>
+        </tr>
+        <tr>
+          <td><code>src</code></td>
+          <td><code>&lt;img&gt;</code>, <code>&lt;script&gt;</code></td>
+          <td>Resource path</td>
+        </tr>
+        <tr>
+          <td><code>alt</code></td>
+          <td><code>&lt;img&gt;</code></td>
+          <td>Alternative text</td>
+        </tr>
+        <tr>
+          <td><code>class</code></td>
+          <td>Any</td>
+          <td>CSS classes</td>
+        </tr>
+        <tr>
+          <td><code>id</code></td>
+          <td>Any</td>
+          <td>Unique identifier</td>
+        </tr>
+        <tr>
+          <td><code>value</code></td>
+          <td><code>&lt;input&gt;</code></td>
+          <td>Field value</td>
+        </tr>
+        <tr>
+          <td><code>disabled</code></td>
+          <td><code>&lt;button&gt;</code>, <code>&lt;input&gt;</code></td>
+          <td>Disable element</td>
+        </tr>
+        <tr>
+          <td><code>data-*</code></td>
+          <td>Any</td>
+          <td>Custom data</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>13. Special case: boolean attributes</h3>
+    <p>Some attributes are <strong>boolean</strong> (they exist or don't exist):</p>
+    <ul>
+      <li><code>disabled</code></li>
+      <li><code>checked</code></li>
+      <li><code>selected</code></li>
+      <li><code>hidden</code></li>
+    </ul>
+
+    <pre><code class="language-javascript">// Add boolean attribute
+button.setAttribute('disabled', '');
+
+// Better: use the property
+button.disabled = true;
+
+// Check
+if (button.hasAttribute('disabled')) {
+  console.log('Button is disabled');
+}
+
+// Remove
+button.removeAttribute('disabled');
+// or
+button.disabled = false;
+    </code></pre>
+
+    <h3>✅ Summary</h3>
+    <ul>
+      <li><code>getAttribute()</code> reads attributes as they are in HTML</li>
+      <li><code>setAttribute()</code> creates or modifies attributes</li>
+      <li><code>hasAttribute()</code> checks existence (returns boolean)</li>
+      <li><code>removeAttribute()</code> removes attributes</li>
+      <li><strong>Attributes ≠ Properties:</strong> attributes are HTML, properties are DOM</li>
+      <li>Use properties for boolean attributes (<code>disabled</code>, <code>checked</code>)</li>
+      <li>Always verify the element exists before manipulating it</li>
+      <li>External links should have <code>target="_blank"</code> and <code>rel="noopener noreferrer"</code></li>
+    </ul>
+
+    <h3>🎯 Next steps</h3>
+    <p>In the following lessons we'll see:</p>
+    <ul>
+      <li>Class manipulation (<code>classList</code>)</li>
+      <li>Dynamic style modification</li>
+      <li><code>data-*</code> attributes (dataset)</li>
+      <li>Events and attributes combined</li>
+    </ul>
+  </article>
+</section>

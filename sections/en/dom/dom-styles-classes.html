@@ -1,0 +1,318 @@
+<section class="box">
+  <h2>DOM Manipulation with querySelector, CSS Classes, and Inline Styles</h2>
+  <p class="subtitle">How to modify element appearance with JavaScript</p>
+  <article>
+    <h3>Introduction</h3>
+    <p>
+      In this block we'll learn how to <strong>select DOM elements</strong> and
+      <strong>modify their appearance</strong> using modern JavaScript.
+    </p>
+    <p>
+      This is one of the most common operations in any frontend application.
+    </p>
+
+    <p>⚠️ <strong>This is not a CSS course</strong>, but we do need to understand how JavaScript interacts with CSS through the DOM.</p>
+
+    <h3>1. Selecting elements with <code>querySelector</code></h3>
+    <p>Today, the most common way to work with the DOM is using <strong>CSS selectors</strong>.</p>
+
+    <p>JavaScript provides us with:</p>
+    <ul>
+      <li><code>document.querySelector()</code> → returns the <strong>first element</strong> that matches</li>
+      <li><code>document.querySelectorAll()</code> → returns <strong>all elements</strong> that match</li>
+    </ul>
+
+    <h4>Basic example</h4>
+    <pre><code class="language-javascript">const box = document.querySelector(".box");
+    </code></pre>
+
+    <p>Here we're saying:</p>
+    <ul>
+      <li>Search in the document</li>
+      <li>The first element that has the class <code>.box</code></li>
+      <li>Store it in the variable <code>box</code></li>
+    </ul>
+
+    <h4>Most common selector types</h4>
+    <ul>
+      <li><code>.box</code> → class</li>
+      <li><code>#main</code> → id</li>
+      <li><code>button</code> → HTML tag</li>
+      <li><code>[data-role="save"]</code> → attribute (heavily used in modern apps)</li>
+    </ul>
+
+    <p>⚠️ <strong>Important:</strong></p>
+    <p>If the element doesn't exist, <code>querySelector</code> returns <code>null</code>.</p>
+
+    <pre><code class="language-javascript">if (!box) return; // avoids errors
+    </code></pre>
+
+    <h3>2. Manipulate CSS classes with <code>classList</code> (recommended way)</h3>
+    <p>
+      Once we have an element, we can access its list of HTML classes using <code>classList</code>.
+    </p>
+    <p>
+      Classes usually represent <strong>visual states</strong>.
+    </p>
+
+    <h4>Main methods</h4>
+    <pre><code class="language-javascript">box.classList.add("selected");    // adds a class
+box.classList.remove("selected"); // removes a class
+box.classList.toggle("selected"); // toggles the class
+    </code></pre>
+
+    <h4>What does <code>toggle</code> really do?</h4>
+    <ul>
+      <li>If the class <strong>doesn't exist</strong> → adds it</li>
+      <li>If the class <strong>exists</strong> → removes it</li>
+    </ul>
+    <p>It's like a switch (ON / OFF).</p>
+
+    <h4>Advanced variant (very useful)</h4>
+    <pre><code class="language-javascript">box.classList.toggle("selected", true);  // forces ON
+box.classList.toggle("selected", false); // forces OFF
+    </code></pre>
+
+    <p>
+      This prevents errors when you want to <strong>control the state</strong>, not blindly toggle it.
+    </p>
+
+    <h4>Other useful <code>classList</code> methods</h4>
+    <pre><code class="language-javascript">// Check if it has a class
+box.classList.contains("selected"); // true or false
+
+// Replace one class with another
+box.classList.replace("old-class", "new-class");
+    </code></pre>
+
+    <h3>3. Connect logic with a real event (click)</h3>
+    <p>
+      Visual changes usually happen because something occurs:
+      a click, a submit, a server response, etc.
+    </p>
+
+    <p><strong>Example with a button:</strong></p>
+    <pre><code class="language-javascript">const box = document.querySelector(".box");
+const button = document.querySelector("button");
+
+if (!box || !button) return;
+
+button.addEventListener("click", () => {
+  box.classList.toggle("selected");
+});
+    </code></pre>
+
+    <h4>What's happening here</h4>
+    <ol>
+      <li>We listen for a click on the button</li>
+      <li>When it happens, we toggle the <code>selected</code> class</li>
+      <li>CSS reacts and repaints the element</li>
+    </ol>
+
+    <h3>4. Change styles directly with <code>style</code> (inline styles)</h3>
+    <p>
+      Besides using classes, all HTML elements have the <code>style</code> property.
+    </p>
+    <p>
+      This modifies the <strong>inline style</strong>, as if you wrote:
+    </p>
+
+    <pre><code class="language-html">&lt;button style="background-color: blue"&gt;
+    </code></pre>
+
+    <h4>Example</h4>
+    <pre><code class="language-javascript">button.style.backgroundColor = "blue";
+button.style.color = "white";
+button.style.padding = "10px";
+    </code></pre>
+
+    <h4>CSS ↔ JavaScript relationship</h4>
+    <p>In <strong>CSS</strong> we use <code>kebab-case</code>:</p>
+    <ul>
+      <li><code>background-color</code></li>
+      <li><code>font-size</code></li>
+      <li><code>border-radius</code></li>
+    </ul>
+
+    <p>In <strong>JavaScript</strong> we use <code>camelCase</code>:</p>
+    <ul>
+      <li><code>backgroundColor</code></li>
+      <li><code>fontSize</code></li>
+      <li><code>borderRadius</code></li>
+    </ul>
+
+    <p>⚠️ Values are usually <strong>strings with units</strong>:</p>
+    <pre><code class="language-javascript">button.style.padding = "10px"; // ✅ correct
+button.style.padding = 10;     // ❌ incorrect
+    </code></pre>
+
+    <h3>5. CSS classes or inline styles? (very important)</h3>
+
+    <h4>Use <strong>CSS classes</strong> when:</h4>
+    <ul>
+      <li>✅ They represent states (<code>is-active</code>, <code>is-open</code>, <code>has-error</code>)</li>
+      <li>✅ The style doesn't depend on dynamic calculations</li>
+      <li>✅ You want to maintain separation between logic and design</li>
+    </ul>
+
+    <h4>Use <strong>inline style</strong> when:</h4>
+    <ul>
+      <li>✅ The value is dynamic (position, size, percentage)</li>
+      <li>✅ It comes from JS calculations (e.g., drag & drop, animations)</li>
+    </ul>
+
+    <div class="problem-box">
+      <p><strong>👉 General rule:</strong></p>
+      <ul>
+        <li><strong>States</strong> → classes</li>
+        <li><strong>Dynamic values</strong> → style</li>
+      </ul>
+    </div>
+
+    <h3>6. Complete example (demo ready)</h3>
+
+    <h4>HTML</h4>
+    <pre><code class="language-html">&lt;div class="box"&gt;Box&lt;/div&gt;
+&lt;button data-action="toggle-box"&gt;Toggle&lt;/button&gt;
+    </code></pre>
+
+    <h4>CSS (conceptual)</h4>
+    <pre><code class="language-css">.box {
+  padding: 16px;
+  border: 1px solid #ccc;
+}
+
+.box.selected {
+  background: red;
+  color: white;
+}
+    </code></pre>
+
+    <h4>JavaScript</h4>
+    <pre><code class="language-javascript">const box = document.querySelector(".box");
+const button = document.querySelector('[data-action="toggle-box"]');
+
+if (!box || !button) return;
+
+button.addEventListener("click", () => {
+  box.classList.toggle("selected");
+});
+    </code></pre>
+
+    <h3>7. Example with dynamic styles</h3>
+    <p>When you need to calculate values dynamically:</p>
+
+    <pre><code class="language-javascript">const slider = document.querySelector('input[type="range"]');
+const box = document.querySelector('.box');
+
+if (!slider || !box) return;
+
+slider.addEventListener('input', (e) => {
+  const value = e.target.value;
+
+  // Dynamic style based on slider value
+  box.style.width = `${value}%`;
+  box.style.opacity = value / 100;
+});
+    </code></pre>
+
+    <h3>8. Combine classes and inline styles</h3>
+    <p>Sometimes you need both approaches:</p>
+
+    <pre><code class="language-javascript">const card = document.querySelector('.card');
+
+// Visual state with class
+card.classList.add('is-loading');
+
+// Dynamic position with style
+card.style.transform = `translateY(${offset}px)`;
+
+// After loading
+setTimeout(() => {
+  card.classList.remove('is-loading');
+  card.classList.add('is-loaded');
+}, 2000);
+    </code></pre>
+
+    <h3>9. Common errors (pitfalls)</h3>
+
+    <h4>❌ Forgetting the <code>.</code> for classes</h4>
+    <pre><code class="language-javascript">// ❌ Incorrect
+querySelector("box")
+
+// ✅ Correct
+querySelector(".box")
+    </code></pre>
+
+    <h4>❌ Not checking if element exists (<code>null</code>)</h4>
+    <pre><code class="language-javascript">// ❌ Dangerous
+const box = document.querySelector(".box");
+box.classList.add("active"); // Error if box is null
+
+// ✅ Safe
+const box = document.querySelector(".box");
+if (box) {
+  box.classList.add("active");
+}
+    </code></pre>
+
+    <h4>❌ Confusing <code>querySelectorAll</code> with a single element</h4>
+    <pre><code class="language-javascript">// ❌ Incorrect (returns a list, doesn't have classList directly)
+const boxes = document.querySelectorAll(".box");
+boxes.classList.add("active"); // Error
+
+// ✅ Correct
+const boxes = document.querySelectorAll(".box");
+boxes.forEach(box => {
+  box.classList.add("active");
+});
+    </code></pre>
+
+    <h4>❌ Using numbers without units in <code>style</code></h4>
+    <pre><code class="language-javascript">// ❌ Incorrect
+element.style.width = 200;
+
+// ✅ Correct
+element.style.width = "200px";
+element.style.width = "50%";
+    </code></pre>
+
+    <h3>10. Mini exercises to practice</h3>
+    <ol>
+      <li>Change <code>selected</code> to <code>is-active</code></li>
+      <li>Make the button change its text based on the state</li>
+      <li>Add a second button that forces the active state using <code>toggle(name, true)</code></li>
+      <li>Create a tab system where only one can be active at a time</li>
+      <li>Implement a dark/light theme by adding/removing a class on <code>body</code></li>
+    </ol>
+
+    <h3>11. Bonus: Multiple classes at once</h3>
+    <pre><code class="language-javascript">// Add multiple classes
+element.classList.add("class1", "class2", "class3");
+
+// Remove multiple classes
+element.classList.remove("class1", "class2");
+    </code></pre>
+
+    <h3>✅ Summary</h3>
+    <ul>
+      <li><code>querySelector()</code> selects the first matching element</li>
+      <li><code>querySelectorAll()</code> selects all matching elements</li>
+      <li><code>classList.add()</code>, <code>remove()</code>, <code>toggle()</code> to manipulate classes</li>
+      <li><code>toggle(name, boolean)</code> to force a specific state</li>
+      <li><code>element.style.property</code> for dynamic inline styles</li>
+      <li>CSS uses <code>kebab-case</code>, JavaScript uses <code>camelCase</code></li>
+      <li><strong>Classes for states</strong>, <strong>style for dynamic values</strong></li>
+      <li>Always verify the element exists before manipulating it</li>
+    </ul>
+
+    <h3>🎯 Next steps</h3>
+    <p>In the following lessons we'll see:</p>
+    <ul>
+      <li>DOM events (<code>addEventListener</code>)</li>
+      <li>Creating and removing elements</li>
+      <li>Navigating the DOM tree</li>
+      <li><code>data-*</code> attributes and the <code>dataset</code> object</li>
+    </ul>
+  </article>
+</section>

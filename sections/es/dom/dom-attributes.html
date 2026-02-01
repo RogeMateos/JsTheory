@@ -1,0 +1,318 @@
+<section class="box">
+  <h2>Manipulación de atributos en el DOM (JavaScript)</h2>
+  <p class="subtitle">Leer, modificar, comprobar y eliminar atributos HTML</p>
+  <article>
+    <h3>Objetivo del tutorial</h3>
+    <p>
+      Aprender a <strong>leer, modificar, comprobar y eliminar atributos HTML</strong> desde JavaScript
+      usando el DOM, entendiendo qué ocurre realmente por debajo y evitando errores comunes.
+    </p>
+
+    <h3>1. ¿Qué es un atributo en HTML?</h3>
+    <p>Un atributo es <strong>información adicional</strong> que vive dentro de una etiqueta HTML.</p>
+
+    <p><strong>Ejemplo:</strong></p>
+    <pre><code class="language-html">&lt;a href="/home" target="_blank"&gt;Home&lt;/a&gt;
+    </code></pre>
+
+    <p>Aquí:</p>
+    <ul>
+      <li><code>href</code> → indica la URL del enlace</li>
+      <li><code>target</code> → indica cómo se abre el enlace</li>
+    </ul>
+
+    <p>
+      Desde JavaScript podemos <strong>leerlos, cambiarlos, comprobar si existen o eliminarlos</strong>.
+    </p>
+
+    <h3>2. Paso 1: seleccionar el elemento correcto</h3>
+    <p>Antes de tocar un atributo, primero hay que <strong>seleccionar el elemento</strong>.</p>
+
+    <h4>Seleccionar un solo enlace</h4>
+    <pre><code class="language-javascript">const link = document.querySelector('a');
+    </code></pre>
+
+    <p>⚠️ <strong>Importante:</strong></p>
+    <p><code>querySelector</code> solo devuelve el <strong>primer elemento</strong> que coincida.</p>
+
+    <h4>Seleccionar todos los enlaces</h4>
+    <pre><code class="language-javascript">const links = document.querySelectorAll('a');
+    </code></pre>
+
+    <p>Esto devuelve una <code>NodeList</code> (una lista de elementos).</p>
+
+    <p>👉 <strong>Buena práctica:</strong> usa selectores específicos.</p>
+    <pre><code class="language-javascript">const link = document.querySelector('.nav-link');
+    </code></pre>
+
+    <h3>3. Paso 2: leer un atributo (<code>getAttribute</code>)</h3>
+    <p>Para obtener el valor de un atributo HTML, usamos <code>getAttribute</code>.</p>
+
+    <pre><code class="language-javascript">const link = document.querySelector('.nav-link');
+const hrefValue = link.getAttribute('href');
+
+console.log(hrefValue);
+    </code></pre>
+
+    <p>🔹 Esto devuelve un <strong>string</strong> con el valor del atributo.</p>
+    <p>🔹 Si el atributo no existe → devuelve <code>null</code>.</p>
+
+    <p>⚠️ <strong>Ojo con el nombre del atributo:</strong></p>
+    <p>Es <code>href</code>, no <code>hrf</code>.</p>
+
+    <h3>4. Paso 3: modificar o crear un atributo (<code>setAttribute</code>)</h3>
+    <p>Con <code>setAttribute</code> podemos <strong>crear o sobrescribir</strong> un atributo.</p>
+
+    <pre><code class="language-javascript">link.setAttribute('href', 'https://example.com');
+    </code></pre>
+
+    <p><strong>Regla mental:</strong></p>
+    <ul>
+      <li>Si existe → lo sobrescribe</li>
+      <li>Si no existe → lo crea</li>
+    </ul>
+
+    <p><strong>Ejemplo práctico:</strong></p>
+    <pre><code class="language-javascript">link.setAttribute('target', '_blank');
+    </code></pre>
+
+    <h3>5. Paso 4: comprobar si un atributo existe (<code>hasAttribute</code>)</h3>
+    <p>Antes de tocar un atributo, muchas veces interesa comprobar si existe.</p>
+
+    <pre><code class="language-javascript">const hasTarget = link.hasAttribute('target');
+console.log(hasTarget); // true o false
+    </code></pre>
+
+    <p><strong>Ejemplo real:</strong></p>
+    <pre><code class="language-javascript">if (!link.hasAttribute('target')) {
+  link.setAttribute('target', '_blank');
+}
+    </code></pre>
+
+    <p>🔹 <code>hasAttribute</code> no devuelve el valor, solo un <strong>boolean</strong>.</p>
+
+    <h3>6. Paso 5: eliminar un atributo (<code>removeAttribute</code>)</h3>
+    <p>Si queremos volver al comportamiento por defecto:</p>
+
+    <pre><code class="language-javascript">link.removeAttribute('target');
+    </code></pre>
+
+    <p>Esto elimina <strong>completamente el atributo del HTML</strong>.</p>
+
+    <h3>7. Atributos vs Propiedades del DOM (MUY IMPORTANTE)</h3>
+    <p>Aquí suele haber confusión.</p>
+
+    <h4>Atributo HTML</h4>
+    <pre><code class="language-javascript">link.getAttribute('href');
+    </code></pre>
+    <ul>
+      <li>Devuelve el valor tal como está en el HTML</li>
+      <li>Puede ser relativo (<code>/home</code>)</li>
+    </ul>
+
+    <h4>Propiedad del DOM</h4>
+    <pre><code class="language-javascript">link.href;
+    </code></pre>
+    <ul>
+      <li>Devuelve la URL normalizada y absoluta</li>
+      <li>Refleja el estado real del elemento</li>
+    </ul>
+
+    <p><strong>Ejemplo:</strong></p>
+    <pre><code class="language-html">&lt;a href="/home"&gt;&lt;/a&gt;
+    </code></pre>
+
+    <pre><code class="language-javascript">link.getAttribute('href'); // "/home"
+link.href;                 // "https://tusitio.com/home"
+    </code></pre>
+
+    <div class="problem-box">
+      <p><strong>👉 En la práctica:</strong></p>
+      <ul>
+        <li>Usa <strong>atributos</strong> si quieres leer el HTML "original"</li>
+        <li>Usa <strong>propiedades</strong> si quieres trabajar con el estado real del elemento</li>
+      </ul>
+    </div>
+
+    <h3>8. Ejemplo real completo (muy de trabajo)</h3>
+    <h4>Objetivo</h4>
+    <p>Todos los enlaces externos:</p>
+    <ul>
+      <li>Se abren en nueva pestaña</li>
+      <li>Son seguros (<code>rel="noopener noreferrer"</code>)</li>
+    </ul>
+
+    <pre><code class="language-javascript">document.querySelectorAll('a').forEach(link => {
+  const href = link.getAttribute('href');
+
+  if (!href) return;
+  if (href.startsWith('#')) return;
+  if (href.startsWith('/')) return;
+
+  link.setAttribute('target', '_blank');
+  link.setAttribute('rel', 'noopener noreferrer');
+});
+    </code></pre>
+
+    <p>💡 <strong>Este patrón se usa muchísimo en proyectos reales.</strong></p>
+
+    <h3>9. Errores comunes que debes evitar</h3>
+    <ul>
+      <li>❌ Asumir que <code>querySelector</code> devuelve varios elementos</li>
+      <li>❌ No comprobar si el elemento existe (<code>null</code>)</li>
+      <li>❌ Confundir <code>href</code> con <code>hrf</code></li>
+      <li>❌ No entender la diferencia entre atributo y propiedad</li>
+    </ul>
+
+    <p><strong>Ejemplo seguro:</strong></p>
+    <pre><code class="language-javascript">const link = document.querySelector('.nav-link');
+
+if (link) {
+  link.setAttribute('href', 'https://example.com');
+}
+    </code></pre>
+
+    <h3>10. Resumen mental rápido</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Acción</th>
+          <th>Método</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Seleccionar elemento</td>
+          <td><code>querySelector</code> / <code>querySelectorAll</code></td>
+        </tr>
+        <tr>
+          <td>Leer atributo</td>
+          <td><code>getAttribute</code></td>
+        </tr>
+        <tr>
+          <td>Modificar / crear</td>
+          <td><code>setAttribute</code></td>
+        </tr>
+        <tr>
+          <td>Comprobar existencia</td>
+          <td><code>hasAttribute</code></td>
+        </tr>
+        <tr>
+          <td>Eliminar</td>
+          <td><code>removeAttribute</code></td>
+        </tr>
+        <tr>
+          <td>Estado real del elemento</td>
+          <td>propiedades (<code>el.href</code>, <code>el.value</code>)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>11. Ejercicios propuestos</h3>
+    <ol>
+      <li>Cambia todos los enlaces internos (<code>/</code>) para que no tengan <code>target</code>.</li>
+      <li>Detecta enlaces sin <code>href</code> y márcalos con una clase <code>invalid-link</code>.</li>
+      <li>Convierte todos los enlaces externos en seguros automáticamente.</li>
+    </ol>
+
+    <h3>12. Atributos comunes y sus usos</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Atributo</th>
+          <th>Elemento</th>
+          <th>Uso</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>href</code></td>
+          <td><code>&lt;a&gt;</code></td>
+          <td>URL del enlace</td>
+        </tr>
+        <tr>
+          <td><code>src</code></td>
+          <td><code>&lt;img&gt;</code>, <code>&lt;script&gt;</code></td>
+          <td>Ruta del recurso</td>
+        </tr>
+        <tr>
+          <td><code>alt</code></td>
+          <td><code>&lt;img&gt;</code></td>
+          <td>Texto alternativo</td>
+        </tr>
+        <tr>
+          <td><code>class</code></td>
+          <td>Cualquiera</td>
+          <td>Clases CSS</td>
+        </tr>
+        <tr>
+          <td><code>id</code></td>
+          <td>Cualquiera</td>
+          <td>Identificador único</td>
+        </tr>
+        <tr>
+          <td><code>value</code></td>
+          <td><code>&lt;input&gt;</code></td>
+          <td>Valor del campo</td>
+        </tr>
+        <tr>
+          <td><code>disabled</code></td>
+          <td><code>&lt;button&gt;</code>, <code>&lt;input&gt;</code></td>
+          <td>Deshabilitar elemento</td>
+        </tr>
+        <tr>
+          <td><code>data-*</code></td>
+          <td>Cualquiera</td>
+          <td>Datos personalizados</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>13. Caso especial: atributos booleanos</h3>
+    <p>Algunos atributos son <strong>booleanos</strong> (existen o no existen):</p>
+    <ul>
+      <li><code>disabled</code></li>
+      <li><code>checked</code></li>
+      <li><code>selected</code></li>
+      <li><code>hidden</code></li>
+    </ul>
+
+    <pre><code class="language-javascript">// Añadir atributo booleano
+button.setAttribute('disabled', '');
+
+// Mejor: usar la propiedad
+button.disabled = true;
+
+// Comprobar
+if (button.hasAttribute('disabled')) {
+  console.log('El botón está deshabilitado');
+}
+
+// Eliminar
+button.removeAttribute('disabled');
+// o
+button.disabled = false;
+    </code></pre>
+
+    <h3>✅ Resumen</h3>
+    <ul>
+      <li><code>getAttribute()</code> lee atributos tal como están en el HTML</li>
+      <li><code>setAttribute()</code> crea o modifica atributos</li>
+      <li><code>hasAttribute()</code> comprueba existencia (retorna boolean)</li>
+      <li><code>removeAttribute()</code> elimina atributos</li>
+      <li><strong>Atributos ≠ Propiedades:</strong> atributos son HTML, propiedades son DOM</li>
+      <li>Usa propiedades para atributos booleanos (<code>disabled</code>, <code>checked</code>)</li>
+      <li>Siempre verifica que el elemento existe antes de manipularlo</li>
+      <li>Los enlaces externos deben tener <code>target="_blank"</code> y <code>rel="noopener noreferrer"</code></li>
+    </ul>
+
+    <h3>🎯 Próximos pasos</h3>
+    <p>En las siguientes lecciones veremos:</p>
+    <ul>
+      <li>Manipulación de clases (<code>classList</code>)</li>
+      <li>Modificación de estilos dinámicos</li>
+      <li>Atributos <code>data-*</code> (dataset)</li>
+      <li>Eventos y atributos combinados</li>
+    </ul>
+  </article>
+</section>

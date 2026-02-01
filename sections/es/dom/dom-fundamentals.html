@@ -1,0 +1,275 @@
+<section class="box">
+  <h2>Tutorial: Introducción al DOM en JavaScript</h2>
+  <p class="subtitle">Document Object Model - Conceptos fundamentales</p>
+  <article>
+    <h3>1️⃣ Contexto: ¿por qué estamos hablando del DOM?</h3>
+    <p>Antes de entrar en materia, es importante aclarar algo:</p>
+    <p>
+      <strong>Este no es un curso de desarrollo web, pero sí es un curso de JavaScript a nivel intermedio.</strong>
+    </p>
+
+    <p>Y aquí viene el punto clave:</p>
+    <p>👉 <strong>JavaScript nació para la web.</strong></p>
+    <p>
+      Aunque hoy lo usemos para muchas más cosas (APIs, servidores, automatización, etc.),
+      una de sus misiones originales fue interactuar con páginas web.
+    </p>
+
+    <p>Ya hemos visto en el curso:</p>
+    <ul>
+      <li>✅ Cómo JavaScript se comunica con servidores (APIs)</li>
+      <li>✅ Cómo maneja datos</li>
+      <li>✅ Cómo trabaja con asincronía</li>
+    </ul>
+
+    <p>
+      El siguiente paso natural es entender <strong>cómo JavaScript interactúa con una página web</strong>,
+      y ahí es donde entra el DOM.
+    </p>
+
+    <h3>2️⃣ Qué es el DOM (explicación clara y directa)</h3>
+    <p><strong>DOM</strong> significa <strong>Document Object Model</strong>.</p>
+    <p>Pero más importante que el nombre es la idea:</p>
+
+    <div class="problem-box">
+      <p>
+        <strong>El DOM es una representación en memoria de la página web, creada por el navegador,
+        que JavaScript puede leer y modificar.</strong>
+      </p>
+    </div>
+
+    <p>⚠️ <strong>Punto importante:</strong></p>
+    <ul>
+      <li>❌ El DOM <strong>no es</strong> el HTML</li>
+      <li>✅ El DOM es lo que el navegador <strong>construye a partir del HTML</strong></li>
+    </ul>
+
+    <h3>3️⃣ HTML, CSS y JavaScript: roles claros</h3>
+    <p>Para entender el DOM, primero hay que entender cómo se divide una web:</p>
+
+    <h4>🧱 HTML – Estructura</h4>
+    <p>Define <strong>qué existe</strong> en la página:</p>
+    <ul>
+      <li>Textos</li>
+      <li>Botones</li>
+      <li>Imágenes</li>
+      <li>Formularios</li>
+      <li>Tablas</li>
+    </ul>
+    <p>Es el <strong>esqueleto</strong> de la web.</p>
+
+    <h4>🎨 CSS – Estilos</h4>
+    <p>Define <strong>cómo se ve</strong>:</p>
+    <ul>
+      <li>Colores</li>
+      <li>Tamaños</li>
+      <li>Posiciones</li>
+      <li>Animaciones</li>
+    </ul>
+    <p>Es la <strong>apariencia</strong>.</p>
+
+    <h4>⚙️ JavaScript – Comportamiento</h4>
+    <p>Define <strong>qué hace</strong> la página:</p>
+    <ul>
+      <li>Responder a clicks</li>
+      <li>Cambiar textos</li>
+      <li>Mostrar u ocultar elementos</li>
+      <li>Reaccionar a eventos</li>
+    </ul>
+
+    <div class="problem-box">
+      <p><strong>Y aquí viene lo importante:</strong></p>
+      <p>JavaScript no modifica el HTML directamente.<br>
+      <strong>JavaScript modifica el DOM.</strong></p>
+    </div>
+
+    <h3>4️⃣ El DOM como árbol (visualización mental)</h3>
+    <p>El navegador transforma el HTML en una estructura jerárquica, parecida a un árbol.</p>
+
+    <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Mi Página&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Título&lt;/h1&gt;
+    &lt;p&gt;Párrafo&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+    </code></pre>
+
+    <p>Se convierte en:</p>
+    <pre><code class="language-plaintext">document
+  └── html
+      ├── head
+      │   └── title
+      │       └── "Mi Página"
+      └── body
+          ├── h1
+          │   └── "Título"
+          └── p
+              └── "Párrafo"
+    </code></pre>
+
+    <h4>Cómo leer este árbol</h4>
+    <ul>
+      <li><code>document</code> es el nodo raíz</li>
+      <li>Cada etiqueta HTML es un <strong>nodo</strong></li>
+      <li>Los elementos están relacionados entre sí (padre, hijo, hermanos)</li>
+    </ul>
+
+    <p>📌 <strong>Analogía útil:</strong></p>
+    <p>
+      El HTML es el <strong>plano</strong> de una casa.<br>
+      El DOM es la <strong>casa ya construida</strong>, con la que puedes interactuar.
+    </p>
+
+    <h3>5️⃣ ¿Por qué el DOM fue tan importante?</h3>
+
+    <h4>Antes del DOM</h4>
+    <ul>
+      <li>❌ La web era estática</li>
+      <li>❌ Para cambiar algo → recargar la página</li>
+      <li>❌ Experiencia muy limitada</li>
+    </ul>
+
+    <h4>Con el DOM</h4>
+    <ul>
+      <li>✅ Cambiar contenido sin recargar</li>
+      <li>✅ Crear interfaces dinámicas</li>
+      <li>✅ Responder a acciones del usuario</li>
+    </ul>
+
+    <p>👉 <strong>La web dejó de ser solo documentos y pasó a ser aplicaciones.</strong></p>
+
+    <h3>6️⃣ Qué puede hacer JavaScript con el DOM</h3>
+    <p>Cuando trabajamos con el DOM, JavaScript suele hacer cuatro cosas principales:</p>
+
+    <h4>1️⃣ Seleccionar elementos</h4>
+    <p>Buscar elementos concretos dentro del documento:</p>
+    <ul>
+      <li>Un párrafo</li>
+      <li>Un botón</li>
+      <li>Un input</li>
+      <li>Una lista</li>
+    </ul>
+
+    <h4>2️⃣ Leer o modificar contenido</h4>
+    <ul>
+      <li>Cambiar texto</li>
+      <li>Cambiar atributos</li>
+      <li>Actualizar valores</li>
+    </ul>
+    <p><strong>Ejemplo conceptual:</strong> Cambiar el texto de un párrafo cuando pasa algo.</p>
+
+    <h4>3️⃣ Cambiar estilos o clases</h4>
+    <ul>
+      <li>Aplicar o quitar clases CSS</li>
+      <li>Cambiar colores, tamaños, visibilidad</li>
+    </ul>
+    <p><strong>Ejemplo:</strong> Resaltar un elemento cuando el usuario interactúa con él.</p>
+
+    <h4>4️⃣ Escuchar eventos</h4>
+    <ul>
+      <li>Clicks</li>
+      <li>Teclas</li>
+      <li>Movimiento del ratón</li>
+      <li>Envío de formularios</li>
+    </ul>
+    <p><strong>Ejemplo:</strong> Ejecutar una acción cuando el usuario hace click en un botón.</p>
+
+    <h3>7️⃣ Ejemplo práctico explicado (sin código todavía)</h3>
+    <p>Imaginemos una página con:</p>
+    <ul>
+      <li>Un párrafo</li>
+      <li>Un botón</li>
+    </ul>
+
+    <p>Queremos que:</p>
+    <p><strong>Al hacer click en el botón, el texto del párrafo cambie.</strong></p>
+
+    <h4>¿Qué ocurre realmente?</h4>
+    <ol>
+      <li>El navegador crea el DOM a partir del HTML</li>
+      <li>JavaScript accede al DOM</li>
+      <li>JavaScript localiza el párrafo</li>
+      <li>JavaScript espera un evento (click)</li>
+      <li>Cuando ocurre el evento:
+        <ul>
+          <li>Modifica el nodo del párrafo</li>
+          <li>El navegador actualiza la pantalla</li>
+        </ul>
+      </li>
+    </ol>
+
+    <p>⚠️ <strong>Importante:</strong></p>
+    <ul>
+      <li>✅ No se recarga la página</li>
+      <li>✅ Solo se modifica el DOM</li>
+    </ul>
+
+    <h3>8️⃣ El DOM NO es parte de JavaScript (detalle importante)</h3>
+    <p>Esto suele confundir mucho al principio, así que conviene dejarlo claro:</p>
+
+    <div class="problem-box">
+      <p><strong>El DOM no forma parte del lenguaje JavaScript.</strong></p>
+    </div>
+
+    <p>El DOM es:</p>
+    <ul>
+      <li>Una <strong>API del navegador</strong></li>
+      <li>Expuesta para que JavaScript pueda usarla</li>
+    </ul>
+
+    <p>Por eso:</p>
+    <ul>
+      <li>✅ <code>document</code> existe en el navegador</li>
+      <li>❌ En Node.js <strong>no existe el DOM</strong></li>
+    </ul>
+
+    <p>
+      Este detalle es clave para entender por qué JavaScript puede ejecutarse en tantos entornos distintos.
+    </p>
+
+    <h3>9️⃣ JavaScript hoy: mucho más que el DOM</h3>
+    <p>Hoy en día JavaScript:</p>
+    <ul>
+      <li>✅ Consume APIs</li>
+      <li>✅ Maneja datos</li>
+      <li>✅ Corre en servidores</li>
+      <li>✅ Se usa en apps móviles y de escritorio</li>
+    </ul>
+
+    <p>Pero aun así:</p>
+    <p>
+      <strong>Una de sus funciones más importantes sigue siendo interactuar con la web mediante el DOM.</strong>
+    </p>
+
+    <p>Y algo muy importante para el futuro:</p>
+    <div class="problem-box">
+      <p>
+        Frameworks como React, Vue o Angular <strong>no reemplazan el DOM</strong>.<br>
+        Lo que hacen es <strong>organizar y abstraer su uso</strong>.
+      </p>
+    </div>
+
+    <h3>🔚 Resumen final</h3>
+    <p><strong>Qué debes quedarte de esta lección:</strong></p>
+    <ul>
+      <li>✅ El DOM es la representación viva de la página web</li>
+      <li>✅ JavaScript interactúa con la web a través del DOM</li>
+      <li>✅ El DOM permite modificar contenido sin recargar</li>
+      <li>✅ Todo frontend moderno termina interactuando con el DOM</li>
+      <li>✅ Entender el DOM es clave antes de usar frameworks</li>
+    </ul>
+
+    <h3>🎯 Próximos pasos</h3>
+    <p>En las siguientes lecciones veremos:</p>
+    <ul>
+      <li>Cómo seleccionar elementos del DOM (selectores)</li>
+      <li>Cómo modificar contenido y atributos</li>
+      <li>Cómo trabajar con eventos</li>
+      <li>Ejemplos prácticos con código paso a paso</li>
+    </ul>
+  </article>
+</section>

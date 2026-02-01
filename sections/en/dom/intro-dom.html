@@ -1,0 +1,189 @@
+<section class="box">
+  <h2>Introduction to the DOM (Document Object Model)</h2>
+  <p class="subtitle">How JavaScript interacts with web pages</p>
+  <article>
+    <h3>What is the DOM?</h3>
+    <p>
+      <strong>DOM</strong> stands for <strong>Document Object Model</strong>.
+      It is the structured representation of a web page that allows JavaScript to interact with HTML content.
+    </p>
+
+    <h3>⚠️ Important note about this course</h3>
+    <p>
+      This is <strong>not a web development course</strong> as such. However, when we talk about JavaScript
+      at an intermediate-advanced level, it's impossible to ignore one of its main missions since its creation:
+      <strong>being a programming language for the web</strong>.
+    </p>
+
+    <h3>🌐 The three pillars of the web</h3>
+    <p>A modern web page consists of three fundamental technologies:</p>
+
+    <h4>1. HTML (Structure)</h4>
+    <ul>
+      <li>Defines the <strong>structure</strong> of the page</li>
+      <li>Creates elements: paragraphs, buttons, tables, forms, etc.</li>
+      <li>It's like the "skeleton" of the page</li>
+    </ul>
+    <pre><code class="language-html">&lt;p&gt;Hello world&lt;/p&gt;
+&lt;button&gt;Click me&lt;/button&gt;
+&lt;table&gt;...&lt;/table&gt;
+    </code></pre>
+
+    <h4>2. CSS (Style)</h4>
+    <ul>
+      <li>Defines the <strong>visual appearance</strong></li>
+      <li>Colors, sizes, positions, animations</li>
+      <li>It's like the "clothing" of the page</li>
+    </ul>
+    <pre><code class="language-css">p {
+  color: blue;
+  font-size: 16px;
+}
+    </code></pre>
+
+    <h4>3. JavaScript (Interactivity)</h4>
+    <ul>
+      <li>Provides <strong>interactivity and behavior</strong></li>
+      <li>Responds to user actions</li>
+      <li>Modifies content dynamically</li>
+      <li>It's like the "brain" of the page</li>
+    </ul>
+
+    <h3>🎯 JavaScript's original mission</h3>
+    <p>
+      30 years ago, when JavaScript was created, web pages were static.
+      You could only <strong>read</strong> content, like a paper document.
+    </p>
+
+    <p><strong>The problem:</strong></p>
+    <ul>
+      <li>The web didn't do anything by itself</li>
+      <li>It didn't transform or modify</li>
+      <li>It didn't respond to user actions</li>
+      <li>It was simply "read mode"</li>
+    </ul>
+
+    <p><strong>The solution: JavaScript</strong></p>
+    <p>
+      JavaScript emerged to give web pages the ability to:
+    </p>
+    <ul>
+      <li>✅ Respond to user actions (clicks, keys, scroll)</li>
+      <li>✅ Modify content dynamically</li>
+      <li>✅ Add or remove elements</li>
+      <li>✅ Change styles and properties</li>
+      <li>✅ Validate forms</li>
+      <li>✅ Communicate with servers (APIs)</li>
+    </ul>
+
+    <h3>🔑 How does the DOM work?</h3>
+    <p>
+      The browser reads the HTML and creates a <strong>tree-like representation</strong>
+      called the DOM. This representation is a JavaScript object that we can manipulate.
+    </p>
+
+    <pre><code class="language-html">&lt;!-- Original HTML --&gt;
+&lt;div id="app"&gt;
+  &lt;h1&gt;Title&lt;/h1&gt;
+  &lt;p&gt;Paragraph text&lt;/p&gt;
+&lt;/div&gt;
+    </code></pre>
+
+    <p>The browser converts it into a structure of objects accessible from JavaScript:</p>
+
+    <pre><code class="language-javascript">// JavaScript can access these elements
+const app = document.getElementById('app');
+const title = app.querySelector('h1');
+const paragraph = app.querySelector('p');
+
+// And modify them
+title.textContent = 'New title';
+paragraph.style.color = 'red';
+    </code></pre>
+
+    <h3>📋 Classic examples of DOM manipulation</h3>
+
+    <h4>Example 1: Change paragraph text</h4>
+    <pre><code class="language-html">&lt;p id="myParagraph"&gt;Original text&lt;/p&gt;
+&lt;button onclick="changeText()"&gt;Change text&lt;/button&gt;
+    </code></pre>
+
+    <pre><code class="language-javascript">function changeText() {
+  const paragraph = document.getElementById('myParagraph');
+  paragraph.textContent = 'Text modified with JavaScript!';
+}
+    </code></pre>
+
+    <h4>Example 2: Respond to button click</h4>
+    <pre><code class="language-html">&lt;button id="myButton"&gt;Click me&lt;/button&gt;
+    </code></pre>
+
+    <pre><code class="language-javascript">const button = document.getElementById('myButton');
+
+button.addEventListener('click', () => {
+  alert('Button clicked!');
+});
+    </code></pre>
+
+    <h4>Example 3: Add elements dynamically</h4>
+    <pre><code class="language-javascript">const newElement = document.createElement('p');
+newElement.textContent = 'Element created with JavaScript';
+
+document.body.appendChild(newElement);
+    </code></pre>
+
+    <h3>💡 JavaScript's native capability</h3>
+    <p><strong>Important:</strong> This ability to interact with the DOM is <strong>native</strong> to JavaScript.</p>
+    <ul>
+      <li>✅ You don't need additional libraries</li>
+      <li>✅ You don't need frameworks</li>
+      <li>✅ It's available directly in the browser</li>
+      <li>✅ It's part of the web standard</li>
+    </ul>
+
+    <p>
+      Although nowadays there are frameworks like React, Vue, or Angular that make working with the DOM easier,
+      <strong>understanding the native DOM is fundamental</strong> for any JavaScript developer.
+    </p>
+
+    <h3>🚀 JavaScript today</h3>
+    <p>
+      Today, JavaScript is such a widespread and powerful language that we can do practically
+      anything with it:
+    </p>
+    <ul>
+      <li>Frontend (interactive web pages)</li>
+      <li>Backend (servers with Node.js)</li>
+      <li>Mobile applications (React Native)</li>
+      <li>Desktop applications (Electron)</li>
+      <li>IoT (Internet of Things)</li>
+      <li>Machine Learning (TensorFlow.js)</li>
+    </ul>
+
+    <p>
+      But <strong>one of its first and most important missions</strong> remains DOM manipulation
+      to create interactive web experiences.
+    </p>
+
+    <h3>✅ Summary</h3>
+    <ul>
+      <li><strong>DOM:</strong> structured representation of a web page</li>
+      <li><strong>JavaScript:</strong> language that allows interaction with the DOM</li>
+      <li><strong>HTML:</strong> page structure</li>
+      <li><strong>CSS:</strong> visual styles</li>
+      <li><strong>JS + DOM:</strong> interactivity and dynamic behavior</li>
+      <li><strong>Native:</strong> you don't need libraries to manipulate the DOM</li>
+    </ul>
+
+    <h3>🎯 What we'll learn in this section</h3>
+    <p>In the upcoming topics we'll see:</p>
+    <ul>
+      <li>How to select DOM elements</li>
+      <li>How to modify content and attributes</li>
+      <li>How to respond to user events</li>
+      <li>How to create and remove elements</li>
+      <li>How to navigate through the DOM structure</li>
+      <li>Best practices and common patterns</li>
+    </ul>
+  </article>
+</section>

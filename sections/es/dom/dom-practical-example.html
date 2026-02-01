@@ -1,0 +1,316 @@
+<section class="box">
+  <h2>Proyecto práctico: HTML + JavaScript + DOM</h2>
+  <p class="subtitle">Configuración real de un proyecto con el DOM</p>
+  <article>
+    <h3>Concepto clave (antes de empezar)</h3>
+    <div class="problem-box">
+      <p><strong>El DOM solo existe en el navegador.</strong></p>
+      <p>
+        JavaScript puede ejecutarse en muchos entornos (Node.js, navegador, etc.),
+        pero <code>document</code> solo existe cuando el JS se ejecuta dentro de una página web.
+      </p>
+    </div>
+
+    <h3>1️⃣ Crear la estructura básica del proyecto</h3>
+    <p>Creamos una carpeta con dos archivos:</p>
+
+    <pre><code class="language-plaintext">dom-example/
+ ├── dom-example.html
+ └── dom-example.js
+    </code></pre>
+
+    <h3>2️⃣ Crear el HTML (dom-example.html)</h3>
+    <p>Este HTML será simple pero real, suficiente para practicar DOM.</p>
+
+    <pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang="es"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;title&gt;HTML de ejemplo&lt;/title&gt;
+
+    &lt;!-- Cargamos el JS externo --&gt;
+    &lt;script src="./dom-example.js" defer&gt;&lt;/script&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;h1 id="title"&gt;Mi título&lt;/h1&gt;
+    &lt;button id="btn"&gt;Mi botón&lt;/button&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+    </code></pre>
+
+    <h4>🧩 Qué está pasando aquí</h4>
+    <ul>
+      <li><code>&lt;!doctype html&gt;</code> → indica que es HTML moderno</li>
+      <li><code>&lt;meta charset="UTF-8"&gt;</code> → soporta acentos y caracteres especiales</li>
+      <li><code>id="title"</code> y <code>id="btn"</code> → nos permiten acceder a estos elementos desde JS</li>
+      <li><code>defer</code> → garantiza que el DOM esté cargado antes de ejecutar el JS</li>
+    </ul>
+
+    <p>👉 <strong>Buena práctica moderna:</strong> usar <code>defer</code> en scripts externos.</p>
+
+    <h3>3️⃣ Servir el HTML en el navegador (Live Server)</h3>
+    <h4>¿Por qué no basta con abrir el archivo?</h4>
+    <p>Aunque podrías abrir el HTML directamente, trabajar con servidor local es lo correcto.</p>
+
+    <h4>Pasos:</h4>
+    <ol>
+      <li>Instala la extensión <strong>Live Server</strong> en VS Code</li>
+      <li>Click derecho sobre <code>dom-example.html</code></li>
+      <li>Selecciona <strong>"Open with Live Server"</strong></li>
+    </ol>
+
+    <h4>Resultado:</h4>
+    <ul>
+      <li>✅ Se abre el navegador</li>
+      <li>✅ URL tipo: <code>http://127.0.0.1:5500/dom-example.html</code></li>
+      <li>✅ Ves el título y el botón</li>
+    </ul>
+
+    <p>✅ <strong>Ya tienes una página web real.</strong></p>
+
+    <h3>4️⃣ Primer contacto con JavaScript y el DOM</h3>
+    <p>Abrimos <code>dom-example.js</code>:</p>
+
+    <pre><code class="language-javascript">console.log("Mi script cargó");
+    </code></pre>
+
+    <h4>¿Dónde aparece este log?</h4>
+    <ul>
+      <li>❌ NO en la terminal de VS Code</li>
+      <li>✅ SÍ en el navegador → <strong>Inspect → Console</strong></li>
+    </ul>
+
+    <div class="problem-box">
+      <p><strong>🔑 Regla de oro:</strong></p>
+      <p>Si el JS se carga desde HTML, se ejecuta en el navegador.</p>
+    </div>
+
+    <h3>5️⃣ Acceder al documento (<code>document</code>)</h3>
+    <p>Ahora sí: el DOM existe.</p>
+
+    <pre><code class="language-javascript">console.log(document);
+    </code></pre>
+
+    <h4>Qué estás viendo</h4>
+    <ul>
+      <li><code>document</code> representa toda la página HTML</li>
+      <li>Es un objeto con nodos, propiedades y métodos</li>
+      <li>Es la puerta de entrada al DOM</li>
+    </ul>
+
+    <h3>6️⃣ Acceder a un elemento del DOM</h3>
+    <p>Vamos a buscar el <code>&lt;h1&gt;</code> usando su id.</p>
+
+    <pre><code class="language-javascript">const title = document.querySelector("#title");
+console.log(title);
+    </code></pre>
+
+    <h4>Qué devuelve <code>querySelector</code></h4>
+    <ul>
+      <li>Devuelve el primer elemento que coincide</li>
+      <li>Si no existe → devuelve <code>null</code></li>
+    </ul>
+
+    <p>Por eso siempre es buena práctica comprobar:</p>
+    <pre><code class="language-javascript">if (!title) {
+  console.error("No se encontró el elemento #title");
+}
+    </code></pre>
+
+    <h3>7️⃣ Leer y modificar contenido del DOM</h3>
+
+    <h4>Leer el texto</h4>
+    <pre><code class="language-javascript">console.log(title.textContent);
+    </code></pre>
+
+    <p><strong>Salida:</strong></p>
+    <pre><code class="language-plaintext">Mi título
+    </code></pre>
+
+    <h4>Modificar el texto</h4>
+    <pre><code class="language-javascript">title.textContent = "Mi nuevo título";
+    </code></pre>
+
+    <p>🔄 <strong>Al refrescar la página:</strong></p>
+    <ul>
+      <li>El texto cambia en tiempo real</li>
+      <li>El HTML original no se modifica, solo el DOM en memoria</li>
+    </ul>
+
+    <h3>8️⃣ Interacción real: eventos del usuario</h3>
+    <p>Ahora vamos a reaccionar a una acción del usuario.</p>
+
+    <pre><code class="language-javascript">const btn = document.querySelector("#btn");
+
+btn.addEventListener("click", () => {
+  title.textContent = "Has hecho click ✅";
+});
+    </code></pre>
+
+    <h4>Qué está pasando aquí</h4>
+    <ol>
+      <li>Escuchamos el evento <code>click</code></li>
+      <li>Cuando ocurre:
+        <ul>
+          <li>Se ejecuta la función</li>
+          <li>Se modifica el DOM</li>
+        </ul>
+      </li>
+    </ol>
+
+    <p><strong>Esto es JavaScript interactuando con la web</strong></p>
+
+    <h3>9️⃣ Código final completo (JS)</h3>
+    <pre><code class="language-javascript">console.log("Mi script cargó");
+
+const title = document.querySelector("#title");
+const btn = document.querySelector("#btn");
+
+if (!title || !btn) {
+  console.error("Faltan elementos en el HTML");
+} else {
+  console.log("Texto inicial:", title.textContent);
+
+  title.textContent = "Mi nuevo título";
+
+  btn.addEventListener("click", () => {
+    title.textContent = "Has hecho click ✅";
+  });
+}
+    </code></pre>
+
+    <h3>🔥 Error típico: "document is not defined"</h3>
+    <p><strong>❌ Esto NO funciona:</strong></p>
+    <pre><code class="language-bash">node dom-example.js
+    </code></pre>
+
+    <h4>❓ Por qué falla</h4>
+    <ul>
+      <li>Node.js no tiene DOM</li>
+      <li><code>document</code> solo existe en el navegador</li>
+      <li>El contexto lo crea el HTML</li>
+    </ul>
+
+    <div class="problem-box">
+      <p><strong>✅ El HTML carga al JavaScript, no al revés.</strong></p>
+    </div>
+
+    <h3>🔟 Estructura del proyecto (visual)</h3>
+    <pre><code class="language-plaintext">┌─────────────────────────────────┐
+│   dom-example.html              │
+│   (Navegador)                   │
+│                                 │
+│   ┌─────────────────────────┐   │
+│   │  &lt;h1 id="title"&gt;       │   │
+│   │  &lt;button id="btn"&gt;     │   │
+│   └─────────────────────────┘   │
+│             │                   │
+│             │ defer             │
+│             ▼                   │
+│   ┌─────────────────────────┐   │
+│   │  dom-example.js         │   │
+│   │  (JavaScript)           │   │
+│   │                         │   │
+│   │  querySelector()        │   │
+│   │  textContent            │   │
+│   │  addEventListener()     │   │
+│   └─────────────────────────┘   │
+└─────────────────────────────────┘
+    </code></pre>
+
+    <h3>1️⃣1️⃣ Extensiones recomendadas para VS Code</h3>
+    <ul>
+      <li><strong>Live Server</strong> - para servir HTML localmente</li>
+      <li><strong>Prettier</strong> - para formatear código automáticamente</li>
+      <li><strong>ESLint</strong> - para detectar errores en JavaScript</li>
+    </ul>
+
+    <h3>1️⃣2️⃣ Atajos útiles del navegador</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Acción</th>
+          <th>Atajo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Abrir DevTools</td>
+          <td><code>F12</code> o <code>Ctrl + Shift + I</code></td>
+        </tr>
+        <tr>
+          <td>Abrir Console</td>
+          <td><code>Ctrl + Shift + J</code></td>
+        </tr>
+        <tr>
+          <td>Recargar página</td>
+          <td><code>Ctrl + R</code> o <code>F5</code></td>
+        </tr>
+        <tr>
+          <td>Recargar sin caché</td>
+          <td><code>Ctrl + Shift + R</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🧠 Ideas clave para quedarte</h3>
+    <ul>
+      <li>✅ El DOM es una representación del HTML en memoria</li>
+      <li>✅ JavaScript accede al DOM usando <code>document</code></li>
+      <li>✅ <code>querySelector</code> devuelve elementos reales del DOM</li>
+      <li>✅ Modificar <code>textContent</code> cambia la página en tiempo real</li>
+      <li>✅ Los eventos conectan al usuario con el código</li>
+      <li>✅ La consola del navegador es tu mejor amiga</li>
+      <li>✅ <code>defer</code> asegura que el DOM esté listo antes de ejecutar JS</li>
+    </ul>
+
+    <h3>✅ Checklist de verificación</h3>
+    <ul>
+      <li>☐ Creé la carpeta del proyecto</li>
+      <li>☐ Creé <code>dom-example.html</code> con estructura básica</li>
+      <li>☐ Añadí el <code>&lt;script&gt;</code> con <code>defer</code></li>
+      <li>☐ Creé <code>dom-example.js</code></li>
+      <li>☐ Abrí el HTML con Live Server</li>
+      <li>☐ Abrí la consola del navegador (F12)</li>
+      <li>☐ Veo mi <code>console.log</code> en la consola</li>
+      <li>☐ Accedí a elementos con <code>querySelector</code></li>
+      <li>☐ Modifiqué el DOM con <code>textContent</code></li>
+      <li>☐ Añadí un evento <code>click</code></li>
+    </ul>
+
+    <h3>🎯 Ejercicio propuesto</h3>
+    <p>Amplía este ejemplo:</p>
+    <ol>
+      <li>Añade un segundo botón</li>
+      <li>Cuando se hace click en el segundo botón:
+        <ul>
+          <li>Cambia el color del título</li>
+          <li>Usa <code>title.style.color = "blue"</code></li>
+        </ul>
+      </li>
+      <li>Añade un tercer botón que restaure el título original</li>
+    </ol>
+
+    <h3>🎯 Próximos pasos</h3>
+    <p>Ahora que entiendes cómo funciona un proyecto real con DOM:</p>
+    <ul>
+      <li>Practica con más elementos y eventos</li>
+      <li>Explora otros métodos del DOM</li>
+      <li>Crea formularios interactivos</li>
+      <li>Construye una mini-aplicación</li>
+    </ul>
+
+    <h3>Recursos adicionales</h3>
+    <ul>
+      <li>
+        <a
+          href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/697fbcec-05b8-838b-a2f3-11bcc2e6ce13"
+          target="_blank"
+          rel="noopener noreferrer"
+          >ChatGPT - Discusión sobre Proyecto Práctico DOM</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>

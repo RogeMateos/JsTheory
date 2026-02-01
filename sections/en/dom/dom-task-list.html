@@ -1,0 +1,228 @@
+<section class="box">
+  <h2>Tutorial: Create a Task List with JavaScript and the DOM (from scratch)</h2>
+  <p class="subtitle">Practical mini application with pure JavaScript and the DOM</p>
+  <article>
+    <h3>Introduction</h3>
+    <p>
+      In this exercise we'll create a mini task list application using pure JavaScript and the DOM.
+      This isn't advanced web development or frameworks: the goal is to understand how JavaScript interacts with HTML.
+    </p>
+
+    <p><strong>By the end of this tutorial you'll know how to:</strong></p>
+    <ul>
+      <li>Select DOM elements</li>
+      <li>Listen to events (click, Enter)</li>
+      <li>Create and delete HTML elements dynamically</li>
+      <li>Avoid common mistakes when working with inputs</li>
+      <li>Understand why these techniques are key in frontend</li>
+    </ul>
+
+    <h3>🎯 Exercise objective</h3>
+    <p>Build a very simple app where:</p>
+    <ul>
+      <li>The user writes a task in an input</li>
+      <li>Presses a button or Enter</li>
+      <li>The task is added to a list</li>
+      <li>The input is cleared automatically</li>
+      <li>If you click on a task, it gets deleted</li>
+      <li>Empty tasks are not allowed</li>
+    </ul>
+
+    <h3>🧱 Step 1: Minimal HTML structure</h3>
+    <p>We create a file called <code>tasklist.html</code>.</p>
+
+    <p><strong>What does our interface need?</strong></p>
+    <ul>
+      <li>A title</li>
+      <li>A text input</li>
+      <li>A button</li>
+      <li>A list (ul) where tasks will go</li>
+    </ul>
+
+    <pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;title&gt;Task List&lt;/title&gt;
+
+    &lt;!-- defer ensures DOM is loaded before executing JS --&gt;
+    &lt;script defer src="tasklist.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;My Tasks&lt;/h1&gt;
+
+    &lt;input
+      id="taskInput"
+      type="text"
+      placeholder="Write a task"
+    /&gt;
+
+    &lt;button id="addTaskBtn"&gt;Add task&lt;/button&gt;
+
+    &lt;ul id="taskList"&gt;&lt;/ul&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+    </code></pre>
+
+    <div class="problem-box">
+      <p><strong>🔎 Important note (very senior):</strong></p>
+      <p>
+        We use <code>defer</code> in the script to ensure the DOM is loaded before accessing elements.
+        This avoids many typical bugs in real projects.
+      </p>
+    </div>
+
+    <h3>🧠 Step 2: Which elements will we interact with?</h3>
+    <p>From JavaScript we need to access:</p>
+    <ul>
+      <li>The input → read and clear text</li>
+      <li>The button → detect click</li>
+      <li>The list → add and delete tasks</li>
+    </ul>
+
+    <p>We create <code>tasklist.js</code>.</p>
+
+    <pre><code class="language-javascript">const taskInput = document.getElementById("taskInput");
+const addTaskBtn = document.getElementById("addTaskBtn");
+const taskList = document.getElementById("taskList");
+    </code></pre>
+
+    <p>💡 <strong>Best practice:</strong></p>
+    <p>We save references once in constants.</p>
+
+    <h3>⚙️ Step 3: Main function – add task</h3>
+    <p>All logic should live in a reusable function.</p>
+
+    <pre><code class="language-javascript">function addTask() {
+  const text = taskInput.value.trim();
+
+  // If input is empty, do nothing
+  if (text === "") return;
+
+  const li = document.createElement("li");
+  li.textContent = text;
+
+  taskList.appendChild(li);
+
+  // Clear the input
+  taskInput.value = "";
+  taskInput.focus();
+}
+    </code></pre>
+
+    <p><strong>What's happening here?</strong></p>
+    <ol>
+      <li>We read the input value</li>
+      <li>We use <code>trim()</code> to avoid empty texts</li>
+      <li>We dynamically create a <code>&lt;li&gt;</code></li>
+      <li>We add it to the <code>&lt;ul&gt;</code></li>
+      <li>We clear the input and return focus</li>
+    </ol>
+
+    <p>👉 This is pure DOM in action.</p>
+
+    <h3>🖱️ Step 4: Click event on the button</h3>
+    <p>Now we connect the button with the function.</p>
+
+    <pre><code class="language-javascript">addTaskBtn.addEventListener("click", addTask);
+    </code></pre>
+
+    <p>✔️ The button doesn't contain logic, it just triggers the action.</p>
+
+    <h3>⌨️ Step 5: Add task by pressing Enter</h3>
+    <p>We want the user to be able to press Enter inside the input.</p>
+
+    <pre><code class="language-javascript">taskInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    addTask();
+  }
+});
+    </code></pre>
+
+    <p>📌 We use <code>keydown</code> and not <code>keypress</code> (better support and current practice).</p>
+
+    <h3>🗑️ Step 6: Delete tasks by clicking</h3>
+    <p>
+      Here we use a very important technique in frontend:<br>
+      👉 <strong>event delegation</strong>
+    </p>
+
+    <p>Instead of adding a listener to each <code>&lt;li&gt;</code>, we add just one to the <code>&lt;ul&gt;</code>.</p>
+
+    <pre><code class="language-javascript">taskList.addEventListener("click", (e) => {
+  if (e.target.tagName === "LI") {
+    e.target.remove();
+  }
+});
+    </code></pre>
+
+    <p><strong>Why is this best practice?</strong></p>
+    <ul>
+      <li>Works even with dynamically created elements</li>
+      <li>Fewer listeners = better performance</li>
+      <li>Widely used in real projects</li>
+    </ul>
+
+    <h3>🧪 Final result</h3>
+    <p>Now we can:</p>
+    <ul>
+      <li>Add tasks with button or Enter</li>
+      <li>See them appear dynamically</li>
+      <li>Delete them with a click</li>
+      <li>Prevent empty tasks</li>
+    </ul>
+
+    <p><strong>All this without frameworks, just JavaScript and DOM.</strong></p>
+
+    <h3>⚠️ Common errors (and how to avoid them)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Error</th>
+          <th>Reason</th>
+          <th>Solution</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Shows [object HTMLInputElement]</td>
+          <td>You're using the node, not its value</td>
+          <td>Use <code>.value</code></td>
+        </tr>
+        <tr>
+          <td>Empty tasks are created</td>
+          <td>You don't validate the text</td>
+          <td>Use <code>trim()</code></td>
+        </tr>
+        <tr>
+          <td>Doesn't work on load</td>
+          <td>DOM not ready</td>
+          <td>Use <code>defer</code></td>
+        </tr>
+        <tr>
+          <td>Enter doesn't work</td>
+          <td>Wrong event</td>
+          <td>Use <code>keydown</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🚀 Proposed exercises</h3>
+    <ol>
+      <li>Add a "Clear all" button</li>
+      <li>Mark tasks as completed with CSS</li>
+      <li>Save tasks in localStorage</li>
+      <li>Show a message if the input is empty</li>
+    </ol>
+
+    <h3>🧠 Conclusion</h3>
+    <p>This exercise isn't about "making a website", but understanding why JavaScript is so powerful in frontend:</p>
+    <ul>
+      <li>It manipulates the DOM</li>
+      <li>It responds to user events</li>
+      <li>It modifies the interface in real time</li>
+    </ul>
+
+    <p><strong>Every modern framework (React, Vue, Angular) builds on these foundations.</strong></p>
+  </article>
+</section>

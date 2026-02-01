@@ -1,0 +1,354 @@
+<section class="box">
+  <h2>Crear, insertar y eliminar elementos HTML con JavaScript (DOM)</h2>
+  <p class="subtitle">Manipulación dinámica de elementos del DOM</p>
+  <article>
+    <h3>Introducción</h3>
+    <p>
+      En este tutorial vamos a aprender cómo <strong>crear elementos HTML dinámicamente</strong> con JavaScript,
+      cómo <strong>insertarlos en distintas posiciones</strong> del DOM y cómo <strong>eliminarlos</strong>,
+      usando tanto APIs modernas como las tradicionales.
+    </p>
+    <p>
+      El objetivo es que entiendas <strong>qué ocurre realmente en el DOM</strong>, no solo memorizar métodos.
+    </p>
+
+    <h3>1️⃣ Idea clave: crear ≠ insertar</h3>
+    <p>Uno de los errores más comunes cuando empiezas con el DOM es este:</p>
+
+    <div class="problem-box">
+      <p><strong>"He creado un elemento… ¿por qué no aparece en la página?"</strong></p>
+    </div>
+
+    <p>La razón es simple:</p>
+    <ul>
+      <li><code>document.createElement()</code> crea un nodo <strong>en memoria</strong></li>
+      <li><strong>NO</strong> lo añade automáticamente al DOM</li>
+      <li>Hasta que no lo insertes explícitamente, no se renderiza</li>
+    </ul>
+
+    <p>Piensa en ello como:</p>
+    <p><em>"Lo he fabricado, pero aún no lo he colocado en ningún sitio".</em></p>
+
+    <h3>2️⃣ Crear un nuevo elemento HTML</h3>
+    <p>Vamos a crear un párrafo (<code>&lt;p&gt;</code>).</p>
+
+    <pre><code class="language-javascript">const newParagraph = document.createElement("p");
+    </code></pre>
+
+    <p>En este punto:</p>
+    <ul>
+      <li>✅ Existe en memoria</li>
+      <li>❌ No está en el DOM</li>
+      <li>❌ No se ve en la página</li>
+    </ul>
+
+    <h3>3️⃣ Configurar el elemento (contenido, estilos, clases)</h3>
+
+    <h4>Añadir texto</h4>
+    <p>La forma recomendada es <code>textContent</code>:</p>
+
+    <pre><code class="language-javascript">newParagraph.textContent = "Este es un nuevo párrafo creado desde JavaScript";
+    </code></pre>
+
+    <h4>📌 Buenas prácticas</h4>
+    <ul>
+      <li>✅ <code>textContent</code> es seguro (no interpreta HTML)</li>
+      <li>✅ Evita problemas de seguridad (XSS)</li>
+      <li>⚠️ Usa <code>innerHTML</code> solo cuando controles completamente el contenido</li>
+    </ul>
+
+    <h4>Añadir estilos</h4>
+    <pre><code class="language-javascript">newParagraph.style.padding = "8px";
+    </code></pre>
+
+    <p>💡 En proyectos reales, lo ideal es usar clases CSS, no estilos inline:</p>
+    <pre><code class="language-javascript">newParagraph.classList.add("paragraph");
+    </code></pre>
+
+    <h3>4️⃣ Insertar el elemento en el DOM</h3>
+    <p>Ahora sí: vamos a añadirlo al HTML.</p>
+
+    <pre><code class="language-javascript">const container = document.querySelector(".container");
+container.append(newParagraph);
+    </code></pre>
+
+    <p>🎉 En este momento:</p>
+    <ul>
+      <li>✅ El nodo pasa de memoria → DOM</li>
+      <li>✅ El navegador lo renderiza</li>
+      <li>✅ El usuario lo ve</li>
+    </ul>
+
+    <h3>5️⃣ Crear y añadir elementos a una lista (ul > li)</h3>
+    <p>Supongamos que tenemos este HTML:</p>
+
+    <pre><code class="language-html">&lt;ul class="items-list"&gt;
+  &lt;li&gt;Item 1&lt;/li&gt;
+  &lt;li&gt;Item 2&lt;/li&gt;
+&lt;/ul&gt;
+    </code></pre>
+
+    <h4>Acceder a la lista</h4>
+    <pre><code class="language-javascript">const itemsList = document.querySelector(".items-list");
+    </code></pre>
+
+    <h4>Crear un nuevo <code>&lt;li&gt;</code></h4>
+    <pre><code class="language-javascript">const newItem = document.createElement("li");
+newItem.textContent = "Nuevo elemento";
+    </code></pre>
+
+    <h3>6️⃣ Insertar en distintas posiciones</h3>
+
+    <h4>➕ Al final de la lista (<code>append</code>)</h4>
+    <pre><code class="language-javascript">itemsList.append(newItem);
+    </code></pre>
+
+    <h4>⬆️ Al principio (<code>prepend</code>)</h4>
+    <pre><code class="language-javascript">itemsList.prepend(newItem);
+    </code></pre>
+
+    <h3>7️⃣ Insertar en una posición concreta</h3>
+
+    <h4>Acceder a los hijos existentes</h4>
+    <pre><code class="language-javascript">const secondItem = itemsList.children[1]; // índice 1 = segundo elemento
+    </code></pre>
+
+    <p>📌 <strong>Importante:</strong></p>
+    <ul>
+      <li><code>children</code> → solo elementos HTML</li>
+      <li><code>childNodes</code> → incluye nodos de texto (espacios, saltos de línea)</li>
+    </ul>
+
+    <h4>Insertar antes del segundo elemento (forma clásica)</h4>
+    <pre><code class="language-javascript">itemsList.insertBefore(newItem, secondItem);
+    </code></pre>
+
+    <h4>Insertar usando APIs modernas (<code>before</code> / <code>after</code>)</h4>
+    <p>Forma más limpia y legible:</p>
+
+    <pre><code class="language-javascript">secondItem.before(newItem); // antes del segundo
+// secondItem.after(newItem); // después del segundo
+    </code></pre>
+
+    <p>💡 Aquí ya no trabajas desde el padre, sino desde el <strong>elemento de referencia</strong>.</p>
+
+    <h3>8️⃣ Mover vs clonar elementos (detalle importante)</h3>
+    <p>Si insertas un nodo que ya existe en el DOM:</p>
+
+    <pre><code class="language-javascript">itemsList.append(existingItem);
+    </code></pre>
+
+    <p>⚠️ <strong>No se duplica, se mueve.</strong></p>
+
+    <p>Si quieres copiarlo:</p>
+    <pre><code class="language-javascript">const clone = existingItem.cloneNode(true);
+itemsList.append(clone);
+    </code></pre>
+
+    <p><strong>Nota sobre <code>cloneNode</code>:</strong></p>
+    <ul>
+      <li><code>cloneNode(true)</code> → clona el elemento y todos sus hijos (clonación profunda)</li>
+      <li><code>cloneNode(false)</code> → clona solo el elemento sin sus hijos</li>
+    </ul>
+
+    <h3>9️⃣ Eliminar elementos del DOM</h3>
+
+    <h4>Forma moderna (recomendada)</h4>
+    <pre><code class="language-javascript">newParagraph.remove();
+    </code></pre>
+
+    <p>Simple, clara y directa.</p>
+
+    <h4>Forma tradicional (legacy)</h4>
+    <pre><code class="language-javascript">const parent = newParagraph.parentElement;
+parent.removeChild(newParagraph);
+    </code></pre>
+
+    <p>📌 Antes era necesario:</p>
+    <ol>
+      <li>Subir al padre</li>
+      <li>Pedirle al padre que eliminara al hijo</li>
+    </ol>
+
+    <p>Hoy en día, <code>remove()</code> hace todo eso por ti.</p>
+
+    <h3>🔟 Rendimiento: crear muchos elementos (nivel senior)</h3>
+    <p>Si necesitas crear muchos elementos, evita insertar uno a uno.</p>
+
+    <h4>Usar <code>DocumentFragment</code></h4>
+    <pre><code class="language-javascript">const fragment = document.createDocumentFragment();
+
+for (let i = 1; i <= 100; i++) {
+  const li = document.createElement("li");
+  li.textContent = `Item ${i}`;
+  fragment.append(li);
+}
+
+itemsList.append(fragment);
+    </code></pre>
+
+    <p><strong>Ventajas:</strong></p>
+    <ul>
+      <li>✅ Menos repintados</li>
+      <li>✅ Mejor rendimiento</li>
+      <li>✅ Código más profesional</li>
+    </ul>
+
+    <h3>1️⃣1️⃣ Resumen de métodos de inserción</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Método</th>
+          <th>Posición</th>
+          <th>API</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>append()</code></td>
+          <td>Al final del contenedor</td>
+          <td>Moderna</td>
+        </tr>
+        <tr>
+          <td><code>prepend()</code></td>
+          <td>Al principio del contenedor</td>
+          <td>Moderna</td>
+        </tr>
+        <tr>
+          <td><code>before()</code></td>
+          <td>Antes del elemento de referencia</td>
+          <td>Moderna</td>
+        </tr>
+        <tr>
+          <td><code>after()</code></td>
+          <td>Después del elemento de referencia</td>
+          <td>Moderna</td>
+        </tr>
+        <tr>
+          <td><code>insertBefore()</code></td>
+          <td>Antes de un hijo específico</td>
+          <td>Clásica</td>
+        </tr>
+        <tr>
+          <td><code>appendChild()</code></td>
+          <td>Al final (legacy)</td>
+          <td>Clásica</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>1️⃣2️⃣ Ejemplo completo (listo para probar)</h3>
+    <pre><code class="language-javascript">// Crear elemento
+const newItem = document.createElement("li");
+newItem.textContent = "Nuevo item dinámico";
+newItem.classList.add("item");
+
+// Seleccionar contenedor
+const list = document.querySelector(".items-list");
+
+// Verificar que existe
+if (list) {
+  // Insertar al final
+  list.append(newItem);
+
+  // Después de 2 segundos, eliminarlo
+  setTimeout(() => {
+    newItem.remove();
+  }, 2000);
+}
+    </code></pre>
+
+    <h3>1️⃣3️⃣ Ejemplo con eventos: añadir y eliminar dinámicamente</h3>
+    <pre><code class="language-javascript">const addButton = document.querySelector("#add-item");
+const list = document.querySelector(".items-list");
+
+if (!addButton || !list) return;
+
+// Añadir nuevo elemento
+addButton.addEventListener("click", () => {
+  const newItem = document.createElement("li");
+  newItem.textContent = `Item ${list.children.length + 1}`;
+
+  // Añadir botón de eliminar
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Eliminar";
+  deleteBtn.addEventListener("click", () => {
+    newItem.remove();
+  });
+
+  newItem.append(deleteBtn);
+  list.append(newItem);
+});
+    </code></pre>
+
+    <h3>✅ Checklist de buenas prácticas</h3>
+    <ul>
+      <li>✔️ <code>createElement</code> crea en memoria, no en el DOM</li>
+      <li>✔️ Usa <code>textContent</code> por defecto</li>
+      <li>✔️ Inserta con <code>append</code>, <code>prepend</code>, <code>before</code>, <code>after</code></li>
+      <li>✔️ Para posiciones concretas, usa <code>children</code></li>
+      <li>✔️ <code>remove()</code> es la forma moderna de eliminar</li>
+      <li>✔️ Para listas grandes, usa <code>DocumentFragment</code></li>
+      <li>✔️ Verifica que los elementos existen antes de manipularlos</li>
+      <li>✔️ Recuerda: insertar un elemento existente lo mueve, no lo duplica</li>
+    </ul>
+
+    <h3>🧠 Ejercicio recomendado</h3>
+    <ol>
+      <li>Crea un botón</li>
+      <li>Al hacer click:
+        <ul>
+          <li>añade un nuevo <code>&lt;li&gt;</code> en segunda posición</li>
+        </ul>
+      </li>
+      <li>Al hacer click sobre un <code>&lt;li&gt;</code>:
+        <ul>
+          <li>elimínalo del DOM</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>1️⃣4️⃣ Errores comunes</h3>
+    <ul>
+      <li>❌ Crear un elemento y esperar que aparezca automáticamente</li>
+      <li>❌ No verificar si el contenedor existe antes de insertar</li>
+      <li>❌ Usar <code>innerHTML</code> para añadir múltiples elementos (pierde event listeners)</li>
+      <li>❌ Olvidar que insertar un elemento existente lo mueve</li>
+      <li>❌ No usar <code>DocumentFragment</code> al crear muchos elementos</li>
+    </ul>
+
+    <h3>✅ Resumen</h3>
+    <ul>
+      <li><code>createElement()</code> crea elementos en memoria</li>
+      <li><code>textContent</code> para añadir texto de forma segura</li>
+      <li><code>append()</code> inserta al final, <code>prepend()</code> al principio</li>
+      <li><code>before()</code> y <code>after()</code> para posiciones relativas</li>
+      <li><code>insertBefore()</code> para posiciones específicas (clásico)</li>
+      <li><code>remove()</code> elimina elementos (moderno)</li>
+      <li><code>cloneNode(true)</code> para copiar elementos</li>
+      <li><code>DocumentFragment</code> para optimizar múltiples inserciones</li>
+      <li>Insertar un elemento existente lo mueve, no lo duplica</li>
+    </ul>
+
+    <h3>🎯 Próximos pasos</h3>
+    <p>En las siguientes lecciones veremos:</p>
+    <ul>
+      <li>Eventos del DOM en profundidad</li>
+      <li>Delegación de eventos</li>
+      <li>Navegación por el árbol del DOM</li>
+      <li>Proyectos prácticos completos</li>
+    </ul>
+
+    <h3>Recursos adicionales</h3>
+    <ul>
+      <li>
+        <a
+          href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/697f750b-ced0-838e-93bc-6dd02e70d783"
+          target="_blank"
+          rel="noopener noreferrer"
+          >ChatGPT - Discusión sobre Crear, Insertar y Eliminar Elementos del DOM</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>

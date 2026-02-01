@@ -1,0 +1,316 @@
+<section class="box">
+  <h2>DOM Fundamentals in JavaScript</h2>
+  <p class="subtitle">Element selection and essential methods</p>
+  <article>
+    <h3>1️⃣ What is the DOM and why is it important?</h3>
+    <p>Before touching code, we need a clear idea.</p>
+
+    <div class="problem-box">
+      <p>
+        The <strong>DOM (Document Object Model)</strong> is an in-memory representation of HTML
+        that the browser creates when loading a web page.
+      </p>
+      <p>
+        JavaScript doesn't interact directly with HTML, but with this intermediate model: the DOM.
+      </p>
+    </div>
+
+    <p>
+      Think of the DOM as a <strong>tree of nodes</strong>, where each HTML tag is an object
+      that JavaScript can read and modify.
+    </p>
+
+    <p>👉 <strong>Key conclusion:</strong></p>
+    <p>
+      If JavaScript wants to change text, a button, or a style, it first has to
+      <strong>access that DOM node</strong>.
+    </p>
+
+    <h3>2️⃣ The <code>document</code> object: the gateway to the DOM</h3>
+    <p>In the browser, JavaScript gives us access to the DOM through a global object called:</p>
+
+    <pre><code class="language-javascript">document
+    </code></pre>
+
+    <ul>
+      <li><code>document</code> represents <strong>the entire HTML page</strong></li>
+      <li>From it we can:
+        <ul>
+          <li>Search for elements</li>
+          <li>Create new nodes</li>
+          <li>Modify content and attributes</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p>⚠️ <strong>Important:</strong></p>
+    <ul>
+      <li>✅ <code>document</code> only exists in the browser</li>
+      <li>❌ It doesn't exist in Node.js, because there's no HTML or DOM</li>
+    </ul>
+
+    <p>That's why, if you run JavaScript outside the browser and do:</p>
+    <pre><code class="language-javascript">console.log(document);
+    </code></pre>
+
+    <p>You'll get an error: <code>document is not defined</code>.</p>
+
+    <h3>3️⃣ First real problem: selecting DOM elements</h3>
+    <p>Before modifying anything, we always have to solve the same problem:</p>
+
+    <div class="problem-box">
+      <p><strong>How do I access a specific HTML element from JavaScript?</strong></p>
+    </div>
+
+    <p>That's what <strong>DOM selection methods</strong> are for.</p>
+
+    <h3>4️⃣ Basic (classic) selection methods</h3>
+
+    <h4>🔹 getElementById</h4>
+    <pre><code class="language-javascript">document.getElementById("my-id");
+    </code></pre>
+
+    <p><strong>What it does:</strong></p>
+    <ul>
+      <li>Returns a <strong>single element</strong></li>
+      <li>Searches by the <code>id</code> attribute</li>
+    </ul>
+
+    <p><strong>Why it returns only one:</strong></p>
+    <ul>
+      <li>An <code>id</code> must be unique within the HTML</li>
+    </ul>
+
+    <p><strong>What it returns:</strong></p>
+    <ul>
+      <li>An <code>HTMLElement</code></li>
+      <li>Or <code>null</code> if it doesn't exist</li>
+    </ul>
+
+    <p><strong>When to use it:</strong></p>
+    <ul>
+      <li>Key elements: main buttons, root containers, forms</li>
+    </ul>
+
+    <pre><code class="language-javascript">const button = document.getElementById("myButton");
+console.log(button); // &lt;button id="myButton"&gt;...&lt;/button&gt;
+    </code></pre>
+
+    <h4>🔹 getElementsByClassName</h4>
+    <pre><code class="language-javascript">document.getElementsByClassName("my-class");
+    </code></pre>
+
+    <p><strong>What it does:</strong></p>
+    <ul>
+      <li>Returns <strong>multiple elements</strong></li>
+      <li>All that share that class</li>
+    </ul>
+
+    <p><strong>What it returns:</strong></p>
+    <ul>
+      <li>An <code>HTMLCollection</code></li>
+      <li>It's not a real array</li>
+      <li>It updates automatically if the DOM changes</li>
+    </ul>
+
+    <pre><code class="language-javascript">const elements = document.getElementsByClassName("card");
+console.log(elements.length); // 3
+
+// To iterate, you need to convert it to an array
+Array.from(elements).forEach(el => {
+  console.log(el);
+});
+    </code></pre>
+
+    <p>👉 <strong>This reflects a good design practice:</strong></p>
+    <ul>
+      <li><strong>IDs</strong> → unique elements</li>
+      <li><strong>Classes</strong> → groups of elements</li>
+    </ul>
+
+    <h4>🔹 getElementsByTagName</h4>
+    <pre><code class="language-javascript">document.getElementsByTagName("p");
+    </code></pre>
+
+    <p><strong>What it does:</strong></p>
+    <ul>
+      <li>Selects elements by tag (<code>div</code>, <code>p</code>, <code>li</code>, etc.)</li>
+      <li>Returns a collection</li>
+    </ul>
+
+    <p><strong>Current usage:</strong></p>
+    <ul>
+      <li>Less and less common</li>
+      <li>Useful only in very generic cases</li>
+    </ul>
+
+    <pre><code class="language-javascript">const paragraphs = document.getElementsByTagName("p");
+console.log(paragraphs); // HTMLCollection of all &lt;p&gt;
+    </code></pre>
+
+    <h3>5️⃣ Limitations of classic methods</h3>
+    <p>The previous methods work, but have problems:</p>
+    <ul>
+      <li>❌ They're not very flexible</li>
+      <li>❌ They don't use CSS selectors</li>
+      <li>❌ They return collections that don't behave like arrays</li>
+    </ul>
+
+    <p>That's why, with JavaScript's evolution, <strong>more modern methods</strong> appeared.</p>
+
+    <h3>6️⃣ Modern methods: querySelector</h3>
+
+    <h4>🔹 querySelector</h4>
+    <pre><code class="language-javascript">document.querySelector(".my-class");
+    </code></pre>
+
+    <p><strong>Key idea:</strong></p>
+    <p><code>querySelector</code> uses <strong>CSS selectors</strong>.</p>
+
+    <p>You can use:</p>
+    <ul>
+      <li><code>.class</code></li>
+      <li><code>#id</code></li>
+      <li><code>div p</code></li>
+      <li><code>ul > li</code></li>
+      <li><code>[data-id="123"]</code></li>
+    </ul>
+
+    <p><strong>What it returns:</strong></p>
+    <ul>
+      <li>The <strong>first element</strong> that matches</li>
+      <li>An <code>Element</code> or <code>null</code></li>
+    </ul>
+
+    <pre><code class="language-javascript">// By class
+const card = document.querySelector(".card");
+
+// By ID
+const header = document.querySelector("#header");
+
+// Complex selector
+const firstLink = document.querySelector("nav ul li a");
+
+console.log(firstLink); // First link inside nav > ul > li
+    </code></pre>
+
+    <p>👉 It's more flexible than <code>getElementById</code> and is used <strong>a lot</strong> nowadays.</p>
+
+    <h4>🔹 querySelectorAll</h4>
+    <pre><code class="language-javascript">document.querySelectorAll(".my-class");
+    </code></pre>
+
+    <p><strong>What it does:</strong></p>
+    <ul>
+      <li>Returns <strong>all elements</strong> that match the selector</li>
+    </ul>
+
+    <p><strong>What it returns:</strong></p>
+    <ul>
+      <li>A <code>NodeList</code></li>
+      <li>Can be iterated with <code>forEach</code></li>
+    </ul>
+
+    <pre><code class="language-javascript">const buttons = document.querySelectorAll(".btn");
+
+buttons.forEach(button => {
+  console.log(button.textContent);
+});
+    </code></pre>
+
+    <p>This fits perfectly with <strong>modern JavaScript</strong>.</p>
+
+    <h3>7️⃣ Important difference: Element vs Collection</h3>
+    <p>When working with the DOM we can receive:</p>
+    <ul>
+      <li><strong>An element</strong> → we can modify it directly</li>
+      <li><strong>A collection</strong> → we have to iterate through it</li>
+    </ul>
+
+    <p><strong>Quick mental summary:</strong></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>What it returns</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>getElementById</code></td>
+          <td>Element</td>
+        </tr>
+        <tr>
+          <td><code>getElementsByClassName</code></td>
+          <td>HTMLCollection</td>
+        </tr>
+        <tr>
+          <td><code>getElementsByTagName</code></td>
+          <td>HTMLCollection</td>
+        </tr>
+        <tr>
+          <td><code>querySelector</code></td>
+          <td>Element</td>
+        </tr>
+        <tr>
+          <td><code>querySelectorAll</code></td>
+          <td>NodeList</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>8️⃣ Current best practices</h3>
+
+    <p><strong>✅ In modern code:</strong></p>
+    <ul>
+      <li>Prioritize <code>querySelector</code> and <code>querySelectorAll</code></li>
+      <li>Use clear CSS selectors</li>
+      <li>Reserve <code>getElementById</code> for very specific cases</li>
+    </ul>
+
+    <p><strong>❌ Avoid:</strong></p>
+    <ul>
+      <li>Mixing many different methods without criteria</li>
+      <li>Assuming collections are arrays</li>
+    </ul>
+
+    <pre><code class="language-javascript">// ✅ Recommended
+const header = document.querySelector("#header");
+const cards = document.querySelectorAll(".card");
+
+cards.forEach(card => {
+  card.classList.add("active");
+});
+
+// ❌ Less recommended (less flexible)
+const header = document.getElementById("header");
+const cards = document.getElementsByClassName("card");
+
+// You need to convert HTMLCollection to array
+Array.from(cards).forEach(card => {
+  card.classList.add("active");
+});
+    </code></pre>
+
+    <h3>9️⃣ Final idea to close the topic</h3>
+    <div class="problem-box">
+      <p>
+        <strong>Mastering element selection is mastering the foundation of web interaction.</strong>
+      </p>
+      <p>
+        If you know how to access DOM nodes, you already have 50% of the work done.
+      </p>
+    </div>
+
+    <h3>✅ Summary</h3>
+    <ul>
+      <li><code>document</code> is the gateway to the DOM</li>
+      <li>Classic methods: <code>getElementById</code>, <code>getElementsByClassName</code>, <code>getElementsByTagName</code></li>
+      <li>Modern methods: <code>querySelector</code>, <code>querySelectorAll</code></li>
+      <li><code>querySelector</code> uses CSS selectors (more flexible)</li>
+      <li><code>querySelectorAll</code> returns a NodeList (can be iterated with forEach)</li>
+      <li>HTMLCollection ≠ Array (you need to convert it)</li>
+      <li>Prioritize modern methods in new code</li>
+    </ul>
+  </article>
+</section>

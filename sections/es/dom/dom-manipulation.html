@@ -1,0 +1,272 @@
+<section class="box">
+  <h2>Manipulación de elementos del DOM en JavaScript</h2>
+  <p class="subtitle">Cómo modificar elementos una vez seleccionados</p>
+  <article>
+    <h3>Objetivo del tutorial</h3>
+    <p>Aprender a modificar elementos del DOM una vez ya los hemos seleccionado:</p>
+    <ul>
+      <li>✅ Cambiar texto</li>
+      <li>✅ Cambiar estructura HTML</li>
+      <li>✅ Entender qué es una referencia</li>
+      <li>✅ Usar las APIs correctas y seguras</li>
+      <li>✅ Evitar errores típicos de principiante</li>
+    </ul>
+
+    <p>
+      Este punto es clave, porque aquí es donde <strong>JavaScript empieza a afectar visualmente a la página</strong>.
+    </p>
+
+    <h3>Contexto previo: selección ≠ modificación</h3>
+    <p>
+      Hasta ahora ya sabemos seleccionar elementos del DOM (<code>getElementById</code>, <code>querySelector</code>, etc.).
+    </p>
+
+    <p>El siguiente paso natural es:</p>
+    <div class="problem-box">
+      <p><strong>"Vale, ya tengo el elemento… ¿y ahora cómo lo cambio?"</strong></p>
+    </div>
+
+    <p>Aquí entra la <strong>manipulación del DOM</strong>.</p>
+
+    <h3>HTML de ejemplo (escenario base)</h3>
+    <p>No es una clase de HTML, pero necesitamos contexto visual.</p>
+
+    <pre><code class="language-html">&lt;h1 id="title"&gt;Título original&lt;/h1&gt;
+
+&lt;div id="container"&gt;
+  &lt;button&gt;Click&lt;/button&gt;
+&lt;/div&gt;
+    </code></pre>
+
+    <h3>Paso 1 – Seleccionar un elemento (la idea de referencia)</h3>
+    <pre><code class="language-javascript">const title = document.getElementById("title");
+    </code></pre>
+
+    <h4>Concepto clave (muy importante)</h4>
+    <ul>
+      <li>❌ <code>title</code> no es el texto</li>
+      <li>❌ <code>title</code> no es una copia</li>
+      <li>✅ <code>title</code> es una <strong>referencia a un objeto del DOM</strong> (un <code>Element</code>)</li>
+    </ul>
+
+    <p>
+      Esto explica por qué podemos modificarlo aunque esté declarado con <code>const</code>.
+    </p>
+
+    <h4>Aclaración importante sobre <code>const</code></h4>
+    <pre><code class="language-javascript">const title = document.getElementById("title");
+
+title = null;            // ❌ NO permitido (reasignar)
+title.textContent = "";  // ✅ SÍ permitido (mutar el objeto)
+    </code></pre>
+
+    <div class="problem-box">
+      <p>
+        <code>const</code> impide <strong>reasignar la variable</strong>,
+        no <strong>modificar el objeto</strong>.
+      </p>
+    </div>
+
+    <h3>Paso 2 – Modificar texto con <code>textContent</code> (forma recomendada)</h3>
+    <pre><code class="language-javascript">title.textContent = "Hola, JavaScript";
+    </code></pre>
+
+    <h4>¿Qué hace <code>textContent</code>?</h4>
+    <ul>
+      <li>Cambia el <strong>texto interno</strong> del elemento</li>
+      <li>No interpreta HTML</li>
+      <li>Es seguro y predecible</li>
+    </ul>
+
+    <h4>Cuándo usarlo</h4>
+    <ul>
+      <li>✅ Cuando solo quieres cambiar texto</li>
+      <li>✅ Cuando el contenido puede venir de variables o del usuario</li>
+      <li>✅ Cuando no quieres riesgos de seguridad</li>
+    </ul>
+
+    <div class="problem-box">
+      <p><strong>👉 Regla general:</strong></p>
+      <p>Si es texto → <code>textContent</code></p>
+    </div>
+
+    <h3>Paso 3 – Manipular contenedores (estructura interna)</h3>
+    <p>Ahora trabajemos con el contenedor.</p>
+
+    <pre><code class="language-javascript">const container = document.querySelector("#container");
+    </code></pre>
+
+    <p>
+      Este elemento no es "solo texto", sino un <strong>contenedor de otros elementos</strong>.
+    </p>
+
+    <h3>Paso 4 – <code>innerHTML</code>: qué es y para qué sirve</h3>
+    <pre><code class="language-javascript">container.innerHTML = "&lt;p&gt;Esto es un nuevo párrafo&lt;/p&gt;";
+    </code></pre>
+
+    <h4>¿Qué está pasando aquí?</h4>
+    <ol>
+      <li>Se borra todo el contenido interno del contenedor</li>
+      <li>Se recrea usando el string HTML</li>
+      <li>El navegador interpreta ese HTML</li>
+    </ol>
+
+    <h4>Cuándo puede ser útil</h4>
+    <ul>
+      <li>Prototipos rápidos</li>
+      <li>Ejemplos simples</li>
+      <li>HTML totalmente controlado por ti</li>
+    </ul>
+
+    <h4>⚠️ Advertencia importante (muy senior)</h4>
+    <ul>
+      <li>❌ <code>innerHTML</code> elimina event listeners</li>
+      <li>❌ <code>innerHTML</code> puede causar XSS si el contenido no es seguro</li>
+    </ul>
+
+    <p><strong>Ejemplo del problema:</strong></p>
+    <pre><code class="language-javascript">const button = document.querySelector("#container button");
+button.addEventListener("click", () => console.log("hola"));
+
+container.innerHTML = "&lt;p&gt;Nuevo&lt;/p&gt;"; // el botón y su listener desaparecen
+    </code></pre>
+
+    <h3>Paso 5 – Alternativa recomendada: crear nodos con la API del DOM</h3>
+    <p>Esta es la forma <strong>correcta y profesional</strong>.</p>
+
+    <pre><code class="language-javascript">const container = document.querySelector("#container");
+
+const p = document.createElement("p");
+p.textContent = "Esto es un nuevo párrafo";
+
+container.replaceChildren(p);
+    </code></pre>
+
+    <h4>Ventajas</h4>
+    <ul>
+      <li>✅ No ejecutas HTML como string</li>
+      <li>✅ Más seguro</li>
+      <li>✅ No pierdes control del DOM</li>
+      <li>✅ Más fácil de mantener y depurar</li>
+    </ul>
+
+    <div class="problem-box">
+      <p>
+        👉 <strong>Buenas prácticas modernas evitan <code>innerHTML</code> siempre que sea posible.</strong>
+      </p>
+    </div>
+
+    <h3><code>textContent</code> vs <code>innerHTML</code> (resumen rápido)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Situación</th>
+          <th>Usa</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Solo texto</td>
+          <td><code>textContent</code></td>
+        </tr>
+        <tr>
+          <td>HTML dinámico controlado</td>
+          <td><code>createElement</code></td>
+        </tr>
+        <tr>
+          <td>Prototipo rápido</td>
+          <td><code>innerHTML</code> (con cuidado)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h4>Nota extra: <code>innerText</code> vs <code>textContent</code></h4>
+    <ul>
+      <li><code>textContent</code> → rápido, no depende de CSS</li>
+      <li><code>innerText</code> → depende de visibilidad y estilos</li>
+    </ul>
+
+    <p>👉 Para tutoriales y lógica: usa <code>textContent</code>.</p>
+
+    <h3>Paso 6 – Manejo seguro de elementos que pueden no existir</h3>
+    <pre><code class="language-javascript">const title = document.getElementById("title");
+
+if (title) {
+  title.textContent = "Hola";
+}
+    </code></pre>
+
+    <p>
+      Esto evita errores cuando el DOM cambia o el script se reutiliza.
+    </p>
+
+    <h3>Ejemplo final completo (versión recomendada)</h3>
+    <pre><code class="language-javascript">// Selección
+const title = document.getElementById("title");
+const container = document.querySelector("#container");
+
+// Modificar texto
+if (title) {
+  title.textContent = "Hola, JavaScript";
+}
+
+// Modificar estructura sin innerHTML
+if (container) {
+  const p = document.createElement("p");
+  p.textContent = "Esto es un nuevo párrafo";
+
+  container.replaceChildren(p);
+}
+    </code></pre>
+
+    <h3>Errores típicos que debes evitar</h3>
+    <ul>
+      <li>❌ Pensar que <code>const</code> hace el DOM inmutable</li>
+      <li>❌ Usar <code>innerHTML</code> para todo</li>
+      <li>❌ Insertar datos del usuario con <code>innerHTML</code></li>
+      <li>❌ Perder event listeners sin saber por qué</li>
+    </ul>
+
+    <h3>Mini-ejercicios (recomendados)</h3>
+    <ol>
+      <li>Cambia el texto del <code>&lt;h1&gt;</code> cuando se haga click en un botón</li>
+      <li>Reemplaza el contenido de <code>#container</code> por:
+        <ul>
+          <li>un <code>&lt;p&gt;</code></li>
+          <li>y debajo un <code>&lt;button&gt;</code> que cambie el texto del <code>&lt;p&gt;</code></li>
+        </ul>
+      </li>
+      <li>Haz lo mismo <strong>sin usar <code>innerHTML</code></strong></li>
+    </ol>
+
+    <h3>Idea clave para cerrar</h3>
+    <div class="problem-box">
+      <p>
+        <strong>Manipular el DOM no es "cambiar cosas al azar".</strong>
+      </p>
+      <p>
+        Es trabajar con <strong>referencias</strong>, <strong>mutar objetos</strong>
+        y usar la <strong>API correcta</strong> según el caso.
+      </p>
+    </div>
+
+    <h3>✅ Resumen</h3>
+    <ul>
+      <li>Las variables con <code>const</code> pueden apuntar a objetos mutables del DOM</li>
+      <li><code>textContent</code> para cambiar texto de forma segura</li>
+      <li><code>innerHTML</code> puede ser peligroso (XSS, pérdida de listeners)</li>
+      <li><code>createElement</code> + <code>replaceChildren</code> es la forma profesional</li>
+      <li>Siempre verifica que el elemento existe antes de modificarlo</li>
+      <li>Usa <code>textContent</code> en lugar de <code>innerText</code> para lógica</li>
+    </ul>
+
+    <h3>🎯 Próximos pasos</h3>
+    <p>En las siguientes lecciones veremos:</p>
+    <ul>
+      <li>Añadir y modificar clases (<code>classList</code>)</li>
+      <li>Cambiar estilos dinámicamente</li>
+      <li>Conectar con eventos (<code>addEventListener</code>)</li>
+      <li>Crear proyectos interactivos completos</li>
+    </ul>
+  </article>
+</section>
