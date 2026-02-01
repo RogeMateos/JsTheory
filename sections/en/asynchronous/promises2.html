@@ -1,0 +1,278 @@
+<section class="box">
+  <h2>The Two Sides of a Promise</h2>
+  <p class="subtitle">Understanding the producer and consumer sides</p>
+  <article>
+    <h3>Introduction</h3>
+    <p>Think of a promise as a contract between two parties:</p>
+
+    <h3>🏭 Side 1: THE ONE WHO CREATES the promise (The Producer)</h3>
+    <pre><code class="language-javascript">const myPromise = new Promise((resolve, reject) => {
+  // INSIDE here I am CREATING the promise
+  // I decide what happens
+
+  setTimeout(() => {
+    const successful = true;
+
+    if (successful) {
+      resolve("It worked!"); // I notify it went well
+    } else {
+      reject("Error!"); // I notify it went wrong
+    }
+  }, 2000);
+});
+    </code></pre>
+
+    <h3>🛍️ Side 2: THE ONE WHO USES the promise (The Consumer)</h3>
+    <pre><code class="language-javascript">myPromise
+  .then((result) => {
+    // Here I RECEIVE the notification it went well
+    console.log(result);
+  })
+  .catch((error) => {
+    // Here I RECEIVE the notification it went wrong
+    console.log(error);
+  })
+  .finally(() => {
+    // This ALWAYS executes
+    console.log("Finished waiting");
+  });
+    </code></pre>
+
+    <h3>📝 Analogy: Food Order</h3>
+    <p>Let me explain it with a real-world example:</p>
+
+    <h4>👨‍🍳 THE RESTAURANT (Creates the promise)</h4>
+    <pre><code class="language-javascript">function prepareFood(dish) {
+  // The restaurant CREATES a promise
+  return new Promise((resolve, reject) => {
+    console.log(`Cooking ${dish}...`);
+
+    setTimeout(() => {
+      const ingredientsAvailable = true;
+
+      if (ingredientsAvailable) {
+        // The chef NOTIFIES it's ready
+        resolve(`Your ${dish} is ready! 🍽️`);
+      } else {
+        // The chef NOTIFIES there's a problem
+        reject(`We don't have ingredients for ${dish} 😞`);
+      }
+    }, 3000);
+  });
+}
+    </code></pre>
+
+    <p><strong>On this side:</strong></p>
+    <ul>
+      <li>resolve = "✅ It's ready, here's your food"</li>
+      <li>reject = "❌ Sorry, we couldn't make it"</li>
+    </ul>
+
+    <h4>🙋‍♂️ THE CLIENT (Uses the promise)</h4>
+    <pre><code class="language-javascript">prepareFood("pizza")
+  .then((message) => {
+    // The client RECEIVES the good news
+    console.log(message); // "Your pizza is ready! 🍽️"
+    console.log("Time to eat!");
+  })
+  .catch((error) => {
+    // The client RECEIVES the bad news
+    console.log(error);
+    console.log("I'll have to order something else...");
+  })
+  .finally(() => {
+    // Whatever happens, the client does this
+    console.log("Thanks for the service");
+  });
+    </code></pre>
+
+    <p><strong>On this side:</strong></p>
+    <ul>
+      <li>.then() = "I receive my food and I'm happy"</li>
+      <li>.catch() = "I was notified there was a problem"</li>
+      <li>.finally() = "Either way, I thank the service"</li>
+    </ul>
+
+    <h3>🔄 Step by Step: Complete Flow</h3>
+    <pre><code class="language-javascript">// STEP 1: Create the promise
+function doSomething() {
+  console.log("🏭 CREATING the promise...");
+
+  return new Promise((resolve, reject) => {
+    console.log("⏳ Working in the background...");
+
+    setTimeout(() => {
+      const randomNumber = Math.random();
+
+      if (randomNumber > 0.5) {
+        console.log("✅ RESOLVING the promise");
+        resolve("Success! Number: " + randomNumber);
+      } else {
+        console.log("❌ REJECTING the promise");
+        reject("Error! Number too low: " + randomNumber);
+      }
+    }, 2000);
+  });
+}
+
+// STEP 2: Use the promise
+console.log("🛍️ USING the promise...");
+
+doSomething()
+  .then((result) => {
+    console.log("😊 RECEIVED success:", result);
+  })
+  .catch((error) => {
+    console.log("😢 RECEIVED error:", error);
+  })
+  .finally(() => {
+    console.log("🏁 FINISHED waiting");
+  });
+
+console.log("🚀 Synchronous code continues...");
+    </code></pre>
+
+    <h4>📊 Output if it goes WELL (number > 0.5):</h4>
+    <pre><code>🛍️ USING the promise...
+🏭 CREATING the promise...
+⏳ Working in the background...
+🚀 Synchronous code continues...
+✅ RESOLVING the promise
+😊 RECEIVED success: Success! Number: 0.7234
+🏁 FINISHED waiting
+    </code></pre>
+
+    <h4>📊 Output if it goes WRONG (number < 0.5):</h4>
+    <pre><code>🛍️ USING the promise...
+🏭 CREATING the promise...
+⏳ Working in the background...
+🚀 Synchronous code continues...
+❌ REJECTING the promise
+😢 RECEIVED error: Error! Number too low: 0.3421
+🏁 FINISHED waiting
+    </code></pre>
+
+    <h3>🎯 Direct Comparison</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Inside new Promise</th>
+          <th>Outside with .then/.catch</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>I CREATE the promise</td>
+          <td>I USE the promise</td>
+        </tr>
+        <tr>
+          <td>I DECIDE what happens</td>
+          <td>I WAIT to be notified</td>
+        </tr>
+        <tr>
+          <td>I call resolve() when it goes well</td>
+          <td>I write .then() to receive success</td>
+        </tr>
+        <tr>
+          <td>I call reject() when it goes wrong</td>
+          <td>I write .catch() to receive error</td>
+        </tr>
+        <tr>
+          <td>I am the PRODUCER</td>
+          <td>I am the CONSUMER</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🔗 Example with Both Sides Clear</h3>
+    <pre><code class="language-javascript">// ============================================
+// 🏭 PRODUCER SIDE: Create the promise
+// ============================================
+function verifyAge(age) {
+  return new Promise((resolve, reject) => {
+    console.log("Verifying age...");
+
+    setTimeout(() => {
+      if (age >= 18) {
+        // I (producer) notify EVERYTHING'S FINE
+        resolve({
+          message: "Access granted",
+          adult: true
+        });
+      } else {
+        // I (producer) notify THERE'S A PROBLEM
+        reject({
+          message: "You are underage",
+          adult: false
+        });
+      }
+    }, 1000);
+  });
+}
+
+// ============================================
+// 🛍️ CONSUMER SIDE: Use the promise
+// ============================================
+verifyAge(20)
+  .then((response) => {
+    // I (consumer) receive the good news
+    console.log("✅", response.message);
+    console.log("You can enter the site");
+  })
+  .catch((response) => {
+    // I (consumer) receive the bad news
+    console.log("❌", response.message);
+    console.log("You cannot enter");
+  })
+  .finally(() => {
+    // I (consumer) do cleanup
+    console.log("Verification completed");
+  });
+    </code></pre>
+
+    <h3>💡 Final Summary</h3>
+    <ol>
+      <li><strong>resolve and reject</strong> = Are INSIDE the promise. You call them to notify what happened</li>
+      <li><strong>.then() and .catch()</strong> = Are OUTSIDE the promise. You use them to receive the news</li>
+      <li><strong>They are complementary</strong>: One creates, the other consumes</li>
+      <li>
+        <strong>They always work together</strong>:
+        <ul>
+          <li>If you call resolve() → .then() executes</li>
+          <li>If you call reject() → .catch() executes</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>Related pages</h3>
+    <ul>
+      <li>
+        <a href="#" data-section="asynchronous/promises"
+          >Promises (Complete Tutorial)</a
+        >
+      </li>
+      <li>
+        <a href="#" data-section="asynchronous/asynchrony"
+          >Asynchronism Overview</a
+        >
+      </li>
+      <li>
+        <a href="#" data-section="asynchronous/callbacks-event-loop"
+          >Callbacks & Event Loop</a
+        >
+      </li>
+    </ul>
+
+    <h3>Additional Resources</h3>
+    <ul>
+      <li>
+        <a
+          href="https://claude.ai/chat/58713c83-b0e9-40d0-8087-2a5a775d695e"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Claude Chat - Discussion on The Two Sides of a Promise</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>

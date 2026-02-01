@@ -1,0 +1,278 @@
+<section class="box">
+  <h2>Las Dos Caras de una Promesa</h2>
+  <p class="subtitle">Entendiendo el lado productor y consumidor</p>
+  <article>
+    <h3>Introducción</h3>
+    <p>Piensa en una promesa como un contrato entre dos partes:</p>
+
+    <h3>🏭 Lado 1: EL QUE CREA la promesa (El Productor)</h3>
+    <pre><code class="language-javascript">const miPromesa = new Promise((resolve, reject) => {
+  // Aquí DENTRO estoy CREANDO la promesa
+  // Yo decido qué pasa
+
+  setTimeout(() => {
+    const exitoso = true;
+
+    if (exitoso) {
+      resolve("¡Funcionó!"); // YO aviso que salió bien
+    } else {
+      reject("¡Error!"); // YO aviso que salió mal
+    }
+  }, 2000);
+});
+    </code></pre>
+
+    <h3>🛍️ Lado 2: EL QUE USA la promesa (El Consumidor)</h3>
+    <pre><code class="language-javascript">miPromesa
+  .then((resultado) => {
+    // Aquí RECIBO la notificación de que salió bien
+    console.log(resultado);
+  })
+  .catch((error) => {
+    // Aquí RECIBO la notificación de que salió mal
+    console.log(error);
+  })
+  .finally(() => {
+    // Esto se ejecuta SIEMPRE
+    console.log("Terminé de esperar");
+  });
+    </code></pre>
+
+    <h3>📝 Analogía: Pedido de Comida</h3>
+    <p>Déjame explicarlo con un ejemplo del mundo real:</p>
+
+    <h4>👨‍🍳 EL RESTAURANTE (Crea la promesa)</h4>
+    <pre><code class="language-javascript">function prepararComida(plato) {
+  // El restaurante CREA una promesa
+  return new Promise((resolve, reject) => {
+    console.log(`Cocinando ${plato}...`);
+
+    setTimeout(() => {
+      const ingredientesDisponibles = true;
+
+      if (ingredientesDisponibles) {
+        // El chef AVISA que está listo
+        resolve(`Tu ${plato} está listo! 🍽️`);
+      } else {
+        // El chef AVISA que hay un problema
+        reject(`No tenemos ingredientes para ${plato} 😞`);
+      }
+    }, 3000);
+  });
+}
+    </code></pre>
+
+    <p><strong>En este lado:</strong></p>
+    <ul>
+      <li>resolve = "✅ Está listo, aquí tienes tu comida"</li>
+      <li>reject = "❌ Lo siento, no pudimos hacerlo"</li>
+    </ul>
+
+    <h4>🙋‍♂️ EL CLIENTE (Usa la promesa)</h4>
+    <pre><code class="language-javascript">prepararComida("pizza")
+  .then((mensaje) => {
+    // El cliente RECIBE la buena noticia
+    console.log(mensaje); // "Tu pizza está listo! 🍽️"
+    console.log("¡A comer!");
+  })
+  .catch((error) => {
+    // El cliente RECIBE la mala noticia
+    console.log(error);
+    console.log("Tendré que pedir otra cosa...");
+  })
+  .finally(() => {
+    // Pase lo que pase, el cliente hace esto
+    console.log("Gracias por el servicio");
+  });
+    </code></pre>
+
+    <p><strong>En este lado:</strong></p>
+    <ul>
+      <li>.then() = "Recibo mi comida y estoy feliz"</li>
+      <li>.catch() = "Me avisaron que hubo un problema"</li>
+      <li>.finally() = "De todas formas, agradezco el servicio"</li>
+    </ul>
+
+    <h3>🔄 Paso a Paso: Flujo Completo</h3>
+    <pre><code class="language-javascript">// PASO 1: Creo la promesa
+function hacerAlgo() {
+  console.log("🏭 CREANDO la promesa...");
+
+  return new Promise((resolve, reject) => {
+    console.log("⏳ Trabajando en segundo plano...");
+
+    setTimeout(() => {
+      const numeroAleatorio = Math.random();
+
+      if (numeroAleatorio > 0.5) {
+        console.log("✅ RESUELVO la promesa");
+        resolve("¡Éxito! Número: " + numeroAleatorio);
+      } else {
+        console.log("❌ RECHAZO la promesa");
+        reject("Error! Número muy bajo: " + numeroAleatorio);
+      }
+    }, 2000);
+  });
+}
+
+// PASO 2: Uso la promesa
+console.log("🛍️ USANDO la promesa...");
+
+hacerAlgo()
+  .then((resultado) => {
+    console.log("😊 RECIBÍ éxito:", resultado);
+  })
+  .catch((error) => {
+    console.log("😢 RECIBÍ error:", error);
+  })
+  .finally(() => {
+    console.log("🏁 TERMINÉ de esperar");
+  });
+
+console.log("🚀 Código síncrono continúa...");
+    </code></pre>
+
+    <h4>📊 Salida si sale BIEN (número > 0.5):</h4>
+    <pre><code>🛍️ USANDO la promesa...
+🏭 CREANDO la promesa...
+⏳ Trabajando en segundo plano...
+🚀 Código síncrono continúa...
+✅ RESUELVO la promesa
+😊 RECIBÍ éxito: ¡Éxito! Número: 0.7234
+🏁 TERMINÉ de esperar
+    </code></pre>
+
+    <h4>📊 Salida si sale MAL (número < 0.5):</h4>
+    <pre><code>🛍️ USANDO la promesa...
+🏭 CREANDO la promesa...
+⏳ Trabajando en segundo plano...
+🚀 Código síncrono continúa...
+❌ RECHAZO la promesa
+😢 RECIBÍ error: Error! Número muy bajo: 0.3421
+🏁 TERMINÉ de esperar
+    </code></pre>
+
+    <h3>🎯 Comparación Directa</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Dentro de new Promise</th>
+          <th>Fuera con .then/.catch</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Yo CREO la promesa</td>
+          <td>Yo USO la promesa</td>
+        </tr>
+        <tr>
+          <td>Yo DECIDO qué pasa</td>
+          <td>Yo ESPERO a que me avisen</td>
+        </tr>
+        <tr>
+          <td>Llamo a resolve() cuando sale bien</td>
+          <td>Escribo .then() para recibir el éxito</td>
+        </tr>
+        <tr>
+          <td>Llamo a reject() cuando sale mal</td>
+          <td>Escribo .catch() para recibir el error</td>
+        </tr>
+        <tr>
+          <td>Soy el PRODUCTOR</td>
+          <td>Soy el CONSUMIDOR</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🔗 Ejemplo con Ambos Lados Claros</h3>
+    <pre><code class="language-javascript">// ============================================
+// 🏭 LADO PRODUCTOR: Creo la promesa
+// ============================================
+function verificarEdad(edad) {
+  return new Promise((resolve, reject) => {
+    console.log("Verificando edad...");
+
+    setTimeout(() => {
+      if (edad >= 18) {
+        // YO (productor) aviso que TODO BIEN
+        resolve({
+          mensaje: "Acceso permitido",
+          adulto: true
+        });
+      } else {
+        // YO (productor) aviso que HAY PROBLEMA
+        reject({
+          mensaje: "Eres menor de edad",
+          adulto: false
+        });
+      }
+    }, 1000);
+  });
+}
+
+// ============================================
+// 🛍️ LADO CONSUMIDOR: Uso la promesa
+// ============================================
+verificarEdad(20)
+  .then((respuesta) => {
+    // YO (consumidor) recibo la buena noticia
+    console.log("✅", respuesta.mensaje);
+    console.log("Puedes entrar al sitio");
+  })
+  .catch((respuesta) => {
+    // YO (consumidor) recibo la mala noticia
+    console.log("❌", respuesta.mensaje);
+    console.log("No puedes entrar");
+  })
+  .finally(() => {
+    // YO (consumidor) hago limpieza
+    console.log("Verificación completada");
+  });
+    </code></pre>
+
+    <h3>💡 Resumen Final</h3>
+    <ol>
+      <li><strong>resolve y reject</strong> = Están DENTRO de la promesa. Tú los llamas para avisar qué pasó</li>
+      <li><strong>.then() y .catch()</strong> = Están FUERA de la promesa. Tú los usas para recibir las noticias</li>
+      <li><strong>Son complementarios</strong>: Uno crea, el otro consume</li>
+      <li>
+        <strong>Siempre trabajan juntos</strong>:
+        <ul>
+          <li>Si llamas resolve() → se ejecuta .then()</li>
+          <li>Si llamas reject() → se ejecuta .catch()</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>Páginas relacionadas</h3>
+    <ul>
+      <li>
+        <a href="#" data-section="asynchronous/promises"
+          >Promesas (Tutorial completo)</a
+        >
+      </li>
+      <li>
+        <a href="#" data-section="asynchronous/asynchrony"
+          >Resumen de Asincronismo</a
+        >
+      </li>
+      <li>
+        <a href="#" data-section="asynchronous/callbacks-event-loop"
+          >Callbacks & Event Loop</a
+        >
+      </li>
+    </ul>
+
+    <h3>Recursos adicionales</h3>
+    <ul>
+      <li>
+        <a
+          href="https://claude.ai/chat/58713c83-b0e9-40d0-8087-2a5a775d695e"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Claude Chat - Discusión sobre las Dos Caras de una Promesa</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>

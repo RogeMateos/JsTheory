@@ -1,83 +1,528 @@
 <section class="box">
-  <h2>Promesas en JavaScript</h2>
+  <h2>Tutorial de Promesas en JavaScript 🚀</h2>
   <article>
-    <h3>¿Qué es una promesa?</h3>
-    <p>Objeto que representa un resultado futuro: pendiente, resuelta o rechazada. Como pedir comida a domicilio: tienes la promesa, pero aún no llega.</p>
+    <h3>¿Qué es una Promesa?</h3>
+    <p>
+      Una promesa es un objeto que representa un valor que puede estar disponible ahora,
+      en el futuro, o nunca. Es como pedir comida a domicilio: cuando haces el
+      pedido, obtienes una "promesa" de que tu comida llegará, pero aún no la
+      tienes.
+    </p>
 
-    <h3>Estados</h3>
+    <h3>Estados de una Promesa</h3>
+    <p>Una promesa puede estar en tres estados:</p>
     <ol>
-      <li><strong>Pendiente</strong></li>
-      <li><strong>Resuelta</strong></li>
-      <li><strong>Rechazada</strong></li>
+      <li><strong>Pendiente</strong>: La operación aún no se ha completado</li>
+      <li><strong>Resuelta</strong>: La operación se completó exitosamente</li>
+      <li><strong>Rechazada</strong>: La operación falló</li>
     </ol>
 
-    <h3>Crear y consumir</h3>
-    <pre><code class="language-javascript">const myPromise = new Promise((resolve, reject) => {
+    <h3>Creando tu Primera Promesa</h3>
+    <pre><code class="language-javascript">const myFirstPromise = new Promise((resolve, reject) => {
+  // Simular una operación que tarda 2 segundos
   setTimeout(() => {
-    const ok = true;
-    ok ? resolve("Listo") : reject("Error");
-  }, 1000);
-});
+    const successful = true;
 
-myPromise
-  .then(res => console.log(res))
-  .catch(err => console.error(err))
-  .finally(() => console.log("Siempre se ejecuta"));
+    if (successful) {
+      resolve("¡Operación exitosa!"); // Todo salió bien
+    } else {
+      reject("Ocurrió un error"); // Algo falló
+    }
+  }, 2000);
+});
     </code></pre>
 
-    <h3>Ejemplo práctico: pizza 🍕</h3>
+    <h3>Consumiendo una Promesa</h3>
+    <p>
+      Para trabajar con el resultado de una promesa, usamos .then(), .catch() y .finally():
+    </p>
+    <pre><code class="language-javascript">myFirstPromise
+  .then((result) => {
+    console.log(result); // Se ejecuta si la promesa se resuelve
+  })
+  .catch((error) => {
+    console.log(error); // Se ejecuta si la promesa es rechazada
+  })
+  .finally(() => {
+    console.log("Esto siempre se ejecuta"); // Se ejecuta sin importar el resultado
+  });
+    </code></pre>
+
+    <h3>Ejemplo Práctico: Pedido de Pizza 🍕</h3>
     <pre><code class="language-javascript">function orderPizza(type) {
   return new Promise((resolve, reject) => {
-    console.log(`Preparando ${type}...`);
+    console.log(`Preparando tu pizza de ${type}...`);
+
     setTimeout(() => {
-      const menu = ['pepperoni', 'margherita'];
-      menu.includes(type)
-        ? resolve(`Tu ${type} está lista 🍕`)
-        : reject(`No tenemos ${type}`);
+      const availablePizzas = ['pepperoni', 'margherita', 'hawaiana'];
+
+      if (availablePizzas.includes(type)) {
+        resolve(`¡Tu pizza de ${type} está lista! 🍕`);
+      } else {
+        reject(`Lo sentimos, no tenemos pizza de ${type} 😢`);
+      }
+    }, 3000);
+  });
+}
+
+// Usando la promesa
+orderPizza('pepperoni')
+  .then((message) => {
+    console.log(message); // ¡Tu pizza de pepperoni está lista! 🍕
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+    </code></pre>
+
+    <h3>Encadenando Promesas</h3>
+    <p>
+      Una de las grandes ventajas de las promesas es que podemos encadenarlas fácilmente:
+    </p>
+    <pre><code class="language-javascript">function step1() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("Paso 1 completado");
+      resolve();
+    }, 1000);
+  });
+}
+
+function step2() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("Paso 2 completado");
+      resolve();
+    }, 1000);
+  });
+}
+
+function step3() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("Paso 3 completado");
+      resolve();
+    }, 1000);
+  });
+}
+
+// Encadenando las promesas
+step1()
+  .then(() => step2())
+  .then(() => step3())
+  .then(() => {
+    console.log("¡Todos los pasos completados! 🎉");
+  });
+    </code></pre>
+
+    <p><strong>Salida:</strong></p>
+    <pre><code>Paso 1 completado
+Paso 2 completado
+Paso 3 completado
+¡Todos los pasos completados! 🎉
+    </code></pre>
+
+    <h3>Ejemplo Real: Cargando Datos de Usuario</h3>
+    <pre><code class="language-javascript">function loadUser(id) {
+  return new Promise((resolve, reject) => {
+    console.log(`Buscando usuario ${id}...`);
+
+    setTimeout(() => {
+      const users = {
+        1: { name: 'Ana', age: 25 },
+        2: { name: 'Carlos', age: 30 },
+        3: { name: 'María', age: 28 }
+      };
+
+      if (users[id]) {
+        resolve(users[id]);
+      } else {
+        reject('Usuario no encontrado');
+      }
+    }, 2000);
+  });
+}
+
+function loadOrders(user) {
+  return new Promise((resolve) => {
+    console.log(`Cargando pedidos de ${user.name}...`);
+
+    setTimeout(() => {
+      resolve([
+        { product: 'Laptop', price: 1200 },
+        { product: 'Mouse', price: 25 }
+      ]);
     }, 1500);
   });
 }
 
-orderPizza('pepperoni')
-  .then(msg => console.log(msg))
-  .catch(err => console.error(err));
+// Encadenando operaciones
+loadUser(1)
+  .then((user) => {
+    console.log(`Usuario encontrado: ${user.name}`);
+    return loadOrders(user);
+  })
+  .then((orders) => {
+    console.log('Pedidos:', orders);
+  })
+  .catch((error) => {
+    console.log('Error:', error);
+  });
     </code></pre>
 
-    <h3>Encadenar promesas</h3>
-    <pre><code class="language-javascript">function step(msg, t) {
-  return new Promise(res => setTimeout(() => {
-    console.log(msg);
-    res();
-  }, t));
-}
+    <h3>❌ Callback Hell vs ✅ Promesas</h3>
 
-step("Paso 1", 500)
-  .then(() => step("Paso 2", 500))
-  .then(() => step("Paso 3", 500))
-  .then(() => console.log("Completado 🎉"));
-    </code></pre>
-
-    <h3>Vs callback hell</h3>
-    <pre><code class="language-javascript">// Antes
-operation1(function(r1) {
-  operation2(r1, function(r2) {
-    operation3(r2, function(r3) {
-      operation4(r3, function(r4) {
-        // difícil de leer
+    <h4>Antes (Callback Hell):</h4>
+    <pre><code class="language-javascript">operation1(function(result1) {
+  operation2(result1, function(result2) {
+    operation3(result2, function(result3) {
+      operation4(result3, function(result4) {
+        // ¡Esto es difícil de leer! 😵
       });
     });
   });
 });
-
-// Con promesas
-operation1()
-  .then(r1 => operation2(r1))
-  .then(r2 => operation3(r2))
-  .then(r3 => operation4(r3))
-  .catch(console.error);
     </code></pre>
 
-    <h3>Lado A/Lado B</h3>
-    <p><code>resolve</code> = éxito, <code>reject</code> = error. Maneja ambos caminos siempre.</p>
+    <h4>Ahora (Con Promesas):</h4>
+    <pre><code class="language-javascript">operation1()
+  .then(result1 => operation2(result1))
+  .then(result2 => operation3(result2))
+  .then(result3 => operation4(result3))
+  .then(result4 => {
+    // ¡Mucho más limpio! 😊
+  })
+  .catch(error => console.log(error));
+    </code></pre>
+
+    <h3>Los Dos Lados de una Promesa</h3>
+    <p>Piensa en una promesa como un contrato entre dos partes:</p>
+
+    <h4>🏭 Lado 1: EL CREADOR de la promesa (El Productor)</h4>
+    <pre><code class="language-javascript">const myPromise = new Promise((resolve, reject) => {
+  // DENTRO de aquí estoy CREANDO la promesa
+  // Yo decido qué pasa
+
+  setTimeout(() => {
+    const successful = true;
+
+    if (successful) {
+      resolve("¡Funcionó!"); // Notifico que salió bien
+    } else {
+      reject("¡Error!"); // Notifico que salió mal
+    }
+  }, 2000);
+});
+    </code></pre>
+
+    <h4>🛍️ Lado 2: EL USUARIO de la promesa (El Consumidor)</h4>
+    <pre><code class="language-javascript">myPromise
+  .then((result) => {
+    // Aquí RECIBO la notificación de que salió bien
+    console.log(result);
+  })
+  .catch((error) => {
+    // Aquí RECIBO la notificación de que salió mal
+    console.log(error);
+  })
+  .finally(() => {
+    // Esto SIEMPRE se ejecuta
+    console.log("Terminé de esperar");
+  });
+    </code></pre>
+
+    <h3>📝 Analogía: Pedido de Comida</h3>
+    <p>Déjame explicarlo con un ejemplo del mundo real:</p>
+
+    <h4>👨‍🍳 EL RESTAURANTE (Crea la promesa)</h4>
+    <pre><code class="language-javascript">function prepareFood(dish) {
+  // El restaurante CREA una promesa
+  return new Promise((resolve, reject) => {
+    console.log(`Cocinando ${dish}...`);
+
+    setTimeout(() => {
+      const ingredientsAvailable = true;
+
+      if (ingredientsAvailable) {
+        // El chef NOTIFICA que está listo
+        resolve(`¡Tu ${dish} está listo! 🍽️`);
+      } else {
+        // El chef NOTIFICA que hay un problema
+        reject(`No tenemos ingredientes para ${dish} 😞`);
+      }
+    }, 3000);
+  });
+}
+    </code></pre>
+
+    <p>En este lado:</p>
+    <ul>
+      <li>resolve = "✅ Está listo, aquí está tu comida"</li>
+      <li>reject = "❌ Lo sentimos, no pudimos hacerlo"</li>
+    </ul>
+
+    <h4>🙋‍♂️ EL CLIENTE (Usa la promesa)</h4>
+    <pre><code class="language-javascript">prepareFood("pizza")
+  .then((message) => {
+    // El cliente RECIBE la buena noticia
+    console.log(message); // "¡Tu pizza está lista! 🍽️"
+    console.log("¡A comer!");
+  })
+  .catch((error) => {
+    // El cliente RECIBE la mala noticia
+    console.log(error);
+    console.log("Tendré que pedir otra cosa...");
+  })
+  .finally(() => {
+    // Pase lo que pase, el cliente hace esto
+    console.log("Gracias por el servicio");
+  });
+    </code></pre>
+
+    <p>En este lado:</p>
+    <ul>
+      <li>.then() = "Recibo mi comida y estoy feliz"</li>
+      <li>.catch() = "Me notificaron que hubo un problema"</li>
+      <li>.finally() = "De cualquier forma, agradezco el servicio"</li>
+    </ul>
+
+    <h3>🔄 Paso a Paso: Flujo Completo</h3>
+    <pre><code class="language-javascript">// PASO 1: Crear la promesa
+function doSomething() {
+  console.log("🏭 CREANDO la promesa...");
+
+  return new Promise((resolve, reject) => {
+    console.log("⏳ Trabajando en segundo plano...");
+
+    setTimeout(() => {
+      const randomNumber = Math.random();
+
+      if (randomNumber > 0.5) {
+        console.log("✅ RESOLVIENDO la promesa");
+        resolve("¡Éxito! Número: " + randomNumber);
+      } else {
+        console.log("❌ RECHAZANDO la promesa");
+        reject("¡Error! Número muy bajo: " + randomNumber);
+      }
+    }, 2000);
+  });
+}
+
+// PASO 2: Usar la promesa
+console.log("🛍️ USANDO la promesa...");
+
+doSomething()
+  .then((result) => {
+    console.log("😊 RECIBÍ éxito:", result);
+  })
+  .catch((error) => {
+    console.log("😢 RECIBÍ error:", error);
+  })
+  .finally(() => {
+    console.log("🏁 TERMINÉ de esperar");
+  });
+
+console.log("🚀 El código síncrono continúa...");
+    </code></pre>
+
+    <h4>📊 Salida si sale BIEN (número > 0.5):</h4>
+    <pre><code>🛍️ USANDO la promesa...
+🏭 CREANDO la promesa...
+⏳ Trabajando en segundo plano...
+🚀 El código síncrono continúa...
+✅ RESOLVIENDO la promesa
+😊 RECIBÍ éxito: ¡Éxito! Número: 0.7234
+🏁 TERMINÉ de esperar
+    </code></pre>
+
+    <h4>📊 Salida si sale MAL (número < 0.5):</h4>
+    <pre><code>🛍️ USANDO la promesa...
+🏭 CREANDO la promesa...
+⏳ Trabajando en segundo plano...
+🚀 El código síncrono continúa...
+❌ RECHAZANDO la promesa
+😢 RECIBÍ error: ¡Error! Número muy bajo: 0.3421
+🏁 TERMINÉ de esperar
+    </code></pre>
+
+    <h3>🎯 Comparación Directa</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Dentro de new Promise</th>
+          <th>Fuera con .then/.catch</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Yo CREO la promesa</td>
+          <td>Yo USO la promesa</td>
+        </tr>
+        <tr>
+          <td>Yo DECIDO qué pasa</td>
+          <td>Yo ESPERO a ser notificado</td>
+        </tr>
+        <tr>
+          <td>Yo llamo resolve() cuando sale bien</td>
+          <td>Yo escribo .then() para recibir el éxito</td>
+        </tr>
+        <tr>
+          <td>Yo llamo reject() cuando sale mal</td>
+          <td>Yo escribo .catch() para recibir el error</td>
+        </tr>
+        <tr>
+          <td>Yo soy el PRODUCTOR</td>
+          <td>Yo soy el CONSUMIDOR</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🔗 Ejemplo con Ambos Lados Claros</h3>
+    <pre><code class="language-javascript">// ============================================
+// 🏭 LADO PRODUCTOR: Crear la promesa
+// ============================================
+function verifyAge(age) {
+  return new Promise((resolve, reject) => {
+    console.log("Verificando edad...");
+
+    setTimeout(() => {
+      if (age >= 18) {
+        // Yo (productor) notifico TODO ESTÁ BIEN
+        resolve({
+          message: "Acceso concedido",
+          adult: true
+        });
+      } else {
+        // Yo (productor) notifico HAY UN PROBLEMA
+        reject({
+          message: "Eres menor de edad",
+          adult: false
+        });
+      }
+    }, 1000);
+  });
+}
+
+// ============================================
+// 🛍️ LADO CONSUMIDOR: Usar la promesa
+// ============================================
+verifyAge(20)
+  .then((response) => {
+    // Yo (consumidor) recibo la buena noticia
+    console.log("✅", response.message);
+    console.log("Puedes entrar al sitio");
+  })
+  .catch((response) => {
+    // Yo (consumidor) recibo la mala noticia
+    console.log("❌", response.message);
+    console.log("No puedes entrar");
+  })
+  .finally(() => {
+    // Yo (consumidor) hago limpieza
+    console.log("Verificación completada");
+  });
+    </code></pre>
+
+    <h3>Puntos Clave 🎯</h3>
+    <ol>
+      <li>
+        <strong>Las promesas son asíncronas</strong>: El código continúa ejecutándose
+        mientras esperan
+      </li>
+      <li>
+        <strong>Usa .then() para el éxito</strong>: Maneja el caso cuando
+        todo sale bien
+      </li>
+      <li>
+        <strong>Usa .catch() para errores</strong>: Captura cualquier error que ocurra
+      </li>
+      <li>
+        <strong>.finally() siempre se ejecuta</strong>: Útil para limpiar recursos
+      </li>
+      <li><strong>Las promesas se pueden encadenar</strong>: Evita el callback hell</li>
+    </ol>
+
+    <h3>💡 Resumen Final</h3>
+    <ol>
+      <li>
+        <strong>resolve y reject</strong> = Están DENTRO de la promesa. Los llamas
+        para notificar qué pasó
+      </li>
+      <li>
+        <strong>.then() y .catch()</strong> = Están FUERA de la promesa. Los usas
+        para recibir las noticias
+      </li>
+      <li>
+        <strong>Son complementarios</strong>: Uno crea, el otro consume
+      </li>
+      <li>
+        <strong>Siempre trabajan juntos</strong>:
+        <ul>
+          <li>Si llamas resolve() → .then() se ejecuta</li>
+          <li>Si llamas reject() → .catch() se ejecuta</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>Ejercicio Práctico 💪</h3>
+    <p>Intenta crear una función que simule descargar un archivo:</p>
+    <pre><code class="language-javascript">function downloadFile(fileName) {
+  return new Promise((resolve, reject) => {
+    console.log(`Descargando ${fileName}...`);
+
+    setTimeout(() => {
+      const success = Math.random() > 0.3; // 70% de tasa de éxito
+
+      if (success) {
+        resolve(`${fileName} descargado exitosamente ✓`);
+      } else {
+        reject(`Error descargando ${fileName} ✗`);
+      }
+    }, 2000);
+  });
+}
+
+// ¡Pruébalo!
+downloadFile('documento.pdf')
+  .then(message => console.log(message))
+  .catch(error => console.log(error));
+    </code></pre>
+
+    <p>
+      <strong>¡Recuerda!</strong> Las promesas hacen el código asíncrono más fácil de leer
+      y mantener. Son la base para entender async/await, que
+      veremos más adelante. 🚀
+    </p>
+
+    <h3>Páginas relacionadas</h3>
+    <ul>
+      <li>
+        <a href="#" data-section="asynchronous/asynchrony"
+          >Resumen de Asincronismo</a
+        >
+      </li>
+      <li>
+        <a href="#" data-section="asynchronous/callbacks-event-loop"
+          >Callbacks & Event Loop</a
+        >
+      </li>
+      <li>
+        <a href="#" data-section="asynchronous/event-loop"
+          >Event Loop (paso a paso)</a
+        >
+      </li>
+    </ul>
+
+    <h3>Recursos adicionales</h3>
+    <ul>
+      <li>
+        <a
+          href="https://chat.deepseek.com/a/chat/s/d5785875-102f-4525-9a7b-d74ed1fee405"
+          target="_blank"
+          rel="noopener noreferrer"
+          >DeepSeek Chat - Discusión sobre Promesas</a
+        >
+      </li>
+    </ul>
   </article>
 </section>
