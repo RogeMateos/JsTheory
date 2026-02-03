@@ -1,0 +1,285 @@
+<section class="box">
+  <h2>Tutorial: replace y Expresiones Regulares en JavaScript</h2>
+  <p class="subtitle">Entendiendo el reemplazo de texto con regex</p>
+  <article>
+    <h3>🎯 Objetivo del capítulo</h3>
+    <p>
+      Entender cómo funciona <code>replace</code>, cómo se combina con expresiones regulares,
+      y por qué a veces solo reemplaza una coincidencia aunque parezca que la regex encuentra varias.
+    </p>
+    <p>
+      Este es uno de esos puntos donde mucha gente se confunde, así que vamos despacio y con ejemplos claros.
+    </p>
+
+    <h3>1️⃣ ¿Qué es replace?</h3>
+    <p><code>replace</code> es un método de los strings, no de las expresiones regulares.</p>
+    <p><strong>Su trabajo es:</strong></p>
+    <p>Buscar una coincidencia dentro de un texto y reemplazarla por otro valor.</p>
+
+    <h4>Sintaxis básica</h4>
+    <pre><code class="language-javascript">texto.replace(busqueda, reemplazo)
+    </code></pre>
+
+    <ul>
+      <li><code>busqueda</code> → puede ser un string o una RegExp</li>
+      <li><code>reemplazo</code> → un string o una función</li>
+    </ul>
+
+    <h3>2️⃣ replace usando un string literal</h3>
+    <p>Cuando sabes exactamente qué texto quieres cambiar:</p>
+
+    <pre><code class="language-javascript">const text = "Hola, JavaScript";
+const result = text.replace("JavaScript", "JS");
+
+console.log(result);
+// "Hola, JS"
+    </code></pre>
+
+    <div class="problem-box">
+      <p><strong>📌 Importante:</strong></p>
+      <ul>
+        <li>Solo reemplaza la primera coincidencia</li>
+        <li>No entiende patrones, solo texto exacto</li>
+      </ul>
+    </div>
+
+    <h3>3️⃣ replace usando una expresión regular</h3>
+    <p>Cuando quieres buscar patrones, no texto fijo:</p>
+
+    <pre><code class="language-javascript">const text = "Hola, JavaScript";
+const result = text.replace(/JavaScript/, "JS");
+
+console.log(result);
+// "Hola, JS"
+    </code></pre>
+
+    <p>Hasta aquí parece igual, pero ahora tenemos mucho más poder.</p>
+
+    <h3>4️⃣ Primer error común: ❌ "¿Por qué solo reemplaza uno?"</h3>
+    <p><strong>Ejemplo típico:</strong></p>
+
+    <pre><code class="language-javascript">const text = "Estoy contando 1 2 3 4 5";
+
+const result = text.replace(/\d/, "Número");
+console.log(result);
+// "Estoy contando Número 2 3 4 5"
+    </code></pre>
+
+    <p>👉 La regex funciona, encuentra un número…<br>
+    👉 Pero <code>replace</code> solo reemplaza la primera coincidencia.</p>
+
+    <div class="problem-box">
+      <p><strong>Esto no es un problema de la regex.</strong></p>
+      <p>Es el comportamiento por defecto de <code>replace</code>.</p>
+    </div>
+
+    <h3>5️⃣ El flag g: reemplazo global</h3>
+    <p>Si quieres que se reemplacen todas las coincidencias, necesitas el flag <code>g</code>.</p>
+
+    <pre><code class="language-javascript">const text = "Estoy contando 1 2 3 4 5";
+
+const result = text.replace(/\d/g, "Número");
+console.log(result);
+// "Estoy contando Número Número Número Número Número"
+    </code></pre>
+
+    <div class="problem-box">
+      <p><strong>🧠 Regla mental clave:</strong></p>
+      <ul>
+        <li><strong>Sin g</strong> → primera coincidencia</li>
+        <li><strong>Con g</strong> → todas las coincidencias</li>
+      </ul>
+    </div>
+
+    <h3>6️⃣ Cuantificadores (+) ≠ búsqueda global</h3>
+    <p>Aquí suele venir la confusión.</p>
+
+    <pre><code class="language-javascript">/\d+/   // uno o más dígitos SEGUIDOS
+    </code></pre>
+
+    <p>Esto no significa "encuentra todos los números del texto".</p>
+
+    <h4>Ejemplo:</h4>
+    <pre><code class="language-javascript">const text = "Tengo 12 perros y 300 gatos";
+
+console.log(text.replace(/\d+/, "NUM"));
+// "Tengo NUM perros y 300 gatos"
+    </code></pre>
+
+    <p><strong>¿Por qué?</strong></p>
+    <ul>
+      <li><code>\d+</code> define qué es una coincidencia</li>
+      <li><code>g</code> define cuántas coincidencias buscar</li>
+    </ul>
+
+    <h4>✅ Versión correcta:</h4>
+    <pre><code class="language-javascript">console.log(text.replace(/\d+/g, "NUM"));
+// "Tengo NUM perros y NUM gatos"
+    </code></pre>
+
+    <h3>7️⃣ Greedy (+) vs Global (g) — diferencia clara</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th>Qué controla</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>+</code> / <code>*</code> / <code>{}</code></td>
+          <td>Cuánto texto captura una coincidencia</td>
+        </tr>
+        <tr>
+          <td><code>g</code></td>
+          <td>Cuántas coincidencias se buscan en el string</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>👉 Son cosas distintas y complementarias.</p>
+
+    <h3>8️⃣ ¿Y replaceAll?</h3>
+    <p><code>replaceAll</code> existe, pero tiene reglas claras.</p>
+
+    <h4>Funciona con strings</h4>
+    <pre><code class="language-javascript">"1 2 3".replaceAll("1", "X");
+    </code></pre>
+
+    <h4>Con regex EXIGE g</h4>
+    <pre><code class="language-javascript">"1 2 3".replaceAll(/\d/g, "X"); // ✅
+"1 2 3".replaceAll(/\d/, "X");  // ❌ TypeError
+    </code></pre>
+
+    <p>📌 Si usas regex, mejor sigue usando <code>replace + g</code>.</p>
+
+    <h3>9️⃣ Reemplazo avanzado: usar una función</h3>
+    <p>Aquí subimos de nivel 🚀</p>
+
+    <pre><code class="language-javascript">const text = "Estoy contando 1 2 3";
+
+const result = text.replace(/\d/g, (match) => {
+  return `Número(${match})`;
+});
+
+console.log(result);
+// "Estoy contando Número(1) Número(2) Número(3)"
+    </code></pre>
+
+    <p>👉 <code>match</code> es el valor exacto que encontró la regex.</p>
+
+    <p><strong>Esto es muy usado para:</strong></p>
+    <ul>
+      <li>formatear datos</li>
+      <li>normalizar textos</li>
+      <li>transformar valores dinámicamente</li>
+    </ul>
+
+    <h4>Ejemplo más avanzado: convertir a mayúsculas</h4>
+    <pre><code class="language-javascript">const text = "hola mundo js";
+
+const result = text.replace(/\b\w/g, (match) => {
+  return match.toUpperCase();
+});
+
+console.log(result);
+// "Hola Mundo Js"
+    </code></pre>
+
+    <h4>Ejemplo: formatear números</h4>
+    <pre><code class="language-javascript">const text = "Precio: 1000 EUR";
+
+const result = text.replace(/\d+/g, (match) => {
+  return parseInt(match).toLocaleString();
+});
+
+console.log(result);
+// "Precio: 1,000 EUR"
+    </code></pre>
+
+    <h3>🔟 Resumen final (para fijarlo bien)</h3>
+    <ul>
+      <li><code>replace</code> es un método de String</li>
+      <li>Acepta strings o regex</li>
+      <li>Sin <code>g</code> → solo reemplaza la primera coincidencia</li>
+      <li><code>g</code> hace la búsqueda global</li>
+      <li>Los cuantificadores (<code>+</code>, <code>*</code>) no sustituyen al <code>g</code></li>
+      <li><code>replaceAll</code> con regex requiere <code>g</code></li>
+    </ul>
+
+    <h3>🧠 Ejercicio rápido (recomendado)</h3>
+    <p><strong>Convierte:</strong></p>
+    <pre><code>"Precio: 20€, descuento: 5€, total: 15€"
+    </code></pre>
+
+    <p><strong>En:</strong></p>
+    <pre><code>"Precio: X€, descuento: X€, total: X€"
+    </code></pre>
+
+    <p>👉 Pista: <code>\d+</code> + <code>g</code> en regex</p>
+
+    <h4>Solución:</h4>
+    <pre><code class="language-javascript">const text = "Precio: 20€, descuento: 5€, total: 15€";
+const result = text.replace(/\d+/g, "X");
+console.log(result);
+// "Precio: X€, descuento: X€, total: X€"
+    </code></pre>
+
+    <h3>Ejercicios adicionales 💪</h3>
+    <ol>
+      <li>Reemplaza todos los espacios múltiples por uno solo</li>
+      <li>Convierte "hello world" en "Hello World" (primera letra mayúscula)</li>
+      <li>Reemplaza todos los números por su valor multiplicado por 2</li>
+      <li>Elimina todos los símbolos especiales de un texto</li>
+    </ol>
+
+    <h3>Soluciones</h3>
+    <pre><code class="language-javascript">// 1. Reemplazar espacios múltiples
+"Hola    mundo    JS".replace(/\s+/g, " ");
+// "Hola mundo JS"
+
+// 2. Primera letra mayúscula
+"hello world".replace(/\b\w/g, m => m.toUpperCase());
+// "Hello World"
+
+// 3. Números multiplicados por 2
+"Tengo 5 manzanas y 3 naranjas".replace(/\d+/g, m => parseInt(m) * 2);
+// "Tengo 10 manzanas y 6 naranjas"
+
+// 4. Eliminar símbolos especiales
+"Hola! ¿Cómo estás? #JavaScript".replace(/[^\w\s]/g, "");
+// "Hola Cómo estás JavaScript"
+    </code></pre>
+
+    <h3>Errores comunes</h3>
+    <ul>
+      <li>❌ Olvidar el flag <code>g</code> cuando quieres reemplazar todas las coincidencias</li>
+      <li>❌ Confundir cuantificadores (<code>+</code>) con búsqueda global (<code>g</code>)</li>
+      <li>❌ Usar <code>replaceAll</code> con regex sin <code>g</code></li>
+      <li>❌ No validar que <code>replace</code> devuelve un nuevo string (no modifica el original)</li>
+    </ul>
+
+    <h3>✅ Puntos clave</h3>
+    <ul>
+      <li><code>replace</code> no modifica el string original, devuelve uno nuevo</li>
+      <li>El flag <code>g</code> es esencial para reemplazos múltiples</li>
+      <li>Puedes usar funciones para transformaciones complejas</li>
+      <li>Los cuantificadores controlan el tamaño de cada coincidencia</li>
+      <li>El flag <code>g</code> controla cuántas coincidencias se buscan</li>
+    </ul>
+
+    <h3>Páginas relacionadas</h3>
+    <ul>
+      <li>
+        <a href="#" data-section="regex/regex"
+          >Expresiones Regulares (Introducción)</a
+        >
+      </li>
+      <li>
+        <a href="#" data-section="fundamentals/strings"
+          >Strings en JavaScript</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>

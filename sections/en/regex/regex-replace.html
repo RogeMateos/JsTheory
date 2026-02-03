@@ -1,0 +1,285 @@
+<section class="box">
+  <h2>Tutorial: replace and Regular Expressions in JavaScript</h2>
+  <p class="subtitle">Understanding text replacement with regex</p>
+  <article>
+    <h3>🎯 Chapter objective</h3>
+    <p>
+      Understand how <code>replace</code> works, how it combines with regular expressions,
+      and why sometimes it only replaces one match even though the regex seems to find several.
+    </p>
+    <p>
+      This is one of those points where many people get confused, so let's go slowly with clear examples.
+    </p>
+
+    <h3>1️⃣ What is replace?</h3>
+    <p><code>replace</code> is a method of strings, not of regular expressions.</p>
+    <p><strong>Its job is:</strong></p>
+    <p>Search for a match within a text and replace it with another value.</p>
+
+    <h4>Basic syntax</h4>
+    <pre><code class="language-javascript">text.replace(search, replacement)
+    </code></pre>
+
+    <ul>
+      <li><code>search</code> → can be a string or a RegExp</li>
+      <li><code>replacement</code> → a string or a function</li>
+    </ul>
+
+    <h3>2️⃣ replace using a string literal</h3>
+    <p>When you know exactly what text you want to change:</p>
+
+    <pre><code class="language-javascript">const text = "Hello, JavaScript";
+const result = text.replace("JavaScript", "JS");
+
+console.log(result);
+// "Hello, JS"
+    </code></pre>
+
+    <div class="problem-box">
+      <p><strong>📌 Important:</strong></p>
+      <ul>
+        <li>Only replaces the first match</li>
+        <li>Doesn't understand patterns, only exact text</li>
+      </ul>
+    </div>
+
+    <h3>3️⃣ replace using a regular expression</h3>
+    <p>When you want to search for patterns, not fixed text:</p>
+
+    <pre><code class="language-javascript">const text = "Hello, JavaScript";
+const result = text.replace(/JavaScript/, "JS");
+
+console.log(result);
+// "Hello, JS"
+    </code></pre>
+
+    <p>So far it looks the same, but now we have much more power.</p>
+
+    <h3>4️⃣ First common error: ❌ "Why does it only replace one?"</h3>
+    <p><strong>Typical example:</strong></p>
+
+    <pre><code class="language-javascript">const text = "I'm counting 1 2 3 4 5";
+
+const result = text.replace(/\d/, "Number");
+console.log(result);
+// "I'm counting Number 2 3 4 5"
+    </code></pre>
+
+    <p>👉 The regex works, it finds a number…<br>
+    👉 But <code>replace</code> only replaces the first match.</p>
+
+    <div class="problem-box">
+      <p><strong>This is not a regex problem.</strong></p>
+      <p>It's the default behavior of <code>replace</code>.</p>
+    </div>
+
+    <h3>5️⃣ The g flag: global replacement</h3>
+    <p>If you want all matches to be replaced, you need the <code>g</code> flag.</p>
+
+    <pre><code class="language-javascript">const text = "I'm counting 1 2 3 4 5";
+
+const result = text.replace(/\d/g, "Number");
+console.log(result);
+// "I'm counting Number Number Number Number Number"
+    </code></pre>
+
+    <div class="problem-box">
+      <p><strong>🧠 Key mental rule:</strong></p>
+      <ul>
+        <li><strong>Without g</strong> → first match</li>
+        <li><strong>With g</strong> → all matches</li>
+      </ul>
+    </div>
+
+    <h3>6️⃣ Quantifiers (+) ≠ global search</h3>
+    <p>This is where confusion often comes.</p>
+
+    <pre><code class="language-javascript">/\d+/   // one or more consecutive digits
+    </code></pre>
+
+    <p>This doesn't mean "find all numbers in the text".</p>
+
+    <h4>Example:</h4>
+    <pre><code class="language-javascript">const text = "I have 12 dogs and 300 cats";
+
+console.log(text.replace(/\d+/, "NUM"));
+// "I have NUM dogs and 300 cats"
+    </code></pre>
+
+    <p><strong>Why?</strong></p>
+    <ul>
+      <li><code>\d+</code> defines what a match is</li>
+      <li><code>g</code> defines how many matches to search for</li>
+    </ul>
+
+    <h4>✅ Correct version:</h4>
+    <pre><code class="language-javascript">console.log(text.replace(/\d+/g, "NUM"));
+// "I have NUM dogs and NUM cats"
+    </code></pre>
+
+    <h3>7️⃣ Greedy (+) vs Global (g) — clear difference</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Concept</th>
+          <th>What it controls</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>+</code> / <code>*</code> / <code>{}</code></td>
+          <td>How much text a match captures</td>
+        </tr>
+        <tr>
+          <td><code>g</code></td>
+          <td>How many matches are searched in the string</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>👉 They are different and complementary things.</p>
+
+    <h3>8️⃣ What about replaceAll?</h3>
+    <p><code>replaceAll</code> exists, but has clear rules.</p>
+
+    <h4>Works with strings</h4>
+    <pre><code class="language-javascript">"1 2 3".replaceAll("1", "X");
+    </code></pre>
+
+    <h4>With regex REQUIRES g</h4>
+    <pre><code class="language-javascript">"1 2 3".replaceAll(/\d/g, "X"); // ✅
+"1 2 3".replaceAll(/\d/, "X");  // ❌ TypeError
+    </code></pre>
+
+    <p>📌 If you use regex, better keep using <code>replace + g</code>.</p>
+
+    <h3>9️⃣ Advanced replacement: using a function</h3>
+    <p>Here we level up 🚀</p>
+
+    <pre><code class="language-javascript">const text = "I'm counting 1 2 3";
+
+const result = text.replace(/\d/g, (match) => {
+  return `Number(${match})`;
+});
+
+console.log(result);
+// "I'm counting Number(1) Number(2) Number(3)"
+    </code></pre>
+
+    <p>👉 <code>match</code> is the exact value the regex found.</p>
+
+    <p><strong>This is widely used for:</strong></p>
+    <ul>
+      <li>formatting data</li>
+      <li>normalizing texts</li>
+      <li>dynamically transforming values</li>
+    </ul>
+
+    <h4>More advanced example: convert to uppercase</h4>
+    <pre><code class="language-javascript">const text = "hello world js";
+
+const result = text.replace(/\b\w/g, (match) => {
+  return match.toUpperCase();
+});
+
+console.log(result);
+// "Hello World Js"
+    </code></pre>
+
+    <h4>Example: format numbers</h4>
+    <pre><code class="language-javascript">const text = "Price: 1000 EUR";
+
+const result = text.replace(/\d+/g, (match) => {
+  return parseInt(match).toLocaleString();
+});
+
+console.log(result);
+// "Price: 1,000 EUR"
+    </code></pre>
+
+    <h3>🔟 Final summary (to fix it well)</h3>
+    <ul>
+      <li><code>replace</code> is a String method</li>
+      <li>Accepts strings or regex</li>
+      <li>Without <code>g</code> → only replaces the first match</li>
+      <li><code>g</code> makes the search global</li>
+      <li>Quantifiers (<code>+</code>, <code>*</code>) don't replace <code>g</code></li>
+      <li><code>replaceAll</code> with regex requires <code>g</code></li>
+    </ul>
+
+    <h3>🧠 Quick exercise (recommended)</h3>
+    <p><strong>Convert:</strong></p>
+    <pre><code>"Price: 20€, discount: 5€, total: 15€"
+    </code></pre>
+
+    <p><strong>To:</strong></p>
+    <pre><code>"Price: X€, discount: X€, total: X€"
+    </code></pre>
+
+    <p>👉 Hint: <code>\d+</code> + <code>g</code> in regex</p>
+
+    <h4>Solution:</h4>
+    <pre><code class="language-javascript">const text = "Price: 20€, discount: 5€, total: 15€";
+const result = text.replace(/\d+/g, "X");
+console.log(result);
+// "Price: X€, discount: X€, total: X€"
+    </code></pre>
+
+    <h3>Additional exercises 💪</h3>
+    <ol>
+      <li>Replace all multiple spaces with a single one</li>
+      <li>Convert "hello world" to "Hello World" (first letter uppercase)</li>
+      <li>Replace all numbers with their value multiplied by 2</li>
+      <li>Remove all special symbols from a text</li>
+    </ol>
+
+    <h3>Solutions</h3>
+    <pre><code class="language-javascript">// 1. Replace multiple spaces
+"Hello    world    JS".replace(/\s+/g, " ");
+// "Hello world JS"
+
+// 2. First letter uppercase
+"hello world".replace(/\b\w/g, m => m.toUpperCase());
+// "Hello World"
+
+// 3. Numbers multiplied by 2
+"I have 5 apples and 3 oranges".replace(/\d+/g, m => parseInt(m) * 2);
+// "I have 10 apples and 6 oranges"
+
+// 4. Remove special symbols
+"Hello! How are you? #JavaScript".replace(/[^\w\s]/g, "");
+// "Hello How are you JavaScript"
+    </code></pre>
+
+    <h3>Common mistakes</h3>
+    <ul>
+      <li>❌ Forgetting the <code>g</code> flag when you want to replace all matches</li>
+      <li>❌ Confusing quantifiers (<code>+</code>) with global search (<code>g</code>)</li>
+      <li>❌ Using <code>replaceAll</code> with regex without <code>g</code></li>
+      <li>❌ Not validating that <code>replace</code> returns a new string (doesn't modify the original)</li>
+    </ul>
+
+    <h3>✅ Key points</h3>
+    <ul>
+      <li><code>replace</code> doesn't modify the original string, returns a new one</li>
+      <li>The <code>g</code> flag is essential for multiple replacements</li>
+      <li>You can use functions for complex transformations</li>
+      <li>Quantifiers control the size of each match</li>
+      <li>The <code>g</code> flag controls how many matches are searched</li>
+    </ul>
+
+    <h3>Related pages</h3>
+    <ul>
+      <li>
+        <a href="#" data-section="regex/regex"
+          >Regular Expressions (Introduction)</a
+        >
+      </li>
+      <li>
+        <a href="#" data-section="fundamentals/strings"
+          >Strings in JavaScript</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>

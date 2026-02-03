@@ -1,0 +1,397 @@
+<section class="box">
+  <h2>Regular Expressions (RegEx) in JavaScript</h2>
+  <p class="subtitle">Complete guide to search and validate text patterns</p>
+  <article>
+    <h3>What is a Regular Expression?</h3>
+    <p>
+      A regular expression (regex) is a pattern used to search, validate, or extract information from text.
+      It's like an advanced search with superpowers.
+    </p>
+
+    <h3>Step 1: Literal regex + test()</h3>
+    <p>The most common way to define a regex is with slashes <code>/pattern/</code>:</p>
+
+    <pre><code class="language-javascript">const regex = /ABC/;
+const text = "Hello, ABC JavaScript";
+
+console.log(regex.test(text)); // true
+console.log(/ABCD/.test(text)); // false
+console.log(/AB/.test(text));   // true
+    </code></pre>
+
+    <p><strong>💡 Key idea:</strong> <code>.test()</code> only answers: "is there a match? yes/no".</p>
+
+    <h3>Step 2: RegExp Constructor (when to use it)</h3>
+    <p>There are two ways to create regular expressions:</p>
+
+    <h4>1. Literal (with slashes) - Most common</h4>
+    <pre><code class="language-javascript">const regex = /ABC/;
+    </code></pre>
+
+    <h4>2. RegExp Constructor - When the pattern is dynamic</h4>
+    <pre><code class="language-javascript">const pattern = "ABC";
+const regex2 = new RegExp(pattern);
+
+console.log(regex2.test("Hello, ABC JavaScript")); // true
+    </code></pre>
+
+    <p><strong>📌 When to use <code>new RegExp()</code>:</strong></p>
+    <ul>
+      <li>When the pattern comes from a variable or configuration</li>
+      <li>When you need to build the pattern dynamically</li>
+    </ul>
+
+    <div class="problem-box">
+      <p><strong>⚠️ Important with RegExp constructor:</strong></p>
+      <p>You must escape backslashes twice:</p>
+      <pre><code class="language-javascript">const digits = "\\d+";  // note the double backslash
+const regex = new RegExp(digits);
+      </code></pre>
+    </div>
+
+    <h3>Step 3: Character classes (\d) and quantifiers (+)</h3>
+
+    <h4>Important difference:</h4>
+    <ul>
+      <li><code>\d</code> = "a digit" (0-9)</li>
+      <li><code>d</code> = "the letter d"</li>
+    </ul>
+
+    <pre><code class="language-javascript">const text2 = "My age is 37";
+
+console.log(/\d/.test(text2));   // true (there's some digit)
+console.log(/\d+/.test(text2));  // true (there's a sequence of digits)
+    </code></pre>
+
+    <p><strong>What changes with <code>+</code>?</strong></p>
+    <ul>
+      <li><code>/\d/</code> → "there's at least 1 digit"</li>
+      <li><code>/\d+/</code> → "there's a sequence of 1 or more digits"</li>
+    </ul>
+
+    <h4>Extract what was found with .match()</h4>
+    <pre><code class="language-javascript">console.log(text2.match(/\d+/)); // ["37"]
+    </code></pre>
+
+    <h3>Step 4: Ranges with brackets [ ]</h3>
+    <p>Brackets define a set of allowed characters:</p>
+
+    <pre><code class="language-javascript">const text3 = "My age is 37";
+
+console.log(/[0-2]/.test(text3)); // false (no 0,1,2)
+console.log(/[3-6]/.test(text3)); // true  (there's a 3)
+console.log(/[4-6]/.test(text3)); // false (no 4,5,6)
+    </code></pre>
+
+    <p><strong>Important:</strong> <code>[3-6]</code> means "a character that is 3, 4, 5, or 6".</p>
+
+    <h3>Step 5: Anchors (^ start, $ end)</h3>
+
+    <div class="problem-box">
+      <p><strong>⚠️ Be careful with ^: it has two different meanings</strong></p>
+      <ul>
+        <li><strong>Outside [ ]</strong> → <code>^</code> is start-of-string anchor</li>
+        <li><strong>Inside [ ]</strong> (at the beginning) → <code>^</code> means negation</li>
+      </ul>
+    </div>
+
+    <h4>^ as start anchor</h4>
+    <pre><code class="language-javascript">console.log(/^\d/.test("37 years")); // true (starts with digit)
+console.log(/^\d/.test("Age 37")); // false (doesn't start with digit)
+    </code></pre>
+
+    <h4>$ as end anchor</h4>
+    <pre><code class="language-javascript">console.log(/\d$/.test("Age 37")); // true (ends with digit)
+console.log(/\d$/.test("37 years")); // false (doesn't end with digit)
+    </code></pre>
+
+    <h4>^ inside [ ] as negation</h4>
+    <pre><code class="language-javascript">console.log(/[^0-2]/.test("012")); // false (all are 0,1,2)
+console.log(/[^0-2]/.test("013")); // true (there's a 3, which is NOT 0,1,2)
+    </code></pre>
+
+    <h3>Step 6: The typical "trap" with flags (g) and .test()</h3>
+
+    <div class="problem-box">
+      <p><strong>⚠️ Senior note (very important):</strong></p>
+      <p>With flag <code>g</code>, a regex maintains state with <code>lastIndex</code> and <code>.test()</code> can alternate true/false if you reuse it.</p>
+    </div>
+
+    <pre><code class="language-javascript">const r = /\d/g;
+const s = "a1b2";
+
+console.log(r.test(s)); // true
+console.log(r.test(s)); // true
+console.log(r.test(s)); // false  <-- because lastIndex advanced and reached the end
+console.log(r.test(s)); // true   <-- starts over
+    </code></pre>
+
+    <p><strong>📌 Recommendation:</strong></p>
+    <ul>
+      <li>For <code>.test()</code>, avoid <code>g</code> at first</li>
+      <li>Use <code>g</code> when you want "all matches" with <code>.match()</code></li>
+    </ul>
+
+    <pre><code class="language-javascript">console.log("a1b2".match(/\d/g)); // ["1","2"]
+    </code></pre>
+
+    <h3>Main methods with RegEx</h3>
+
+    <h4>1. .test() - Returns boolean</h4>
+    <pre><code class="language-javascript">const regex = /\d+/;
+console.log(regex.test("There are 5 apples")); // true
+    </code></pre>
+
+    <h4>2. .match() - Returns array or null</h4>
+    <pre><code class="language-javascript">const text = "Order 12, box 7, batch 301";
+console.log(text.match(/\d+/g)); // ["12", "7", "301"]
+    </code></pre>
+
+    <h4>3. .replace() - Replaces matches</h4>
+    <pre><code class="language-javascript">const text = "Hello    world    JS";
+const cleaned = text.replace(/\s+/g, " ");
+console.log(cleaned); // "Hello world JS"
+    </code></pre>
+
+    <h4>4. .exec() - Match with groups (useful in loops with g)</h4>
+    <pre><code class="language-javascript">const regex = /\d+/g;
+const text = "a1b2c3";
+let match;
+
+while ((match = regex.exec(text)) !== null) {
+  console.log(`Found: ${match[0]} at index ${match.index}`);
+}
+// Found: 1 at index 1
+// Found: 2 at index 3
+// Found: 3 at index 5
+    </code></pre>
+
+    <h3>Practical use cases</h3>
+
+    <h4>1. Validate only numbers</h4>
+    <pre><code class="language-javascript">function isNumber(str) {
+  return /^\d+$/.test(str);
+}
+
+console.log(isNumber("123"));    // true
+console.log(isNumber("12a3"));   // false
+console.log(isNumber(""));       // false
+    </code></pre>
+
+    <h4>2. Extract numbers from text</h4>
+    <pre><code class="language-javascript">const input = "Total: 149€";
+const amount = input.match(/\d+/)?.[0];
+console.log(amount); // "149"
+    </code></pre>
+
+    <h4>3. Validate email (simple)</h4>
+    <pre><code class="language-javascript">function isSimpleEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+console.log(isSimpleEmail("user@example.com")); // true
+console.log(isSimpleEmail("user@"));            // false
+    </code></pre>
+
+    <div class="problem-box">
+      <p><strong>⚠️ Important warning:</strong></p>
+      <p>
+        Regex is not for validating everything 100% (perfect emails are very complex).
+        Use it for reasonable rules, not for critical security validations.
+      </p>
+    </div>
+
+    <h4>4. Clean multiple spaces</h4>
+    <pre><code class="language-javascript">const text = "Hello     world    JS";
+const cleaned = text.replace(/\s+/g, " ").trim();
+console.log(cleaned); // "Hello world JS"
+    </code></pre>
+
+    <h3>Most common character classes</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Pattern</th>
+          <th>Meaning</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>\d</code></td>
+          <td>Digit (0-9)</td>
+          <td><code>/\d+/</code> matches "123"</td>
+        </tr>
+        <tr>
+          <td><code>\w</code></td>
+          <td>Word (a-z, A-Z, 0-9, _)</td>
+          <td><code>/\w+/</code> matches "hello_123"</td>
+        </tr>
+        <tr>
+          <td><code>\s</code></td>
+          <td>Whitespace</td>
+          <td><code>/\s+/</code> matches "   "</td>
+        </tr>
+        <tr>
+          <td><code>\D</code></td>
+          <td>NOT digit</td>
+          <td><code>/\D+/</code> matches "abc"</td>
+        </tr>
+        <tr>
+          <td><code>\W</code></td>
+          <td>NOT word</td>
+          <td><code>/\W+/</code> matches "!@#"</td>
+        </tr>
+        <tr>
+          <td><code>\S</code></td>
+          <td>NOT whitespace</td>
+          <td><code>/\S+/</code> matches "text"</td>
+        </tr>
+        <tr>
+          <td><code>.</code></td>
+          <td>Any character (except \n)</td>
+          <td><code>/a.c/</code> matches "abc", "a*c"</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Quantifiers</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Pattern</th>
+          <th>Meaning</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>+</code></td>
+          <td>One or more times</td>
+          <td><code>/\d+/</code> matches "123"</td>
+        </tr>
+        <tr>
+          <td><code>*</code></td>
+          <td>Zero or more times</td>
+          <td><code>/\d*/</code> matches "", "123"</td>
+        </tr>
+        <tr>
+          <td><code>?</code></td>
+          <td>Zero or one time (optional)</td>
+          <td><code>/colou?r/</code> matches "color", "colour"</td>
+        </tr>
+        <tr>
+          <td><code>{n}</code></td>
+          <td>Exactly n times</td>
+          <td><code>/\d{3}/</code> matches "123"</td>
+        </tr>
+        <tr>
+          <td><code>{n,}</code></td>
+          <td>n or more times</td>
+          <td><code>/\d{2,}/</code> matches "12", "123"</td>
+        </tr>
+        <tr>
+          <td><code>{n,m}</code></td>
+          <td>Between n and m times</td>
+          <td><code>/\d{2,4}/</code> matches "12", "123", "1234"</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Flags (modifiers)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Flag</th>
+          <th>Meaning</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>g</code></td>
+          <td>Global (all matches)</td>
+          <td><code>/\d/g</code></td>
+        </tr>
+        <tr>
+          <td><code>i</code></td>
+          <td>Case insensitive</td>
+          <td><code>/abc/i</code> matches "ABC"</td>
+        </tr>
+        <tr>
+          <td><code>m</code></td>
+          <td>Multiline (^ and $ per line)</td>
+          <td><code>/^test/m</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Practical exercises 💪</h3>
+    <ol>
+      <li>Write a regex that detects if a string starts with "Hello"</li>
+      <li>Extract all numbers from: "Order 12, box 7, batch 301"</li>
+      <li>Check if a string is only digits (hint: ^ and $ + \d+)</li>
+      <li>Replace multiple spaces with one in: "Hello    world    JS"</li>
+      <li>Validate a phone number with format: 123-456-7890</li>
+    </ol>
+
+    <h3>Solutions</h3>
+    <pre><code class="language-javascript">// 1. Starts with "Hello"
+console.log(/^Hello/.test("Hello world")); // true
+
+// 2. Extract all numbers
+console.log("Order 12, box 7, batch 301".match(/\d+/g)); // ["12", "7", "301"]
+
+// 3. Only digits
+console.log(/^\d+$/.test("12345")); // true
+console.log(/^\d+$/.test("123a5")); // false
+
+// 4. Clean multiple spaces
+console.log("Hello    world    JS".replace(/\s+/g, " ")); // "Hello world JS"
+
+// 5. Validate phone
+console.log(/^\d{3}-\d{3}-\d{4}$/.test("123-456-7890")); // true
+    </code></pre>
+
+    <h3>Common mistakes</h3>
+    <ul>
+      <li>❌ Confusing <code>\d</code> with <code>d</code></li>
+      <li>❌ Forgetting to escape special characters: <code>.</code> → <code>\.</code></li>
+      <li>❌ Using <code>g</code> with <code>.test()</code> without knowing about <code>lastIndex</code></li>
+      <li>❌ Not using <code>^</code> and <code>$</code> for exact validations</li>
+      <li>❌ Confusing <code>^</code> outside [ ] with <code>^</code> inside [ ]</li>
+    </ul>
+
+    <h3>✅ Summary</h3>
+    <ul>
+      <li>Regex are defined with <code>/pattern/</code> or <code>new RegExp()</code></li>
+      <li><code>.test()</code> returns boolean, <code>.match()</code> returns array</li>
+      <li><code>\d</code>, <code>\w</code>, <code>\s</code> are character classes</li>
+      <li><code>+</code>, <code>*</code>, <code>?</code> are quantifiers</li>
+      <li><code>^</code> and <code>$</code> are start/end anchors</li>
+      <li>Flag <code>g</code> with <code>.test()</code> maintains state (beware)</li>
+      <li>Use regex for reasonable rules, not for everything</li>
+    </ul>
+
+    <h3>Related pages</h3>
+    <ul>
+      <li>
+        <a href="#" data-section="fundamentals/strings"
+          >Strings in JavaScript</a
+        >
+      </li>
+    </ul>
+
+    <h3>Additional Resources</h3>
+    <ul>
+      <li>
+        <a
+          href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/6982045e-87ec-8388-96e9-26d33b0a9806"
+          target="_blank"
+          rel="noopener noreferrer"
+          >ChatGPT - Discussion on Regular Expressions</a
+        >
+      </li>
+    </ul>
+  </article>
+</section>
