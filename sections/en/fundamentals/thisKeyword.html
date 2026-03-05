@@ -22,9 +22,478 @@
   <div class="solution-box">
     <h4>Core idea</h4>
     <p>
-      Think of <code>this</code> as the “owner” of the current execution. In regular functions the owner is chosen at call time; in arrow functions the owner is inherited from where the function was defined.
+      Think of <code>this</code> as the "owner" of the current execution. In regular functions the owner is chosen at call time; in arrow functions the owner is inherited from where the function was defined.
     </p>
   </div>
+
+  <!-- FUNDAMENTAL VISUAL IDEA -->
+  <article>
+    <h3>🧠 The Visual Fundamental Idea</h3>
+
+    <div class="key-concept">
+      <h4>Regular function</h4>
+      <p><strong>👉 this = whoever executes the function</strong></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Arrow function</h4>
+      <p><strong>👉 this = the this of the environment where it was created</strong></p>
+    </div>
+
+    <div class="solution-box">
+      <h4>🧠 The ultimate analogy</h4>
+      <p>Imagine <code>this</code> as the "boss":</p>
+      <ul>
+        <li><strong>Regular function</strong> → The boss is whoever calls you to the office</li>
+        <li><strong>Arrow function</strong> → The boss is whoever hired you originally</li>
+      </ul>
+    </div>
+
+    <div class="warning-box">
+      <h4>💥 The phrase you must remember</h4>
+      <p><strong>Regular function</strong> → <code>this</code> is dynamic</p>
+      <p><strong>Arrow</strong> → <code>this</code> is lexical</p>
+    </div>
+
+    <div class="key-concept">
+      <h4>📊 Visual Structure: Regular Function vs Arrow</h4>
+      <pre class="diagram-red">
+<strong class="label-structure">HANDLER</strong> (object)
+│
+├── <strong class="label-structure">name: "Brais"</strong>
+│
+└── <strong class="label-method">greeting()</strong>   ← <span class="annotation-regular">REGULAR FUNCTION</span>
+     │
+     └── <strong class="label-arrow">arrowGreeting()</strong>  ← <span class="annotation-arrow">ARROW FUNCTION</span></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔍 Correct Reading:</h4>
+      <ul>
+        <li><span style="color: #991b1b;"><strong>greeting():</strong></span> when executed, <code>this</code> = handler ✅</li>
+        <li><span style="color: #2563eb;"><strong>arrowGreeting():</strong></span> inherits <code>this</code> from <code>greeting()</code>, so <code>this</code> = handler ✅</li>
+      </ul>
+    </div>
+
+    <div class="key-concept">
+      <h4>🔗 How <code>this</code> flows through the scope</h4>
+      <pre class="diagram-yellow">
+<strong class="flow-label">handler</strong> (root object)
+│
+├─ <strong class="flow-label">name: "Brais"</strong>
+│
+└─ <strong class="text-red-bright">greeting()</strong> <span class="annotation-scope">(REGULAR function)</span>
+     │
+     ├─ <strong class="flow-arrow">this ─────► handler</strong> <span class="text-green">(decided here)</span>
+     │
+     └─ <strong class="label-arrow">arrowGreeting()</strong> <span class="annotation-scope">(arrow function)</span>
+          │
+          └─ <strong class="label-arrow">this (inherited) ─────► handler</strong></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚡ The flow of this:</h4>
+      <p><strong>In REGULAR functions:</strong> <code>this</code> is decided <strong>at execution time</strong></p>
+      <p><strong>In arrow functions:</strong> <code>this</code> is inherited <strong>from the scope where it was defined</strong></p>
+      <p>In this case, both point to <code>handler</code> because the arrow function is inside a regular function executed by handler.</p>
+    </div>
+  </article>
+
+  <!-- WHAT DOES "EXECUTING" MEAN -->
+  <article>
+    <h3>What Does "Executing a Function" Mean?</h3>
+
+    <div class="key-concept">
+      <h4>A function does nothing until someone calls it</h4>
+      <p><strong>Defining ≠ Executing</strong></p>
+    </div>
+
+    <div class="code-comparison">
+      <div class="before">
+        <h5>1️⃣ Defining a function</h5>
+        <pre><code class="language-javascript">function greet() {
+  console.log("Hello");
+}
+
+// You're just storing it in memory here
+// It doesn't run yet</code></pre>
+      </div>
+      <div class="after">
+        <h5>2️⃣ Executing a function</h5>
+        <pre><code class="language-javascript">greet();
+
+// The parentheses () mean:
+// 👉 "Execute what's inside"
+// NOW the code runs</code></pre>
+      </div>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔥 So... what does "who executes" mean?</h4>
+      <p>It means:</p>
+      <p><strong>From which object or context is the function being called?</strong></p>
+      <p>Because that determines the value of <code>this</code>.</p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Step by step: person.greet()</h4>
+      <pre><code class="language-javascript">const person = {
+  name: "Roge",
+  greet: function () {
+    console.log("Hi, I'm", this.name);
+  }
+};
+
+person.greet();</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔎 Breakdown</h4>
+      <p><strong>1️⃣ person.greet</strong></p>
+      <p>This means:</p>
+      <ul>
+        <li>👉 Go to the object <code>person</code></li>
+        <li>👉 Find the property <code>greet</code></li>
+      </ul>
+
+      <p><strong>2️⃣ person.greet()</strong></p>
+      <p>The <code>()</code> means:</p>
+      <ul>
+        <li>👉 Execute the function</li>
+        <li>👉 But execute it as a method of <code>person</code></li>
+      </ul>
+
+      <p><strong>The important part:</strong></p>
+      <p>When a function is called using the dot (<code>object.function()</code>):</p>
+      <p><strong>👉 The object on the left side of the dot is who executes it</strong></p>
+      <p>In this case: <code>person</code> executes it</p>
+      <p>Therefore: <code>this === person</code></p>
+    </div>
+
+    <div class="interview-box">
+      <h4>📌 Why do we say "who executes"?</h4>
+      <p>Because JavaScript internally does something like this:</p>
+      <pre><code class="language-javascript">person.greet()
+
+// It's interpreted as:
+// "Call greet with person as the context"
+// Or: "Execute this function and use person as this"</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>📦 Visualize it this way</h4>
+      <p>Think of it as a command:</p>
+      <pre class="diagram-red-small"><strong class="text-red-dark">person</strong> → <span class="text-green">"Hey greet, execute yourself"</span>
+
+<strong class="label-structure">Then inside greet:</strong>
+👉 <strong class="label-this">this points to whoever gave the command: person</strong></pre>
+    </div>
+
+    <div class="problem-box">
+      <h4>🔥 Now watch what happens if we change how we call it</h4>
+      <pre><code class="language-javascript">const fn = person.greet;
+
+fn();
+
+// Now:
+// fn() → No dot
+// No object on the left
+// 👉 Nobody specific is executing it
+// 👉 this is no longer person</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>🎯 The mental rule you need</h4>
+      <p><strong>If there's a dot:</strong></p>
+      <pre><code class="language-javascript">object.method()
+// 👉 this = object</code></pre>
+
+      <p><strong>If there's NO dot:</strong></p>
+      <pre><code class="language-javascript">function()
+// 👉 this = window (in browser)
+// 👉 or undefined (in strict mode)</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🧠 A simple analogy</h4>
+      <p>Imagine the function is an employee.</p>
+      <p><strong>If the boss says:</strong></p>
+      <pre><code class="language-javascript">Person: execute this
+// The employee knows their boss is person</code></pre>
+
+      <p><strong>If someone yells from nowhere:</strong></p>
+      <pre><code class="language-javascript">Execute!
+// The employee doesn't know who the boss is</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>💡 Ultra-clear summary</h4>
+      <p>"Executing" means:</p>
+      <ul>
+        <li>👉 Calling the function using <code>()</code></li>
+        <li>👉 And the value of <code>this</code> depends on HOW you call it</li>
+      </ul>
+      <p><strong>It doesn't depend on where it's written.</strong></p>
+      <p><strong>It depends on how you call it.</strong></p>
+    </div>
+  </article>
+
+  <!-- DYNAMIC VS LEXICAL -->
+  <article>
+    <h3>💥 Dynamic vs Lexical: The Fundamental Difference</h3>
+
+    <div class="key-concept">
+      <h4>💥 "Regular function → this is dynamic"</h4>
+      <p><strong>What does dynamic mean?</strong></p>
+      <p>That it <strong>changes depending on how the function executes</strong>.</p>
+      <ul>
+        <li>It's not fixed when you define it</li>
+        <li>It's decided at the moment of invocation</li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔎 Clear example</h4>
+      <pre><code class="language-javascript">function show() {
+  console.log(this.name);
+}
+
+const obj1 = { name: "Roge", show };
+const obj2 = { name: "Carlos", show };
+
+obj1.show(); // Roge
+obj2.show(); // Carlos</code></pre>
+      <p><strong>👉 It's the same function.</strong></p>
+      <p><strong>👉 But <code>this</code> changes.</strong></p>
+      <p><strong>That's dynamic.</strong></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>💥 "Arrow → this is lexical"</h4>
+      <p><strong>What does lexical mean?</strong></p>
+      <p>"Lexical" means:</p>
+      <p><strong>It depends on where the function was written.</strong></p>
+      <ul>
+        <li>It doesn't change no matter how you call it</li>
+        <li>It keeps the <code>this</code> of the environment surrounding it</li>
+      </ul>
+    </div>
+
+    <div class="warning-box">
+      <h4>🔎 Clear example</h4>
+      <pre><code class="language-javascript">const name = "Global";
+
+const obj = {
+  name: "Roge",
+  show: () => {
+    console.log(this.name);
+  }
+};
+
+obj.show();
+
+// Result in browser:
+// Global</code></pre>
+      <p><strong>Why?</strong></p>
+      <p>Because the arrow was defined in global scope.</p>
+      <p>So it inherits that <code>this</code>.</p>
+      <p>It doesn't matter that you call it as <code>obj.show()</code>.</p>
+    </div>
+
+    <div class="key-concept">
+      <h4>🎯 Brutally clear visual difference</h4>
+
+      <pre class="diagram-red-small"><strong class="text-red-dark">Regular function</strong>
+
+<span class="annotation-scope">obj.method()</span>
+👉 <strong class="label-this">this = obj</strong>
+
+<span class="text-green">If you do:</span>
+<span class="annotation-scope">const fn = obj.method;</span>
+<span class="annotation-scope">fn();</span>
+👉 <strong class="comparison-table-problem">this changes</strong></pre>
+
+      <pre class="diagram-yellow-small"><strong class="text-brown">Arrow Function</strong>
+
+<span class="text-green">const obj = {</span>
+  <span class="annotation-scope">method: () => {</span>
+    <span class="annotation-scope">console.log(this);</span>
+  <span class="annotation-scope">}</span>
+<span class="text-green">};</span>
+
+👉 <strong class="comparison-table-problem">this is NOT obj</strong>
+👉 <strong class="label-arrow">It's the this of where it was created</strong>
+👉 <strong class="label-arrow">And it never changes</strong></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🧠 A powerful analogy</h4>
+
+      <p><strong>Regular function</strong></p>
+      <p>It's like a freelance actor.</p>
+      <p>Works for whoever hires them that day.</p>
+
+      <p><strong>Arrow</strong></p>
+      <p>It's like a permanent employee.</p>
+      <p>Always answers to the same boss (the context where it was born).</p>
+    </div>
+
+    <div class="interview-box">
+      <h4>🔥 The example that makes it all clear</h4>
+      <pre><code class="language-javascript">const person = {
+  name: "Roge",
+  regular: function () {
+    console.log("Regular:", this.name);
+  },
+  arrow: () => {
+    console.log("Arrow:", this.name);
+  }
+};
+
+person.regular();  // Regular: Roge
+person.arrow();    // Arrow: undefined</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>🧠 Dynamic vs Lexical Comparison Table</h4>
+      <pre class="diagram-red-small"><strong class="comparison-table-header">                      </strong><strong class="comparison-table-regular">Regular function</strong><strong class="comparison-table-header">    </strong><strong class="comparison-table-arrow">Arrow</strong>
+<strong class="comparison-table-header">When is it decided?</strong>   <span class="comparison-table-regular">At execution</span>         <span class="comparison-table-arrow">At definition</span>
+<strong class="comparison-table-header">Can it change?</strong>        <span class="comparison-table-regular">Yes</span>                  <span class="comparison-table-arrow">No</span>
+<strong class="comparison-table-header">Type of this</strong>          <span class="comparison-table-regular">Dynamic</span>              <span class="comparison-table-arrow">Lexical</span></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🎯 Final phrase to remember</h4>
+      <p><strong>Regular function</strong> → <code>this</code> depends on <strong>how you call it</strong>.</p>
+      <p><strong>Arrow</strong> → <code>this</code> depends on <strong>where you write it</strong>.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>📊 Mental Diagram: Structure of this</h3>
+
+    <div class="key-concept">
+      <h4>How this works in a nested structure</h4>
+      <pre class="diagram-red">
+<strong class="label-structure">OBJECT</strong>
+└── <strong class="label-method">method()</strong>  ← <span class="annotation-regular">regular function</span>
+    ├── <strong class="label-this">this = object</strong> ✅
+    └── <strong class="label-arrow">arrow()</strong>  ← <span class="annotation-arrow">arrow function</span>
+        └── <strong class="label-inherited">this = (inherited from method)</strong> ✅</pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>📌 Correct reading:</h4>
+      <ul>
+        <li>🔵 <code>method()</code> → <code>this</code> = object (because the object called it)</li>
+        <li>🟡 <code>arrow()</code> → copies the <code>this</code> from <code>method()</code> (because it's inside)</li>
+      </ul>
+      <p><strong>The arrow doesn't look at the object, it looks up ⬆️</strong></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Example with result</h4>
+      <pre><code class="language-javascript">const handler = {
+  name: "Brais",
+  greeting() {
+    const arrowGreeting = () => {
+      console.log(`Hello, ${this.name}`);
+    };
+    arrowGreeting();
+  }
+};
+
+handler.greeting(); // ✅ Hello, Brais</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>🧪 MENTAL TEST: How much do you know about this?</h3>
+
+    <div class="problem-box">
+      <h4>Question 1️⃣: What's the result?</h4>
+      <pre><code class="language-javascript">const obj = {
+  name: "Test",
+  method: function() {
+    console.log(this.name);
+  }
+};
+
+obj.method();</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Answer 1️⃣:</h4>
+      <p><strong>Output:</strong> <code>Test</code></p>
+      <p><strong>Reason:</strong> obj calls the method → this = obj</p>
+    </div>
+
+    <div class="problem-box">
+      <h4>Question 2️⃣: What's the result?</h4>
+      <pre><code class="language-javascript">const obj = {
+  name: "Test",
+  method: () => {
+    console.log(this.name);
+  }
+};
+
+obj.method();</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>Answer 2️⃣:</h4>
+      <p><strong>Output:</strong> <code>undefined</code></p>
+      <p><strong>Reason:</strong> Arrow inherits this from global scope (not from obj)</p>
+    </div>
+
+    <div class="problem-box">
+      <h4>Question 3️⃣: What's the result?</h4>
+      <pre><code class="language-javascript">const obj = {
+  name: "Test",
+  method: function() {
+    setTimeout(() => {
+      console.log(this.name);
+    }, 100);
+  }
+};
+
+obj.method();</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Answer 3️⃣:</h4>
+      <p><strong>Output:</strong> <code>Test</code></p>
+      <p><strong>Reason:</strong> Arrow inside method() inherits the this from method() which is obj</p>
+      <p><strong>💡 This is the most important case for React</strong></p>
+    </div>
+
+    <div class="problem-box">
+      <h4>Question 4️⃣: What's the result?</h4>
+      <pre><code class="language-javascript">const obj = {
+  name: "Test",
+  method: function() {
+    setTimeout(function() {
+      console.log(this.name);
+    }, 100);
+  }
+};
+
+obj.method();</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>Answer 4️⃣:</h4>
+      <p><strong>Output:</strong> <code>undefined</code></p>
+      <p><strong>Reason:</strong> Regular function in setTimeout is executed by the system (window), not obj</p>
+    </div>
+
+    <div class="interview-box">
+      <h4>✅ Test Summary</h4>
+      <p>If you got 3-4 right: <strong>You understand this well!</strong></p>
+      <p>If you got all: <strong>You're a this master! 🏆</strong></p>
+      <p>If you got some wrong: <strong>Review the "Dynamic vs Lexical" sections 🔄</strong></p>
+    </div>
+  </article>
 
   <article>
     <h3>Global context vs. objects</h3>
@@ -90,10 +559,10 @@ myObject.getName(); // "Global Name" (inherited from outer scope)
 
     <div class="key-concept">
       <h4>Mental Diagram</h4>
-      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #4f46e5; margin: 10px 0;">
-OBJECT
-└── method()  ← regular function
-    └── arrow()  ← arrow function
+      <pre class="diagram-red-small">
+<strong class="label-structure">OBJECT</strong>
+└── <strong class="label-method">method()</strong>  ← <span class="annotation-regular">regular function</span>
+    └── <strong class="label-arrow">arrow()</strong>  ← <span class="annotation-arrow">arrow function</span>
       </pre>
       <p><strong>Correct reading:</strong></p>
       <ul>
@@ -213,14 +682,14 @@ team.show(); // "Digital Renewals"</code></pre>
 };
 
 handler.greeting(); // ✅ Hello, Brais</code></pre>
-      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #4f46e5; margin: 10px 0;">
-handler (object)
+      <pre class="diagram-red-small">
+<strong class="label-structure">handler</strong> (object)
 │
-├─ name: "Brais"
+├─ <strong class="label-structure">name: "Brais"</strong>
 │
-└─ greeting()   ← REGULAR FUNCTION
+└─ <strong class="label-method">greeting()</strong>   ← <span class="annotation-regular">REGULAR FUNCTION</span>
      │
-     └─ arrowGreeting()  ← ARROW FUNCTION
+     └─ <strong class="label-arrow">arrowGreeting()</strong>  ← <span class="annotation-arrow">ARROW FUNCTION</span>
       </pre>
     </div>
 
@@ -239,10 +708,10 @@ THE handler OBJECT</code></pre>
   // this === handler
 }</code></pre>
       <p><strong>Visually:</strong></p>
-      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #4f46e5; margin: 10px 0;">
-greeting scope
+      <pre class="diagram-yellow-small">
+<strong class="flow-label">greeting scope</strong>
 │
-├─ this ─────► handler
+├─ <strong class="flow-arrow">this ─────► handler</strong>
       </pre>
     </div>
 
@@ -259,10 +728,10 @@ greeting scope
       </ul>
       <p><strong>Where is it born?</strong> INSIDE <code>greeting()</code></p>
       <p>So it does this: <code>arrowGreeting.this = greeting.this</code></p>
-      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #f59e0b; margin: 10px 0;">
-arrowGreeting
+      <pre class="diagram-yellow-small">
+<strong class="flow-label">arrowGreeting</strong>
 │
-└─ this ─────► handler   ✅
+└─ <strong class="label-arrow">this ─────► handler</strong>   ✅
       </pre>
     </div>
 
@@ -278,18 +747,18 @@ arrowGreeting
 
     <div class="key-concept">
       <h4>🎯 COMPLETE FINAL DIAGRAM</h4>
-      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #4f46e5; margin: 10px 0;">
-handler
+      <pre class="diagram-red-small">
+<strong class="label-structure">handler</strong>
 │
-├─ name: "Brais"
+├─ <strong class="label-structure">name: "Brais"</strong>
 │
-└─ greeting()
+└─ <strong class="label-method">greeting()</strong>
      │
-     ├─ this ─────► handler
+     ├─ <strong class="flow-arrow">this ─────► handler</strong>
      │
-     └─ arrowGreeting()
+     └─ <strong class="label-arrow">arrowGreeting()</strong>
           │
-          └─ this (inherited) ─────► handler
+          └─ <strong class="label-arrow">this (inherited) ─────► handler</strong>
       </pre>
     </div>
 
@@ -308,10 +777,10 @@ handler
     console.log(this.name);
   }
 };</code></pre>
-        <pre style="background: #fee2e2; padding: 15px; border-left: 4px solid #dc2626; margin: 10px 0;">
-arrowGreeting
+        <pre class="diagram-red-small">
+<strong class="flow-label">arrowGreeting</strong>
 │
-└─ this ─────► global ❌
+└─ <strong class="flow-arrow">this ─────► global</strong> ❌
         </pre>
       </div>
       <div class="after">
@@ -495,5 +964,7 @@ account.printOwner(); // "Ada"
     <a href="https://chatgpt.com/c/693f20af-580c-8331-be15-2cf9c56228d9" target="_blank" rel="noopener noreferrer">ChatGPT - Mental Trick for this</a>
     <a href="https://chatgpt.com/c/693f245d-5870-8324-ba69-9e6918296764" target="_blank" rel="noopener noreferrer">ChatGPT - Trap Exercise</a>
     <a href="https://chatgpt.com/c/693f2a04-19a0-832e-a5b3-f26360987eb5" target="_blank" rel="noopener noreferrer">ChatGPT - Practice Exercises</a>
+    <a href="https://www.w3schools.com/js/js_this.asp" target="_blank" rel="noopener noreferrer">W3Schools - JavaScript this</a>
+    <a href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/69990994-eeec-8386-ba22-d50b8cf5db6f" target="_blank" rel="noopener noreferrer">ChatGPT - Complete this Analysis</a>
   </div>
 </section>

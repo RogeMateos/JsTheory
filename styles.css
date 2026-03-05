@@ -25,12 +25,53 @@ body {
 }
 
 header {
-  text-align: center;
   margin-bottom: 20px;
+  position: relative;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
 }
 
 #title {
-  margin-bottom: 8px;
+  margin-bottom: 0;
+  flex: 1;
+  text-align: center;
+}
+
+.burger-menu {
+  display: none;
+  flex-direction: column;
+  background: none;
+  border: none;
+  cursor: pointer;
+  gap: 6px;
+  padding: 8px;
+  margin-left: -8px;
+}
+
+.burger-line {
+  width: 28px;
+  height: 3px;
+  background: #333;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.burger-menu.active .burger-line:nth-child(1) {
+  transform: rotate(45deg) translateY(15px);
+}
+
+.burger-menu.active .burger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-menu.active .burger-line:nth-child(3) {
+  transform: rotate(-45deg) translateY(-15px);
 }
 
 .language-toggle {
@@ -294,6 +335,10 @@ code:not(pre code) {
     font-size: 32px;
   }
 
+  .burger-menu {
+    display: flex;
+  }
+
   .container {
     padding: 0;
     flex-direction: column;
@@ -302,11 +347,48 @@ code:not(pre code) {
   }
 
   nav {
-    position: static;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     max-width: 100%;
+    height: 100vh;
     margin: 0;
-    text-align: center;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    padding: 100px 18px 18px 18px;
+    box-shadow: none;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 99;
+    overflow-y: auto;
+    text-align: left;
+  }
+
+  nav.mobile-open {
+    transform: translateX(0);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Mobile backdrop overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 98;
+  }
+
+  body.menu-open::before {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .categories h3 {

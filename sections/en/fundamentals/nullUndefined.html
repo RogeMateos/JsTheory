@@ -2,39 +2,91 @@
 <section  class="box">
   <h2>Null and Undefined</h2>
   <article>
-    <h3>Understanding Null and Undefined in JavaScript</h3>
-    <p>In JavaScript, null and undefined are both used to represent the absence of a value, but they have distinct meanings and use cases:</p>
-    <p><b>undefined:</b> This represents the absence of a value because it hasn't been assigned yet. It typically occurs when a variable is declared but not initialized.</p>
-    <p><b>null:</b> This represents an intentional absence of a value. It's explicitly assigned to indicate that a variable should be empty.</p>
-    <pre><code class="language-javascript">
-      let myVariable = null; // Intentionally empty
-      let myOtherVariable;   // Declared but not assigned, so it's undefined
+    <h3>🧠 Visual Fundamental Idea</h3>
+    <div class="solution-box">
+      <p>Both represent <strong>absence of value</strong>, but have completely different meanings:</p>
+      <p><strong>undefined</strong> → JavaScript assigns it automatically when there's no value</p>
+      <p><strong>null</strong> → You assign it intentionally to indicate "no value"</p>
+    </div>
 
-      console.log(myVariable);       // Output: null
-      console.log(myOtherVariable);  // Output: undefined
-    </code></pre>
+    <h3>1. Undefined</h3>
+    <div class="key-concept">
+      <h4>A variable that has been declared but has no value:</h4>
+      <pre><code class="language-javascript">
+let user
+console.log(user) // undefined
+
+let address
+console.log(address) // undefined
+      </code></pre>
+    </div>
+    <div class="warning-box">
+      <p><strong>⚠️ Important:</strong> <code>undefined</code> is what JavaScript automatically assigns to variables that haven't been initialized.</p>
+    </div>
+
+    <h3>2. Null</h3>
+    <div class="key-concept">
+      <h4>Represents the intentional absence of a value:</h4>
+      <pre><code class="language-javascript">
+let response = null // Intentionally without value
+console.log(response) // null
+      </code></pre>
+    </div>
+    <div class="solution-box">
+      <p><strong>💡 Key Difference:</strong> <code>null</code> is <em>assigned by you</em> explicitly, while <code>undefined</code> is assigned automatically by JavaScript.</p>
+    </div>
+    <h3>📊 Difference between undefined and null</h3>
+    <div class="code-comparison">
+      <div class="before">
+        <h5>undefined (Automatic)</h5>
+        <pre><code class="language-javascript">let undefined_var // No value assigned
+console.log(undefined_var) // undefined</code></pre>
+      </div>
+      <div class="after">
+        <h5>null (Intentional)</h5>
+        <pre><code class="language-javascript">let no_value = null // Intentionally empty
+console.log(no_value) // null</code></pre>
+      </div>
+    </div>
+
     <h3>Key Differences:</h3>
     <h4>Type Checking:</h4>
-    <p><b>typeof null</b> returns "object", which is a quirk in JavaScript due to legacy reasons.</p>
-    <p><b>typeof undefined</b> returns "undefined".</p>
+    <div class="key-concept">
+      <p><strong>typeof null</strong> returns <code>"object"</code>, which is a quirk in JavaScript due to legacy reasons.</p>
+      <p><strong>typeof undefined</strong> returns <code>"undefined"</code>.</p>
+    </div>
+
     <h4>Equality Comparison:</h4>
-    <p><b>Loose Equality (==):</b> <code>null == undefined</code> is true because they are considered equal in value when type is not considered.</p>
-    <p><b>Strict Equality (===):</b> <code>null === undefined</code> is false because they are different types.</p>
-    <pre><code class="language-javascript">
-      console.log(undefined == null);  // Output: true (due to loose equality)
-      console.log(undefined === null); // Output: false (due to strict equality)
-    </code></pre>
+    <div class="key-concept">
+      <p><strong>Loose Equality (==):</strong> <code>null == undefined</code> is <code>true</code> because they are considered equal in value when type is not considered.</p>
+      <p><strong>Strict Equality (===):</strong> <code>null === undefined</code> is <code>false</code> because they are different types.</p>
+      <pre><code class="language-javascript">
+console.log(undefined == null);  // true (loose equality)
+console.log(undefined === null); // false (strict equality)
+
+console.log(typeof undefined)    // "undefined"
+console.log(typeof null)         // "object"
+      </code></pre>
+    </div>
+    <h3>🎯 Mental Rule to Remember</h3>
+    <div class="warning-box">
+      <p><strong>undefined:</strong> JavaScript assigns it automatically when there's no value</p>
+      <p><strong>null:</strong> You assign it intentionally to indicate "no value"</p>
+      <p><strong>It's rare but you can also assign undefined manually,</strong> although <strong>it's not recommended.</strong></p>
+    </div>
+
     <h3>Best Practices:</h3>
     <ul>
       <li>Use <code>===</code> for Comparisons: It's best practice to use strict equality to avoid issues with type coercion.</li>
-      <li>Use <code>undefined</code> for uninitialized variables.</li>
-      <li>Use <code>null</code> to intentionally signify "no value."</li>
+      <li>Use <code>undefined</code> for uninitialized variables (JavaScript does this automatically).</li>
+      <li>Use <code>null</code> to intentionally and explicitly signify "no value."</li>
+      <li>Prefer <code>===</code> over <code>==</code> to avoid unintended type coercion.</li>
     </ul>
-    <p>Prefer <code>===</code> over <code>==</code> to avoid unintended type coercion.</p>
   </article>
 
   <!-- Block of links -->
   <div class="links">
     <a href="https://code-boxx.com/javascript-null-vs-undefined-vs-empty/" target="_blank">Null vs Undefined</a>
+    <a href="https://www.jscamp.dev/javascript/tipos-datos-variables" target="_blank">Data Types and Variables</a>
   </div>
 </section>

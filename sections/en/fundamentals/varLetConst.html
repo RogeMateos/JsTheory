@@ -18,45 +18,149 @@
   </article>
 
   <article>
-    <h3>let</h3>
-    <p><b>let</b> is block-scoped and cannot be redeclared within the same scope. This means that once you declare a
-      variable with <b>let</b> in a block, it cannot be redeclared or accessed outside that block.</p>
-    <pre><code>
-      let y = 10;
-      if (y === 10) {
-          let y = 20;
-          console.log(y); // Output: 20
-      }
-      console.log(y); // Output: 10
-    </code></pre>
+    <h3>🔄 let - Variable that can be reassigned</h3>
+    <div class="key-concept">
+      <h4>let allows you to declare a variable whose value can change:</h4>
+      <pre><code class="language-javascript">
+let age = 25
+console.log(age) // 25
+
+// You can reassign the value
+age = 26
+console.log(age) // 26
+
+age = 27
+console.log(age) // 27
+      </code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Practical example with let</h4>
+      <pre><code class="language-javascript">
+let counter = 0
+console.log(counter) // 0
+
+counter = counter + 1 // Increment
+console.log(counter) // 1
+
+counter = counter + 1
+console.log(counter) // 2
+      </code></pre>
+    </div>
+
+    <div class="warning-box">
+      <p><b>let</b> is block-scoped and cannot be redeclared within the same scope.</p>
+      <pre><code class="language-javascript">
+let y = 10;
+if (y === 10) {
+    let y = 20;
+    console.log(y); // Output: 20
+}
+console.log(y); // Output: 10
+      </code></pre>
+    </div>
   </article>
 
   <article>
-    <h3>const</h3>
-    <p><b>const</b> is also block-scoped and is used to declare constants. Once a value is assigned to a
-      <b>const</b> variable, it cannot be reassigned. However, if the variable holds an object or array, the
-      properties or elements of that object or array can be modified.</p>
-    <pre><code>
-      const z = 10;
-      console.log(z); // Output: 10
+    <h3>🔒 const - Variable that CANNOT be reassigned</h3>
+    <div class="key-concept">
+      <h4>const declares a variable whose value cannot change (it's constant):</h4>
+      <pre><code class="language-javascript">
+const PI = 3.14159
+console.log(PI) // 3.14159
 
-      const obj = { name: 'Alice' };
-      obj.name = 'Bob';
-      console.log(obj.name); // Output: Bob
+// ❌ This will cause an error
+PI = 3.14 // TypeError: Assignment to constant variable
+      </code></pre>
+    </div>
 
-      const arr = [1, 2, 3];
-      arr.push(4);
-      console.log(arr); // Output: [1, 2, 3, 4]
-    </code></pre>
+    <div class="solution-box">
+      <h4>Practical example with const</h4>
+      <pre><code class="language-javascript">
+const name = 'Miguel'
+const lastName = 'Ángel'
+
+console.log(name) // Miguel
+console.log(lastName) // Ángel
+
+// ❌ This will cause an error
+name = 'Juan' // TypeError: Assignment to constant variable
+      </code></pre>
+    </div>
+
+    <div class="warning-box">
+      <p><b>const</b> is block-scoped and doesn't allow reassigning the reference. However, objects/arrays can still be mutated internally.</p>
+      <pre><code class="language-javascript">
+const z = 10;
+// z = 11; // Error
+
+const obj = { name: 'Alice' };
+obj.name = 'Bob'; // ok
+
+const arr = [1, 2];
+arr.push(3); // ok
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>📊 When to use let and when to use const?</h3>
+
+    <h4>Use const when:</h4>
+    <div class="key-concept">
+      <ul>
+        <li>The value won't change</li>
+        <li>It's a constant value (PI, configuration, etc.)</li>
+        <li>You want to prevent accidental reassignments</li>
+      </ul>
+      <pre><code class="language-javascript">
+const MAX_USERS = 100
+const API_URL = 'https://api.example.com'
+const APP_NAME = 'MyApp'
+      </code></pre>
+    </div>
+
+    <h4>Use let when:</h4>
+    <div class="key-concept">
+      <ul>
+        <li>The value will change</li>
+        <li>You need to reassign the variable</li>
+        <li>It's a counter, accumulator, etc.</li>
+      </ul>
+      <pre><code class="language-javascript">
+let counter = 0
+let sum = 0
+let currentUser = null
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>🎯 Practical Rule</h3>
+    <div class="solution-box">
+      <p><strong>Use const by default.</strong> Only switch to <code>let</code> if you discover you need to reassign the value.</p>
+      <pre><code class="language-javascript">
+// ✅ Good practice: start with const
+const name = 'Miguel'
+const age = 25
+
+// If you need to change the value, use let
+let counter = 0
+counter = counter + 1
+      </code></pre>
+    </div>
   </article>
 
   <article>
     <h3>Scope Comparison</h3>
-    <p><b>var</b> is function-scoped and can be redeclared within the same scope. <b>let</b> and <b>const</b> are
-      block-scoped and cannot be redeclared within the same scope. <b>const</b> is used for constants that should
-      not be reassigned, while <b>let</b> is used for variables that can be reassigned.</p>
-    <p>Understanding the differences between <b>var</b>, <b>let</b>, and <b>const</b> is crucial for writing clean
-      and maintainable JavaScript code.</p>
+    <div class="key-concept">
+      <p><b>var</b> is function-scoped and can be redeclared within the same scope.</p>
+      <p><b>let</b> and <b>const</b> are block-scoped and cannot be redeclared within the same scope.</p>
+      <p><b>const</b> is used for constants that should not be reassigned, while <b>let</b> is used for variables that can be reassigned.</p>
+    </div>
+    <div class="solution-box">
+      <p>Understanding the differences between <b>var</b>, <b>let</b>, and <b>const</b> is crucial for writing clean and maintainable JavaScript code.</p>
+    </div>
   </article>
 
   <!-- Links Section -->
@@ -65,5 +169,6 @@
     <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const" target="_blank">MDN: const</a>
     <a href="https://chatgpt.com/c/5b0a5ff1-0a0c-4c4f-89a2-07bc5465a248" target="_blank">YouTube: Var, Let, and Const - What's the Difference?</a>
     <a href="https://chatgpt.com/c/6978e33b-7b4c-832b-8f29-606de7b3facd" target="_blank">ChatGPT: Const Explanation</a>
+    <a href="https://www.jscamp.dev/javascript/tipos-datos-variables" target="_blank">Data Types and Variables</a>
   </div>
 </section>

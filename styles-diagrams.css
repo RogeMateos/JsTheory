@@ -1,0 +1,155 @@
+/* ============================================
+   DIAGRAM AND TABLE STYLES FOR THIS KEYWORD
+   ============================================ */
+
+/* Red gradient backgrounds - Regular Functions */
+.diagram-red {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  padding: 20px;
+  border-left: 6px solid #dc2626;
+  margin: 10px 0;
+  border-radius: 8px;
+}
+
+.diagram-red-small {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  padding: 15px;
+  border-left: 6px solid #dc2626;
+  margin: 10px 0;
+  border-radius: 6px;
+}
+
+/* Yellow gradient backgrounds - Scope/Flow */
+.diagram-yellow {
+  background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%);
+  padding: 20px;
+  border-left: 6px solid #f59e0b;
+  margin: 10px 0;
+  border-radius: 8px;
+}
+
+.diagram-yellow-small {
+  background: linear-gradient(135deg, #fef3c7 0%, #fef9e7 100%);
+  padding: 15px;
+  border-left: 6px solid #f59e0b;
+  margin: 10px 0;
+  border-radius: 6px;
+}
+
+/* Text color classes */
+.text-red-dark {
+  color: #991b1b;
+}
+
+.text-red-bright {
+  color: #dc2626;
+}
+
+.text-blue-bright {
+  color: #2563eb;
+}
+
+.text-blue-dark {
+  color: #0277bd;
+}
+
+.text-blue-dark-2 {
+  color: #0c4a6e;
+}
+
+.text-green {
+  color: #065f46;
+}
+
+.text-brown {
+  color: #92400e;
+}
+
+.text-orange {
+  color: #f59e0b;
+}
+
+/* Structure labels */
+.label-structure {
+  color: #0c4a6e;
+  font-weight: bold;
+}
+
+.label-method {
+  color: #991b1b;
+  font-weight: bold;
+}
+
+.label-arrow {
+  color: #2563eb;
+  font-weight: bold;
+}
+
+.label-this {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.label-inherited {
+  color: #065f46;
+  font-weight: bold;
+}
+
+/* Type annotations in diagrams */
+.annotation-regular {
+  color: #dc2626;
+}
+
+.annotation-arrow {
+  color: #2563eb;
+}
+
+.annotation-scope {
+  color: #0c4a6e;
+}
+
+/* Comparison tables */
+.comparison-table-header {
+  color: #0c4a6e;
+  font-weight: bold;
+}
+
+.comparison-table-regular {
+  color: #991b1b;
+}
+
+.comparison-table-arrow {
+  color: #2563eb;
+}
+
+.comparison-table-warning {
+  color: #f59e0b;
+}
+
+.comparison-table-problem {
+  color: #dc2626;
+}
+
+.comparison-table-success {
+  color: #065f46;
+}
+
+/* Flow diagrams with arrows */
+.flow-arrow {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.flow-label {
+  color: #92400e;
+  font-weight: bold;
+}
+
+/* Code blocks in diagrams */
+pre.diagram-red,
+pre.diagram-red-small,
+pre.diagram-yellow,
+pre.diagram-yellow-small {
+  color: inherit;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}

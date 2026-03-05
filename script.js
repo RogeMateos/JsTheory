@@ -3,9 +3,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const links = document.querySelectorAll("nav a");
   const categories = document.querySelectorAll(".categories > li > h3");
   const langButtons = document.querySelectorAll(".lang-btn");
-  
+  const burgerMenu = document.getElementById("burgerMenu");
+  const nav = document.querySelector("nav");
+
   let currentLanguage = "en";
   let currentSection = null;
+
+  // Close mobile menu
+  function closeMobileMenu() {
+    burgerMenu.classList.remove("active");
+    nav.classList.remove("mobile-open");
+    document.body.classList.remove("menu-open");
+  }
+
+  // Burger menu toggle functionality
+  burgerMenu.addEventListener("click", () => {
+    burgerMenu.classList.toggle("active");
+    nav.classList.toggle("mobile-open");
+    document.body.classList.toggle("menu-open");
+  });
+
+  // Close menu when backdrop is clicked
+  document.addEventListener("click", (e) => {
+    if (nav.classList.contains("mobile-open") &&
+        !nav.contains(e.target) &&
+        !burgerMenu.contains(e.target)) {
+      closeMobileMenu();
+    }
+  });
 
   links.forEach((link) => {
     link.addEventListener("click", (e) => {
@@ -25,6 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Load content
       currentSection = section;
       loadContent(section);
+
+      // Close mobile menu when a link is clicked
+      closeMobileMenu();
     });
   });
 

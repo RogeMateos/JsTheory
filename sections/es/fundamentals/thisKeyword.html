@@ -25,42 +25,677 @@
     </p>
   </div>
 
+  <!-- IDEA VISUAL FUNDAMENTAL -->
   <article>
-    <h3>Contexto global vs. objetos</h3>
+    <h3>🧠 Idea Visual Fundamental</h3>
+
     <div class="key-concept">
-      <h4>Regla rápida</h4>
-      <p>
-        En el ámbito global del navegador, <code>this</code> es <code>window</code>; en Node.js suele ser <code>global</code>. Dentro de un objeto, <code>this</code> apunta a ese objeto si él hace la llamada.
-      </p>
+      <h4>Function normal</h4>
+      <p><strong>👉 this = quien ejecuta la función</strong></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Arrow function</h4>
+      <p><strong>👉 this = el this del entorno donde fue creada</strong></p>
+    </div>
+
+    <div class="solution-box">
+      <h4>🧠 Analogía definitiva</h4>
+      <p>Imagina <code>this</code> como el "jefe":</p>
+      <ul>
+        <li><strong>Function normal</strong> → El jefe es quien te llama al despacho</li>
+        <li><strong>Arrow function</strong> → El jefe es quien te contrató originalmente</li>
+      </ul>
+    </div>
+
+    <div class="warning-box">
+      <h4>💥 Frase que debes recordar</h4>
+      <p><strong>Function normal</strong> → <code>this</code> es dinámico</p>
+      <p><strong>Arrow</strong> → <code>this</code> es léxico</p>
+    </div>
+
+    <div class="key-concept">
+      <h4>📊 Estructura visual: Función normal vs Arrow</h4>
+      <pre class="diagram-red">
+<strong class="label-structure">HANDLER</strong> (objeto)
+│
+├── <strong class="label-structure">name: "Brais"</strong>
+│
+└── <strong class="label-method">greeting()</strong>   ← <span class="annotation-regular">FUNCIÓN NORMAL</span>
+     │
+     └── <strong class="label-arrow">arrowGreeting()</strong>  ← <span class="annotation-arrow">ARROW FUNCTION</span></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔍 Lectura correcta:</h4>
+      <ul>
+        <li><span style="color: #991b1b;"><strong>greeting():</strong></span> cuando se ejecuta, <code>this</code> = handler ✅</li>
+        <li><span style="color: #2563eb;"><strong>arrowGreeting():</strong></span> hereda <code>this</code> de <code>greeting()</code>, entonces <code>this</code> = handler ✅</li>
+      </ul>
+    </div>
+
+    <div class="key-concept">
+      <h4>🔗 Cómo fluye <code>this</code> a través del scope</h4>
+      <pre class="diagram-yellow">
+<strong class="flow-label">handler</strong> (objeto raíz)
+│
+├─ <strong class="flow-label">name: "Brais"</strong>
+│
+└─ <strong class="text-red-bright">greeting()</strong> <span class="annotation-scope">(función NORMAL)</span>
+     │
+     ├─ <strong class="flow-arrow">this ─────► handler</strong> <span class="text-green">(se decide aquí)</span>
+     │
+     └─ <strong class="label-arrow">arrowGreeting()</strong> <span class="annotation-scope">(arrow function)</span>
+          │
+          └─ <strong class="label-arrow">this (heredado) ─────► handler</strong></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚡ El flujo de this:</h4>
+      <p><strong>En funciones NORMALES:</strong> <code>this</code> se decide <strong>en el momento de ejecución</strong></p>
+      <p><strong>En arrow functions:</strong> <code>this</code> se hereda <strong>del scope donde fueron definidas</strong></p>
+      <p>En este caso, ambas apuntan a <code>handler</code> porque la arrow function está dentro de una función normal ejecutada por handler.</p>
+    </div>
+  </article>
+
+  <!-- SECCIÓN: QUÉ SIGNIFICA "EJECUTAR" -->
+  <article>
+    <h3>¿Qué significa "ejecutar una función"?</h3>
+
+    <div class="key-concept">
+      <h4>Una función no hace nada hasta que alguien la llama</h4>
+      <p><strong>Definirla ≠ Ejecutarla</strong></p>
     </div>
 
     <div class="code-comparison">
       <div class="before">
-        <h5>Contexto global</h5>
-        <pre><code class="language-javascript">function getName() {
-  console.log(this.name);
+        <h5>1️⃣ Definir una función</h5>
+        <pre><code class="language-javascript">function saludar() {
+  console.log("Hola");
 }
 
-global.name = 'Global Name'; // Node.js
-getName(); // "Global Name"
-
-// En el navegador
-window.name = 'Global Name';
-getName(); // "Global Name"
-</code></pre>
+// Aquí solo la estás guardando en memoria
+// Todavía no se ejecuta</code></pre>
       </div>
       <div class="after">
-        <h5>Dentro de un objeto</h5>
-        <pre><code class="language-javascript">const user = {
-  name: 'MyObject Name',
-  getName: function() {
-    console.log(this.name);
+        <h5>2️⃣ Ejecutar una función</h5>
+        <pre><code class="language-javascript">saludar();
+
+// Los paréntesis () significan:
+// 👉 "Ejecuta lo que hay dentro"
+// Ahora sí se corre el código</code></pre>
+      </div>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔥 Entonces… ¿qué significa "quién ejecuta"?</h4>
+      <p>Significa:</p>
+      <p><strong>¿Desde qué objeto o contexto se está llamando la función?</strong></p>
+      <p>Porque eso determina el valor de <code>this</code>.</p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Paso a paso: persona.saludar()</h4>
+      <pre><code class="language-javascript">const persona = {
+  nombre: "Roge",
+  saludar: function () {
+    console.log("Hola soy", this.nombre);
   }
 };
 
-user.getName(); // "MyObject Name"
-</code></pre>
-      </div>
+persona.saludar();</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔎 Desglose</h4>
+      <p><strong>1️⃣ persona.saludar</strong></p>
+      <p>Significa:</p>
+      <ul>
+        <li>👉 Ve al objeto <code>persona</code></li>
+        <li>👉 Busca la propiedad <code>saludar</code></li>
+      </ul>
+
+      <p><strong>2️⃣ persona.saludar()</strong></p>
+      <p>El <code>()</code> significa:</p>
+      <ul>
+        <li>👉 Ejecuta la función</li>
+        <li>👉 Pero ejecútala como método de <code>persona</code></li>
+      </ul>
+
+      <p><strong>Lo importante:</strong></p>
+      <p>Cuando una función se llama usando punto (<code>objeto.funcion()</code>):</p>
+      <p><strong>👉 El objeto a la izquierda del punto es quien ejecuta</strong></p>
+      <p>En este caso: <code>persona</code> es quien ejecuta</p>
+      <p>Por lo tanto: <code>this === persona</code></p>
+    </div>
+
+    <div class="interview-box">
+      <h4>📌 ¿Por qué se dice "quien ejecuta"?</h4>
+      <p>Porque JavaScript internamente hace algo parecido a esto:</p>
+      <pre><code class="language-javascript">persona.saludar()
+
+// Se interpreta como:
+// "Llama a saludar con persona como contexto"
+// O: "Ejecuta esta función y usa persona como this"</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>📦 Visualízalo así</h4>
+      <p>Imagina esto como una orden:</p>
+      <pre class="diagram-red-small"><strong class="text-red-dark">persona</strong> → <span class="text-green">"Oye saludar, ejecútate"</span>
+
+<strong class="label-structure">Entonces dentro de saludar:</strong>
+👉 <strong class="label-this">this apunta a quien dio la orden: persona</strong></pre>
+    </div>
+
+    <div class="problem-box">
+      <h4>🔥 Ahora mira qué pasa si cambiamos la forma de llamar</h4>
+      <pre><code class="language-javascript">const fn = persona.saludar;
+
+fn();
+
+// Ahora:
+// fn() → Ya no hay punto
+// Ya no hay objeto a la izquierda
+// 👉 Nadie específico la está ejecutando
+// 👉 this ya no es persona</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>🎯 Regla mental definitiva</h4>
+      <p><strong>Si hay punto:</strong></p>
+      <pre><code class="language-javascript">objeto.metodo()
+// 👉 this = objeto</code></pre>
+
+      <p><strong>Si NO hay punto:</strong></p>
+      <pre><code class="language-javascript">funcion()
+// 👉 this = window (en navegador)
+// 👉 o undefined (en modo estricto)</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🧠 Analogía sencilla</h4>
+      <p>Imagina que la función es un empleado.</p>
+      <p><strong>Si el jefe dice:</strong></p>
+      <pre><code class="language-javascript">Persona: ejecuta esto
+// El empleado sabe que su jefe es persona</code></pre>
+
+      <p><strong>Si alguien grita desde la nada:</strong></p>
+      <pre><code class="language-javascript">¡Ejecuta!
+// El empleado no sabe quién es el jefe</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>💡 Resumen ultra claro</h4>
+      <p>"Ejecutar" significa:</p>
+      <ul>
+        <li>👉 Invocar la función usando <code>()</code></li>
+        <li>👉 Y el valor de <code>this</code> depende de cómo la invocas</li>
+      </ul>
+      <p><strong>No depende de dónde está escrita.</strong></p>
+      <p><strong>Depende de cómo la llamas.</strong></p>
+    </div>
+  </article>
+
+  <!-- SECCIÓN: DINÁMICO VS LÉXICO -->
+  <article>
+    <h3>💥 Dinámico vs Léxico: La Diferencia Fundamental</h3>
+
+    <div class="key-concept">
+      <h4>💥 "Function normal → this es dinámico"</h4>
+      <p><strong>¿Qué significa dinámico?</strong></p>
+      <p>Que <strong>cambia dependiendo de cómo se ejecute</strong> la función.</p>
+      <ul>
+        <li>No está fijado cuando se define</li>
+        <li>Se decide en el momento de invocar</li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔎 Ejemplo claro</h4>
+      <pre><code class="language-javascript">function mostrar() {
+  console.log(this.nombre);
+}
+
+const obj1 = { nombre: "Roge", mostrar };
+const obj2 = { nombre: "Carlos", mostrar };
+
+obj1.mostrar(); // Roge
+obj2.mostrar(); // Carlos</code></pre>
+      <p><strong>👉 Es la misma función.</strong></p>
+      <p><strong>👉 Pero <code>this</code> cambia.</strong></p>
+      <p><strong>Eso es dinámico.</strong></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>💥 "Arrow → this es léxico"</h4>
+      <p><strong>¿Qué significa léxico?</strong></p>
+      <p>"Léxico" significa:</p>
+      <p><strong>Depende del lugar donde fue escrita la función.</strong></p>
+      <ul>
+        <li>No cambia aunque la llames diferente</li>
+        <li>Se queda con el <code>this</code> del entorno que la rodea</li>
+      </ul>
+    </div>
+
+    <div class="warning-box">
+      <h4>🔎 Ejemplo claro</h4>
+      <pre><code class="language-javascript">const nombre = "Global";
+
+const obj = {
+  nombre: "Roge",
+  mostrar: () => {
+    console.log(this.nombre);
+  }
+};
+
+obj.mostrar();
+
+// Resultado en navegador:
+// Global</code></pre>
+      <p><strong>¿Por qué?</strong></p>
+      <p>Porque la arrow fue definida en el scope global.</p>
+      <p>Entonces hereda ese <code>this</code>.</p>
+      <p>No importa que la llames como <code>obj.mostrar()</code>.</p>
+    </div>
+
+    <div class="key-concept">
+      <h4>🎯 Diferencia visual brutal</h4>
+
+      <pre class="diagram-red-small"><strong class="text-red-dark">Function normal</strong>
+
+<span class="annotation-scope">obj.metodo()</span>
+👉 <strong class="label-this">this = obj</strong>
+
+<span class="text-green">Si haces:</span>
+<span class="annotation-scope">const fn = obj.metodo;</span>
+<span class="annotation-scope">fn();</span>
+👉 <strong class="comparison-table-problem">this cambia</strong></pre>
+
+      <pre class="diagram-yellow-small"><strong class="text-brown">Arrow Function</strong>
+
+<span class="text-green">const obj = {</span>
+  <span class="annotation-scope">metodo: () => {</span>
+    <span class="annotation-scope">console.log(this);</span>
+  <span class="annotation-scope">}</span>
+<span class="text-green">};</span>
+
+👉 <strong class="comparison-table-problem">this NO es obj</strong>
+👉 <strong class="label-arrow">Es el this del lugar donde se creó</strong>
+👉 <strong class="label-arrow">Y no cambia nunca</strong></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🧠 Analogía poderosa</h4>
+
+      <p><strong>Function normal</strong></p>
+      <p>Es como un actor freelance.</p>
+      <p>Trabaja para quien lo contrate ese día.</p>
+
+      <p><strong>Arrow</strong></p>
+      <p>Es como un empleado fijo.</p>
+      <p>Siempre responde al mismo jefe (el contexto donde nació).</p>
+    </div>
+
+    <div class="interview-box">
+      <h4>🔥 El ejemplo que lo deja todo claro</h4>
+      <pre><code class="language-javascript">const persona = {
+  nombre: "Roge",
+  normal: function () {
+    console.log("Normal:", this.nombre);
+  },
+  arrow: () => {
+    console.log("Arrow:", this.nombre);
+  }
+};
+
+persona.normal();  // Normal: Roge
+persona.arrow();   // Arrow: undefined</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>🧠 Tabla Comparativa Dinámico vs Léxico</h4>
+      <pre class="diagram-red-small"><strong class="comparison-table-header">                    </strong><strong class="comparison-table-regular">Function normal</strong><strong class="comparison-table-header">    </strong><strong class="comparison-table-arrow">Arrow</strong>
+<strong class="comparison-table-header">¿Cuándo se decide?</strong>   <span class="comparison-table-regular">En la ejecución</span>     <span class="comparison-table-arrow">En la definición</span>
+<strong class="comparison-table-header">¿Puede cambiar?</strong>      <span class="comparison-table-regular">Sí</span>                  <span class="comparison-table-arrow">No</span>
+<strong class="comparison-table-header">Tipo de this</strong>         <span class="comparison-table-regular">Dinámico</span>            <span class="comparison-table-arrow">Léxico</span></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🎯 Frase final que debes grabarte</h4>
+      <p><strong>Function normal</strong> → <code>this</code> depende de <strong>cómo la llamas</strong>.</p>
+      <p><strong>Arrow</strong> → <code>this</code> depende de <strong>dónde la escribes</strong>.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Ejemplo 1 — Caso más simple (objeto)</h3>
+
+    <div class="key-concept">
+      <h4>✅ Function normal</h4>
+      <pre><code class="language-javascript">const persona = {
+  nombre: "Roge",
+  saludar: function () {
+    console.log("Hola soy", this.nombre);
+  }
+};
+
+persona.saludar();</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔎 ¿Qué pasa?</h4>
+      <p><code>persona.saludar()</code></p>
+      <p>Quien ejecuta la función es <code>persona</code></p>
+      <p><strong>👉 this === persona</strong></p>
+      <p><strong>Resultado:</strong> <code>Hola soy Roge</code></p>
+    </div>
+
+    <div class="problem-box">
+      <h4>❌ Arrow function (mismo código pero con arrow)</h4>
+      <pre><code class="language-javascript">const persona = {
+  nombre: "Roge",
+  saludar: () => {
+    console.log("Hola soy", this.nombre);
+  }
+};
+
+persona.saludar();</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>🔎 ¿Qué pasa?</h4>
+      <p>Arrow function no tiene su propio <code>this</code></p>
+      <p>Toma el <code>this</code> del contexto exterior</p>
+      <p>En navegador, normalmente será <code>window</code></p>
+      <p><strong>👉 this.nombre será undefined</strong></p>
+      <p><strong>Resultado:</strong> <code>Hola soy undefined</code></p>
+      <p><strong>⚠️ Aquí empieza la confusión.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Ejemplo 2 — Cambia el invocador</h3>
+
+    <p>Aquí es donde las function normales "cambian de dueño".</p>
+
+    <div class="key-concept">
+      <h4>Función extraída (sin objeto)</h4>
+      <pre><code class="language-javascript">function mostrar() {
+  console.log(this);
+}
+
+mostrar();</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔎 ¿Quién la ejecuta?</h4>
+      <p>Nadie en concreto → llamada directa.</p>
+      <p>En navegador:</p>
+      <p><strong>👉 this === window</strong></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Ahora asigna la función a un objeto</h4>
+      <pre><code class="language-javascript">const objeto = {
+  mostrar: mostrar
+};
+
+objeto.mostrar();</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔎 Ahora ¿quién ejecuta?</h4>
+      <p><strong>objeto</strong></p>
+      <p><strong>👉 this === objeto</strong></p>
+      <p><strong>💡 MISMA FUNCIÓN, distinto this.</strong></p>
+      <p><strong>Esto es lo que más confunde.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Ejemplo 3 — El clásico problema con setTimeout</h3>
+
+    <div class="problem-box">
+      <h4>Function normal dentro de método</h4>
+      <pre><code class="language-javascript">const contador = {
+  numero: 0,
+  incrementar: function () {
+    setTimeout(function () {
+      console.log(this.numero);
+    }, 1000);
+  }
+};
+
+contador.incrementar();</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>🔎 ¿Qué pasa?</h4>
+      <p>La función dentro de <code>setTimeout</code> es normal</p>
+      <p>La ejecuta el sistema (<code>window</code>)</p>
+      <p><strong>👉 this === window</strong></p>
+      <p><strong>Resultado:</strong> <code>undefined</code></p>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔥 Ahora con arrow</h4>
+      <pre><code class="language-javascript">const contador = {
+  numero: 0,
+  incrementar: function () {
+    setTimeout(() => {
+      console.log(this.numero);
+    }, 1000);
+  }
+};
+
+contador.incrementar();</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>🔎 ¿Qué cambia?</h4>
+      <p>Arrow no crea nuevo <code>this</code></p>
+      <p>Hereda el <code>this</code> de <code>incrementar</code></p>
+      <p>Y <code>incrementar</code> fue llamada por <code>contador</code></p>
+      <p><strong>👉 this === contador</strong></p>
+      <p><strong>Resultado:</strong> <code>0</code></p>
+      <p><strong>💡 Este es uno de los usos más importantes de arrow functions.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Ejemplo 4 — Método extraído (confusión real)</h3>
+
+    <div class="problem-box">
+      <h4>Función extraída del objeto</h4>
+      <pre><code class="language-javascript">const usuario = {
+  nombre: "Roge",
+  decirNombre: function () {
+    console.log(this.nombre);
+  }
+};
+
+const fn = usuario.decirNombre;
+
+fn();</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>🔎 ¿Qué pasa?</h4>
+      <p>Ahora no se ejecuta como <code>usuario.decirNombre()</code></p>
+      <p>Se ejecuta como <code>fn()</code></p>
+      <p><strong>👉 this ya no es usuario</strong></p>
+      <p><strong>Resultado:</strong> <code>undefined</code></p>
+      <p><strong>⚠️ Aquí se ve claramente: En funciones normales, this depende de cómo se llama.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>Ejemplo 5 — Arrow dentro de clase (muy importante para React)</h3>
+
+    <div class="key-concept">
+      <h4>Arrow methods en clases</h4>
+      <pre><code class="language-javascript">class Persona {
+  constructor(nombre) {
+    this.nombre = nombre;
+  }
+
+  saludar = () => {
+    console.log(this.nombre);
+  };
+}
+
+const p = new Persona("Roge");
+const fn = p.saludar;
+fn();</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>🔎 ¿Qué pasa?</h4>
+      <p>Arrow guarda el <code>this</code> del constructor</p>
+      <p>No importa cómo la invoques</p>
+      <p><strong>Resultado:</strong> <code>Roge</code></p>
+      <p><strong>🔥 Por eso en React moderno se usan arrow methods.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>🎯 Tabla Comparativa Rápida</h3>
+
+    <div class="key-concept">
+      <h4>Resumen de diferencias</h4>
+      <pre class="diagram-red-small"><strong class="comparison-table-header">                </strong><strong class="comparison-table-regular">Function normal</strong><strong class="comparison-table-header">    </strong><strong class="comparison-table-arrow">Arrow function</strong>
+<strong class="comparison-table-header">¿Tiene propio this?</strong>     <span class="comparison-table-regular">✅ Sí</span>             <span class="comparison-table-arrow">❌ No</span>
+<strong class="comparison-table-header">¿Cuándo se decide?</strong>      <span class="comparison-table-regular">En invocación</span>      <span class="comparison-table-arrow">En definición</span>
+<strong class="comparison-table-header">¿Cambia según llamada?</strong>  <span class="comparison-table-regular">✅ Sí</span>             <span class="comparison-table-arrow">❌ No</span>
+<strong class="comparison-table-header">Ideal para métodos</strong>      <span class="comparison-table-regular">✅</span>                <span class="comparison-table-warning">⚠️ Depende</span>
+<strong class="comparison-table-header">Ideal para callbacks</strong>    <span class="comparison-table-problem">⚠️ Problemas</span>      <span class="comparison-table-success">✅ Perfecto</span></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>📊 Diagrama Mental: Estructura de this</h3>
+
+    <div class="key-concept">
+      <h4>Cómo funciona this en una estructura anidada</h4>
+      <pre class="diagram-red">
+<strong class="label-structure">OBJETO</strong>
+└── <strong class="label-method">método()</strong>  ← <span class="annotation-regular">función NORMAL</span>
+    ├── <strong class="label-this">this = objeto</strong> ✅
+    └── <strong class="label-arrow">arrow()</strong>  ← <span class="annotation-arrow">arrow function</span>
+        └── <strong class="label-inherited">this = (hereda del método)</strong> ✅</pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>📌 Lectura correcta:</h4>
+      <ul>
+        <li>🔵 <code>método()</code> → <code>this</code> = objeto (porque la llamó el objeto)</li>
+        <li>🟡 <code>arrow()</code> → copia el <code>this</code> de <code>método()</code> (porque está dentro)</li>
+      </ul>
+      <p><strong>La arrow NO mira al objeto, mira hacia arriba ⬆️</strong></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Ejemplo visual con resultado</h4>
+      <pre><code class="language-javascript">const handler = {
+  name: "Brais",
+  greeting() {
+    const arrowGreeting = () => {
+      console.log(`Hola, ${this.name}`);
+    };
+    arrowGreeting();
+  }
+};
+
+handler.greeting(); // ✅ Hola, Brais</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>🧪 TEST MENTAL: ¿Cuánto sabes de this?</h3>
+
+    <div class="problem-box">
+      <h4>Pregunta 1️⃣: ¿Cuál es el resultado?</h4>
+      <pre><code class="language-javascript">const obj = {
+  nombre: "Test",
+  metodo: function() {
+    console.log(this.nombre);
+  }
+};
+
+obj.metodo();</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Respuesta 1️⃣:</h4>
+      <p><strong>Output:</strong> <code>Test</code></p>
+      <p><strong>Razón:</strong> obj llama al método → this = obj</p>
+    </div>
+
+    <div class="problem-box">
+      <h4>Pregunta 2️⃣: ¿Cuál es el resultado?</h4>
+      <pre><code class="language-javascript">const obj = {
+  nombre: "Test",
+  metodo: () => {
+    console.log(this.nombre);
+  }
+};
+
+obj.metodo();</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>Respuesta 2️⃣:</h4>
+      <p><strong>Output:</strong> <code>undefined</code></p>
+      <p><strong>Razón:</strong> Arrow hereda this del scope global (no de obj)</p>
+    </div>
+
+    <div class="problem-box">
+      <h4>Pregunta 3️⃣: ¿Cuál es el resultado?</h4>
+      <pre><code class="language-javascript">const obj = {
+  nombre: "Test",
+  metodo: function() {
+    setTimeout(() => {
+      console.log(this.nombre);
+    }, 100);
+  }
+};
+
+obj.metodo();</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Respuesta 3️⃣:</h4>
+      <p><strong>Output:</strong> <code>Test</code></p>
+      <p><strong>Razón:</strong> Arrow dentro de metodo() hereda el this de metodo() que es obj</p>
+      <p><strong>💡 Este es el caso más importante para React</strong></p>
+    </div>
+
+    <div class="problem-box">
+      <h4>Pregunta 4️⃣: ¿Cuál es el resultado?</h4>
+      <pre><code class="language-javascript">const obj = {
+  nombre: "Test",
+  metodo: function() {
+    setTimeout(function() {
+      console.log(this.nombre);
+    }, 100);
+  }
+};
+
+obj.metodo();</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>Respuesta 4️⃣:</h4>
+      <p><strong>Output:</strong> <code>undefined</code></p>
+      <p><strong>Razón:</strong> Función normal en setTimeout la ejecuta el sistema (window), no obj</p>
+    </div>
+
+    <div class="interview-box">
+      <h4>✅ Resumen del Test</h4>
+      <p>Si contestaste 3-4 correctas: <strong>¡Entiendes bien!</strong></p>
+      <p>Si contestaste todas: <strong>¡Eres un maestro de this! 🏆</strong></p>
+      <p>Si te equivocaste: <strong>Repasa las secciones de "Dinámico vs Léxico" 🔄</strong></p>
     </div>
   </article>
 
@@ -88,10 +723,10 @@ myObject.getName(); // "Global Name" (heredado del ámbito exterior)
 
     <div class="key-concept">
       <h4>Dibujito Mental</h4>
-      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #4f46e5; margin: 10px 0;">
-OBJETO
-└── método()  ← función NORMAL
-    └── arrow()  ← arrow function
+      <pre class="diagram-red-small">
+<strong class="label-structure">OBJETO</strong>
+└── <strong class="label-method">método()</strong>  ← <span class="annotation-regular">función NORMAL</span>
+    └── <strong class="label-arrow">arrow()</strong>  ← <span class="annotation-arrow">arrow function</span>
       </pre>
       <p><strong>Lectura correcta:</strong></p>
       <ul>
@@ -211,14 +846,14 @@ team.show(); // "Digital Renewals"</code></pre>
 };
 
 handler.greeting(); // ✅ Hola, Brais</code></pre>
-      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #4f46e5; margin: 10px 0;">
-handler (objeto)
+      <pre class="diagram-red-small">
+<strong class="label-structure">handler</strong> (objeto)
 │
-├─ name: "Brais"
+├─ <strong class="label-structure">name: "Brais"</strong>
 │
-└─ greeting()   ← FUNCIÓN NORMAL
+└─ <strong class="label-method">greeting()</strong>   ← <span class="annotation-regular">FUNCIÓN NORMAL</span>
      │
-     └─ arrowGreeting()  ← ARROW FUNCTION
+     └─ <strong class="label-arrow">arrowGreeting()</strong>  ← <span class="annotation-arrow">ARROW FUNCTION</span>
       </pre>
     </div>
 
@@ -237,10 +872,10 @@ EL OBJETO handler</code></pre>
   // this === handler
 }</code></pre>
       <p><strong>Visualmente:</strong></p>
-      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #4f46e5; margin: 10px 0;">
-greeting scope
+      <pre class="diagram-yellow-small">
+<strong class="flow-label">greeting scope</strong>
 │
-├─ this ─────► handler
+├─ <strong class="flow-arrow">this ─────► handler</strong>
       </pre>
     </div>
 
@@ -257,10 +892,10 @@ greeting scope
       </ul>
       <p><strong>¿Dónde nace?</strong> DENTRO de <code>greeting()</code></p>
       <p>Así que hace esto: <code>arrowGreeting.this = greeting.this</code></p>
-      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #f59e0b; margin: 10px 0;">
-arrowGreeting
+      <pre class="diagram-yellow-small">
+<strong class="flow-label">arrowGreeting</strong>
 │
-└─ this ─────► handler   ✅
+└─ <strong class="label-arrow">this ─────► handler</strong>   ✅
       </pre>
     </div>
 
@@ -276,18 +911,18 @@ arrowGreeting
 
     <div class="key-concept">
       <h4>🎯 ESQUEMA FINAL COMPLETO</h4>
-      <pre style="background: #f8f9fa; padding: 15px; border-left: 4px solid #4f46e5; margin: 10px 0;">
-handler
+      <pre class="diagram-red-small">
+<strong class="label-structure">handler</strong>
 │
-├─ name: "Brais"
+├─ <strong class="label-structure">name: "Brais"</strong>
 │
-└─ greeting()
+└─ <strong class="label-method">greeting()</strong>
      │
-     ├─ this ─────► handler
+     ├─ <strong class="flow-arrow">this ─────► handler</strong>
      │
-     └─ arrowGreeting()
+     └─ <strong class="label-arrow">arrowGreeting()</strong>
           │
-          └─ this (heredado) ─────► handler
+          └─ <strong class="label-arrow">this (heredado) ─────► handler</strong>
       </pre>
     </div>
 
@@ -306,10 +941,10 @@ handler
     console.log(this.name);
   }
 };</code></pre>
-        <pre style="background: #fee2e2; padding: 15px; border-left: 4px solid #dc2626; margin: 10px 0;">
-arrowGreeting
+        <pre class="diagram-red-small">
+<strong class="flow-label">arrowGreeting</strong>
 │
-└─ this ─────► global ❌
+└─ <strong class="flow-arrow">this ─────► global</strong> ❌
         </pre>
       </div>
       <div class="after">
@@ -493,5 +1128,7 @@ account.printOwner(); // "Ada"
     <a href="https://chatgpt.com/c/693f20af-580c-8331-be15-2cf9c56228d9" target="_blank" rel="noopener noreferrer">ChatGPT - Truco Mental this</a>
     <a href="https://chatgpt.com/c/693f245d-5870-8324-ba69-9e6918296764" target="_blank" rel="noopener noreferrer">ChatGPT - Ejercicio Trampa</a>
     <a href="https://chatgpt.com/c/693f2a04-19a0-832e-a5b3-f26360987eb5" target="_blank" rel="noopener noreferrer">ChatGPT - Ejercicios Práctica</a>
+    <a href="https://www.w3schools.com/js/js_this.asp" target="_blank" rel="noopener noreferrer">W3Schools - JavaScript this</a>
+    <a href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/69990994-eeec-8386-ba22-d50b8cf5db6f" target="_blank" rel="noopener noreferrer">ChatGPT - Análisis Completo this</a>
   </div>
 </section>

@@ -16,22 +16,79 @@ console.log(x); // 20 (se sobrescribió)
   </article>
 
   <article>
-    <h3>let</h3>
-    <p><b>let</b> es de bloque y no se puede redeclarar en el mismo scope.</p>
-    <pre><code class="language-javascript">
+    <h3>🔄 let - Variable que se puede reasignar</h3>
+    <div class="key-concept">
+      <h4>let permite declarar una variable cuyo valor puede cambiar:</h4>
+      <pre><code class="language-javascript">
+let edad = 25
+console.log(edad) // 25
+
+// Puedes reasignar el valor
+edad = 26
+console.log(edad) // 26
+
+edad = 27
+console.log(edad) // 27
+      </code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Ejemplo práctico con let</h4>
+      <pre><code class="language-javascript">
+let contador = 0
+console.log(contador) // 0
+
+contador = contador + 1 // Incrementar
+console.log(contador) // 1
+
+contador = contador + 1
+console.log(contador) // 2
+      </code></pre>
+    </div>
+
+    <div class="warning-box">
+      <p><b>let</b> es de bloque y no se puede redeclarar en el mismo scope.</p>
+      <pre><code class="language-javascript">
 let y = 10;
 if (y === 10) {
   let y = 20;
   console.log(y); // 20
 }
 console.log(y); // 10
-    </code></pre>
+      </code></pre>
+    </div>
   </article>
 
   <article>
-    <h3>const</h3>
-    <p><b>const</b> es de bloque y no permite reasignar la referencia. Objetos/arrays sí pueden mutar internamente.</p>
-    <pre><code class="language-javascript">
+    <h3>🔒 const - Variable que NO se puede reasignar</h3>
+    <div class="key-concept">
+      <h4>const declara una variable cuyo valor no puede cambiar (es constante):</h4>
+      <pre><code class="language-javascript">
+const PI = 3.14159
+console.log(PI) // 3.14159
+
+// ❌ Esto causará un error
+PI = 3.14 // TypeError: Assignment to constant variable
+      </code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Ejemplo práctico con const</h4>
+      <pre><code class="language-javascript">
+const nombre = 'Miguel'
+const apellido = 'Ángel'
+
+console.log(nombre) // Miguel
+console.log(apellido) // Ángel
+
+// ❌ Esto causará un error
+nombre = 'Juan' // TypeError: Assignment to constant variable
+      </code></pre>
+    </div>
+
+    <div class="warning-box">
+      <p><b>const</b> es de bloque y no permite reasignar la referencia. Objetos/arrays sí pueden mutar internamente.</p>
+      <pre><code class="language-javascript">
 const z = 10;
 // z = 11; // Error
 
@@ -40,7 +97,56 @@ obj.name = 'Bob'; // ok
 
 const arr = [1, 2];
 arr.push(3); // ok
-    </code></pre>
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>📊 ¿Cuándo usar let y cuándo const?</h3>
+
+    <h4>Usa const cuando:</h4>
+    <div class="key-concept">
+      <ul>
+        <li>El valor no va a cambiar</li>
+        <li>Es un valor constante (PI, configuración, etc.)</li>
+        <li>Quieres evitar reasignaciones accidentales</li>
+      </ul>
+      <pre><code class="language-javascript">
+const MAX_USUARIOS = 100
+const API_URL = 'https://api.ejemplo.com'
+const NOMBRE_APP = 'MiApp'
+      </code></pre>
+    </div>
+
+    <h4>Usa let cuando:</h4>
+    <div class="key-concept">
+      <ul>
+        <li>El valor va a cambiar</li>
+        <li>Necesitas reasignar la variable</li>
+        <li>Es un contador, acumulador, etc.</li>
+      </ul>
+      <pre><code class="language-javascript">
+let contador = 0
+let suma = 0
+let usuarioActual = null
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>🎯 Regla práctica</h3>
+    <div class="solution-box">
+      <p><strong>Usa const por defecto.</strong> Solo cambia a <code>let</code> si descubres que necesitas reasignar el valor.</p>
+      <pre><code class="language-javascript">
+// ✅ Buena práctica: empieza con const
+const nombre = 'Miguel'
+const edad = 25
+
+// Si necesitas cambiar el valor, usa let
+let contador = 0
+contador = contador + 1
+      </code></pre>
+    </div>
   </article>
 
   <article>
@@ -57,5 +163,6 @@ arr.push(3); // ok
     <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const" target="_blank">MDN: const</a>
     <a href="https://www.youtube.com/watch?v=6UAKBYpUC-Y" target="_blank">Var vs let vs const</a>
     <a href="https://chatgpt.com/c/6978e33b-7b4c-832b-8f29-606de7b3facd" target="_blank">ChatGPT: Const Explanation</a>
+    <a href="https://www.jscamp.dev/javascript/tipos-datos-variables" target="_blank">Tipos de Datos y Variables</a>
   </div>
 </section>

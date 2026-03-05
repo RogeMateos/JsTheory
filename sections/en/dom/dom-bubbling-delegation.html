@@ -1,0 +1,325 @@
+<section class="box">
+  <h2>Event Bubbling and Event Delegation</h2>
+  <p class="subtitle">Understanding how events propagate in JavaScript</p>
+
+  <article>
+    <h3>🎯 Simple Definition for Interviews</h3>
+
+    <div class="solution-box">
+      <h4>Event Bubbling (Event Propagation)</h4>
+      <p><strong>When you click on an element, the event travels up through the DOM tree.</strong></p>
+      <p>It's like throwing a stone in a pond: the waves go up from the clicked element toward its parents.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Event Delegation (Event Delegation)</h4>
+      <p><strong>Instead of putting a listener on each element, you put ONE SINGLE listener on the parent and let bubbling tell you which element was clicked.</strong></p>
+      <p>It's like a doorman: instead of having a doorman at each door, you have one at the entrance who says "which door did people enter through".</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>🌊 Event Bubbling (Event Propagation)</h3>
+
+    <div class="key-concept">
+      <h4>What happens when you click?</h4>
+      <p>The event doesn't stay in the element where you clicked. <strong>It travels up toward the parent elements.</strong></p>
+      <pre><code class="language-html">&lt;div class="container"&gt;
+  &lt;button class="button"&gt;Click me&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>Order of bubbling</h4>
+      <p>When you click the button:</p>
+      <pre><code class="language-javascript">1. Click on button
+2. Goes up to div.container
+3. Goes up to body
+4. Goes up to html
+5. Reaches document</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Practical example</h4>
+      <pre><code class="language-javascript">// If you put listeners at all levels:
+
+document.addEventListener('click', () => {
+  console.log('1. document')
+})
+
+document.body.addEventListener('click', () => {
+  console.log('2. body')
+})
+
+document.querySelector('.container').addEventListener('click', () => {
+  console.log('3. container')
+})
+
+document.querySelector('.button').addEventListener('click', () => {
+  console.log('4. button')
+})
+
+// When you click the button, you'll see in console:
+// 4. button
+// 3. container
+// 2. body
+// 1. document</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>⚡ Key point</h4>
+      <p>Bubbling happens <strong>always</strong>, even if there are no listeners above.</p>
+      <p>It's a browser behavior, not a JavaScript behavior.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>🧠 Event Delegation (Event Delegation)</h3>
+
+    <div class="problem-box">
+      <h4>❌ The problem without delegation</h4>
+      <p>Imagine you have a list of 100 buttons:</p>
+      <pre><code class="language-html">&lt;ul class="jobs-list"&gt;
+  &lt;li&gt;&lt;button class="button-apply"&gt;Apply&lt;/button&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;button class="button-apply"&gt;Apply&lt;/button&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;button class="button-apply"&gt;Apply&lt;/button&gt;&lt;/li&gt;
+  &lt;!-- ... 97 more buttons --&gt;
+&lt;/ul&gt;</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>Traditional approach (inefficient)</h4>
+      <pre><code class="language-javascript">const buttons = document.querySelectorAll('.button-apply')
+
+buttons.forEach((button) => {
+  button.addEventListener('click', function () {
+    button.textContent = 'Applied!'
+    button.disabled = true
+  })
+})
+
+// Problem: 100 listeners for 100 buttons
+// And if you dynamically add a new button... it won't have a listener</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Solution: Event Delegation</h4>
+      <p>Instead of listeners on each button, <strong>one single listener on the parent container.</strong></p>
+      <pre><code class="language-javascript">const jobsList = document.querySelector('.jobs-list')
+
+jobsList.addEventListener('click', function (event) {
+  // Find the closest button to the clicked element
+  const button = event.target.closest('.button-apply')
+
+  // If it's not a button, exit
+  if (!button) return
+
+  // If it is a button, do something
+  button.textContent = 'Applied!'
+  button.disabled = true
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>🎯 Why does it work?</h4>
+      <ul>
+        <li>You click on the button</li>
+        <li>The event bubbles up</li>
+        <li>It reaches the container that has the listener</li>
+        <li>The listener asks: "Is it a .button-apply?"</li>
+        <li>If yes → execute the code</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>🧰 Important tools: event.target vs event.currentTarget</h3>
+
+    <div class="key-concept">
+      <h4>What is event.target?</h4>
+      <p><strong>The element where you actually clicked.</strong></p>
+      <pre><code class="language-javascript">&lt;div class="container"&gt;
+  &lt;button class="button"&gt;Click me&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+      <pre><code class="language-javascript">document.querySelector('.container').addEventListener('click', (event) => {
+  console.log(event.target) // ← The button
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>What is event.currentTarget?</h4>
+      <p><strong>The element that has the listener.</strong></p>
+      <pre><code class="language-javascript">document.querySelector('.container').addEventListener('click', (event) => {
+  console.log(event.currentTarget) // ← The container
+})</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>📝 Mental summary</h4>
+      <p><strong>target</strong> = Where you clicked</p>
+      <p><strong>currentTarget</strong> = Where the listener is</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>🎯 .closest() — The key tool for delegation</h3>
+
+    <div class="problem-box">
+      <h4>⚠️ The problem</h4>
+      <p>If the button has an element inside (like a span), event.target will be the span, not the button:</p>
+      <pre><code class="language-html">&lt;button class="button-apply"&gt;
+  &lt;span&gt;Apply&lt;/span&gt;
+&lt;/button&gt;</code></pre>
+      <pre><code class="language-javascript">// If you click on the span:
+event.target // ← It's the &lt;span&gt;, not the &lt;button&gt;
+
+// This fails:
+if (event.target.classList.contains('button-apply')) {
+  // It doesn't enter because event.target is the span
+}</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Solution: .closest()</h4>
+      <p><strong>.closest() travels up the DOM until it finds the element you're looking for.</strong></p>
+      <pre><code class="language-javascript">const button = event.target.closest('.button-apply')
+
+// This works even if you clicked on the span
+// Because .closest() travels up until it finds .button-apply</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>How .closest() works</h4>
+      <pre><code class="language-javascript">event.target = &lt;span&gt;
+     ↓
+.closest('.button-apply')
+     ↓
+Travels up until it finds an element with that class
+     ↓
+Returns &lt;button class="button-apply"&gt;</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>⚡ stopPropagation() — Stop the bubbling</h3>
+
+    <div class="warning-box">
+      <h4>What does it do?</h4>
+      <p><strong>Stops the event from continuing to travel up the DOM.</strong></p>
+      <pre><code class="language-javascript">button.addEventListener('click', (event) => {
+  event.stopPropagation()
+  // The event does NOT continue traveling
+  // The parent's listener does NOT execute
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>✔️ When to use it</h4>
+      <ul>
+        <li>Modals (so they don't close when you click inside)</li>
+        <li>Dropdowns (to keep them open)</li>
+        <li>Isolated components</li>
+      </ul>
+    </div>
+
+    <div class="problem-box">
+      <h4>❌ When to avoid it</h4>
+      <p>If you use stopPropagation() too much, you can break global logic:</p>
+      <pre><code class="language-javascript">// Global listener to close menu
+document.addEventListener('click', closeMenu)
+
+// If you stop bubbling here...
+button.addEventListener('click', (event) => {
+  event.stopPropagation()
+})
+
+// ❌ The global listener never executes</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>🏆 Professional Delegation Pattern</h3>
+
+    <div class="solution-box">
+      <h4>Separate logic</h4>
+      <pre><code class="language-javascript">// 1. Function that handles the logic
+function handleApplyClick(button) {
+  button.textContent = 'Applied!'
+  button.disabled = true
+}
+
+// 2. Delegated listener that uses that function
+const jobsList = document.querySelector('.jobs-list')
+
+jobsList.addEventListener('click', (event) => {
+  const button = event.target.closest('.button-apply')
+  if (!button) return
+
+  handleApplyClick(button)
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Why is it better?</h4>
+      <ul>
+        <li>✅ Cleaner code</li>
+        <li>✅ Easy to test</li>
+        <li>✅ Reusable</li>
+        <li>✅ Maintainable</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>📊 Comparison: When to use what</h3>
+
+    <div class="code-comparison">
+      <div class="before">
+        <h5>🟢 Use Delegation</h5>
+        <ul>
+          <li>Dynamic lists</li>
+          <li>10+ elements</li>
+          <li>Scalable apps</li>
+          <li>UI that changes</li>
+        </ul>
+      </div>
+      <div class="after">
+        <h5>🔵 Use individual listeners</h5>
+        <ul>
+          <li>1–3 elements</li>
+          <li>Static elements</li>
+          <li>Quick prototypes</li>
+          <li>Unique elements</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <article>
+    <h3>💡 Visual Summary</h3>
+
+    <div class="solution-box">
+      <h4>Without delegation</h4>
+      <pre><code>Button 1 → Listener
+Button 2 → Listener
+Button 3 → Listener
+Button 4 → Listener
+...
+Button 100 → Listener</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>With delegation</h4>
+      <pre><code>Container → 1 Listener
+              ↓
+        Decides which button was clicked
+        Executes the logic</code></pre>
+    </div>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events" target="_blank">MDN: Events in JavaScript</a>
+    <a href="https://www.jscamp.dev/javascript/eventos-navegador" target="_blank">Browser Events</a>
+  </div>
+</section>

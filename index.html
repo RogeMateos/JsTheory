@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles-diagrams.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-okaidia.min.css"
@@ -15,10 +16,17 @@
   </head>
   <body>
     <header>
-      <h1 id="title">JS Theory</h1>
-      <div class="language-toggle">
-        <button class="lang-btn active" data-lang="en">English</button>
-        <button class="lang-btn" data-lang="es">Español</button>
+      <div class="header-content">
+        <button class="burger-menu" id="burgerMenu" aria-label="Toggle menu">
+          <span class="burger-line"></span>
+          <span class="burger-line"></span>
+          <span class="burger-line"></span>
+        </button>
+        <h1 id="title">JS Theory</h1>
+        <div class="language-toggle">
+          <button class="lang-btn active" data-lang="en">English</button>
+          <button class="lang-btn" data-lang="es">Español</button>
+        </div>
       </div>
     </header>
 
@@ -339,6 +347,11 @@
               <li>
                 <a href="#" data-section="dom/intro-dom"
                   >Introducción al DOM</a
+                >
+              </li>
+              <li>
+                <a href="#" data-section="dom/dom-bubbling-delegation"
+                  >Delegación de Eventos y Bubbling</a
                 >
               </li>
               <li>
