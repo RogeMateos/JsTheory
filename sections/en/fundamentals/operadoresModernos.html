@@ -1,0 +1,413 @@
+<section class="box">
+  <h2>5 Modern JavaScript Operators</h2>
+  <p class="subtitle">The operators that senior developers use in 2024</p>
+
+  <article>
+    <h3>🎯 The 5 Key Operators</h3>
+
+    <div class="solution-box">
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <tr style="background-color: #f3f4f6;">
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Operator</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">What It Does</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Example</th>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ddd; padding: 10px;"><strong>?.</strong></td>
+          <td style="border: 1px solid #ddd; padding: 10px;">Prevents errors if not exists</td>
+          <td style="border: 1px solid #ddd; padding: 10px;"><code>user?.name</code></td>
+        </tr>
+        <tr style="background-color: #f9fafb;">
+          <td style="border: 1px solid #ddd; padding: 10px;"><strong>??</strong></td>
+          <td style="border: 1px solid #ddd; padding: 10px;">Default value if null/undefined</td>
+          <td style="border: 1px solid #ddd; padding: 10px;"><code>name ?? "Guest"</code></td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ddd; padding: 10px;"><strong>||=</strong></td>
+          <td style="border: 1px solid #ddd; padding: 10px;">Assigns if falsy</td>
+          <td style="border: 1px solid #ddd; padding: 10px;"><code>user ||= "default"</code></td>
+        </tr>
+        <tr style="background-color: #f9fafb;">
+          <td style="border: 1px solid #ddd; padding: 10px;"><strong>&&=</strong></td>
+          <td style="border: 1px solid #ddd; padding: 10px;">Assigns if truthy</td>
+          <td style="border: 1px solid #ddd; padding: 10px;"><code>user &&= true</code></td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ddd; padding: 10px;"><strong>??=</strong></td>
+          <td style="border: 1px solid #ddd; padding: 10px;">Assigns if null/undefined</td>
+          <td style="border: 1px solid #ddd; padding: 10px;"><code>user ??= "default"</code></td>
+        </tr>
+      </table>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣ Optional Chaining (?.)</h3>
+
+    <div class="key-concept">
+      <h4>Mental translation</h4>
+      <p><strong>?. = "if it exists, continue"</strong></p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Basic example</h4>
+      <pre><code class="language-javascript">const user = null
+
+console.log(user?.name)  // undefined (no error)
+
+// Without ?.:
+console.log(user.name)   // ❌ Error: Cannot read properties of null</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Real case</h4>
+      <pre><code class="language-javascript">const username = data?.user?.name
+
+// If data.user.name exists → returns the value
+// If something doesn't exist → returns undefined</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>2️⃣ Nullish Coalescing (??)</h3>
+
+    <div class="key-concept">
+      <h4>Mental translation</h4>
+      <p><strong>?? = "if it's null or undefined, use this"</strong></p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Basic example</h4>
+      <pre><code class="language-javascript">const name = null
+
+console.log(name ?? "Guest")  // "Guest"
+
+const age = 0
+console.log(age ?? 18)        // 0 (because 0 is not null/undefined)</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Real case</h4>
+      <pre><code class="language-javascript">const username = user?.name ?? "Anonymous"
+
+// If user.name exists → uses its value
+// If null/undefined → uses "Anonymous"</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>3️⃣ Logical OR Assignment (||=)</h3>
+
+    <div class="key-concept">
+      <h4>Mental translation</h4>
+      <p><strong>||= = "assign if falsy"</strong></p>
+      <p><strong>Falsy:</strong> false, 0, "", null, undefined</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Basic example</h4>
+      <pre><code class="language-javascript">let username = ""
+
+username ||= "Guest"
+console.log(username)  // "Guest"
+
+// Because "" is falsy</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Long equivalent</h4>
+      <pre><code class="language-javascript">if (!username) {
+  username = "Guest"
+}
+
+// Same result, but ||= is more elegant</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Real case in applications</h4>
+      <pre><code class="language-javascript">let timeout = config.timeout
+
+timeout ||= 3000  // If timeout is 0, "", null → use 3000</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>4️⃣ Logical AND Assignment (&&=)</h3>
+
+    <div class="key-concept">
+      <h4>Mental translation</h4>
+      <p><strong>&&= = "assign only if truthy"</strong></p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Basic example</h4>
+      <pre><code class="language-javascript">let user = { logged: true }
+
+user.logged &&= false
+console.log(user.logged)  // false
+
+// Only assigned because user.logged was true</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Long equivalent</h4>
+      <pre><code class="language-javascript">if (user.logged) {
+  user.logged = false
+}
+
+// Same result, but &&= is more elegant</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Real case</h4>
+      <pre><code class="language-javascript">let isAdmin = user.role === "admin"
+
+isAdmin &&= canManageUsers  // Only changes if admin</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>5️⃣ Nullish Assignment (??=)</h3>
+
+    <div class="key-concept">
+      <h4>Mental translation</h4>
+      <p><strong>??= = "assign if null or undefined"</strong></p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Basic example</h4>
+      <pre><code class="language-javascript">let username = null
+
+username ??= "Guest"
+console.log(username)  // "Guest"
+
+// But look at this:
+let username2 = ""
+
+username2 ??= "Guest"
+console.log(username2)  // ""
+
+// Because "" is NOT null/undefined</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>The key difference</h4>
+      <pre><code class="language-javascript">// ||= assigns if falsy (0, "", null, undefined, false)
+let a = 0
+a ||= 10  // → 10
+
+// ??= assigns ONLY if null/undefined
+let b = 0
+b ??= 10  // → 0</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Real case</h4>
+      <pre><code class="language-javascript">let theme = config.theme
+
+theme ??= "dark"  // Only if not defined</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>📊 Visual Comparison</h3>
+
+    <div class="code-comparison">
+      <div class="before">
+        <h5>||= (Falsy)</h5>
+        <pre><code class="language-javascript">let value = ""
+
+value ||= "default"
+// → "default"
+
+// Because "" is falsy</code></pre>
+      </div>
+      <div class="after">
+        <h5>??= (Null/Undefined)</h5>
+        <pre><code class="language-javascript">let value = ""
+
+value ??= "default"
+// → ""
+
+// Because "" is NOT null</code></pre>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <h4>This is the most common confusion</h4>
+      <p>Remember: <strong>??=</strong> ONLY checks null/undefined</p>
+      <p>While <strong>||=</strong> checks any falsy value</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>💡 Real Example: Modern Code</h3>
+
+    <div class="solution-box">
+      <h4>Typical in React/APIs</h4>
+      <pre><code class="language-javascript">// Get data safely
+const username = data?.user?.name ?? "Guest"
+
+// Set default values
+settings.theme ??= "dark"
+
+// Configure timeouts
+config.timeout ||= 3000
+
+// Change state only if true
+user.isAdmin &&= hasPermission</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Complete mental translation</h4>
+      <pre><code>If data.user.name exists use it
+If not, use "Guest"
+
+If settings.theme doesn't exist use "dark"
+
+If config.timeout is falsy use 3000
+
+If user.isAdmin is true and hasPermission is true → true</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>🎯 When to Use Each One</h3>
+
+    <div class="key-concept">
+      <h4>?. (Optional Chaining)</h4>
+      <ul>
+        <li>Access properties that might not exist</li>
+        <li>Call methods that might not exist</li>
+        <li>Read arrays with indexes that might not exist</li>
+      </ul>
+      <pre><code class="language-javascript">user?.name
+user?.getAge()
+items?.[0]</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>?? (Nullish Coalescing)</h4>
+      <ul>
+        <li>Provide safe default value</li>
+        <li>Differentiate null/undefined from other falsy values</li>
+      </ul>
+      <pre><code class="language-javascript">price ?? 0      // If price is null/undefined
+timeout ?? 5000 // If timeout doesn't exist</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>||= (Logical OR Assignment)</h4>
+      <ul>
+        <li>Initialize variables if empty/false</li>
+        <li>When you want to exclude 0 and "" too</li>
+      </ul>
+      <pre><code class="language-javascript">username ||= "Guest"   // If username is ""
+retries ||= 3          // If retries is 0</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>&&= (Logical AND Assignment)</h4>
+      <ul>
+        <li>Change value only if already true</li>
+        <li>Compact conditional operations</li>
+      </ul>
+      <pre><code class="language-javascript">user.premium &&= checkPayment()
+isValid &&= validateForm()</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>??= (Nullish Assignment)</h4>
+      <ul>
+        <li>Initialize variables that don't exist yet</li>
+        <li>Allow 0, "", false as valid values</li>
+      </ul>
+      <pre><code class="language-javascript">config.theme ??= "dark"
+settings.volume ??= 50</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>⚡ Common Patterns in React</h3>
+
+    <div class="solution-box">
+      <h4>Pattern 1: Safe data with default value</h4>
+      <pre><code class="language-javascript">const avatar = user?.profile?.avatar ?? defaultAvatar</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Pattern 2: Initialize state</h4>
+      <pre><code class="language-javascript">let settings = loadSettings()
+settings.theme ??= "light"
+settings.language ??= "en"</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Pattern 3: Conditional validation</h4>
+      <pre><code class="language-javascript">user.hasPermission &&= validateToken()
+data?.length &&= fetchMore()</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Pattern 4: Safe default values</h4>
+      <pre><code class="language-javascript">const timeout = config?.timeout || 3000
+const theme = user?.settings?.theme ?? "default"</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>✅ Practical Summary</h3>
+
+    <div class="warning-box">
+      <h4>Learn these first:</h4>
+      <ul>
+        <li><strong>?.</strong> → prevents errors</li>
+        <li><strong>??</strong> → safe default value (null/undefined)</li>
+        <li><strong>||</strong> → default value (falsy)</li>
+      </ul>
+      <p>The others (||=, &&=, ??=) are shortcuts for assignments.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>💡 In professional code you'll see more</h4>
+      <ul>
+        <li><strong>?.</strong> - Super common</li>
+        <li><strong>??</strong> - Super common</li>
+        <li><strong>||</strong> - Very common (but try to avoid if you can)</li>
+        <li><strong>||=</strong> - Occasionally</li>
+        <li><strong>&&=</strong> - Rare</li>
+        <li><strong>??=</strong> - Occasionally</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>🚀 Advice for Interviews</h3>
+
+    <div class="solution-box">
+      <h4>If asked about modern operators</h4>
+      <p><strong>Say this:</strong></p>
+      <p>"?. prevents access errors when something might not exist"</p>
+      <p>"?? provides a safe default value for null/undefined"</p>
+      <p>"Assignment operators (||=, &&=, ??=) are shortcuts for conditional operations"</p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Example that impresses in interview</h4>
+      <pre><code class="language-javascript">// Safe and elegant code
+const userPreference = user?.settings?.theme ?? "dark"
+settings.notifications ??= true
+user.isPremium &&= validateSubscription()</code></pre>
+      <p>"I see ?. for safe access, ?? for defaults, and &&= for conditional validation"</p>
+    </div>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining" target="_blank">MDN: Optional Chaining</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing" target="_blank">MDN: Nullish Coalescing</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_AND_assignment" target="_blank">MDN: Logical AND Assignment</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR_assignment" target="_blank">MDN: Logical OR Assignment</a>
+    <a href="https://www.jscamp.dev/javascript/tipos-datos-variables" target="_blank">Data Types and Variables</a>
+  </div>
+</section>
