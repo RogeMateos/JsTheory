@@ -1,0 +1,307 @@
+<section class="box">
+  <h2>Diferencia entre ?. y ?? (Optional Chaining vs Nullish Coalescing)</h2>
+  <p class="subtitle">Dos operadores diferentes que siempre aparecen juntos en JavaScript moderno</p>
+
+  <article>
+    <h3>🎯 Definición Simple para Entrevistas</h3>
+
+    <div class="solution-box">
+      <h4>Optional Chaining (?.)</h4>
+      <p><strong>?. = "si existe, continúa"</strong></p>
+      <p>Evita errores cuando algo podría no existir.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Nullish Coalescing (??)</h4>
+      <p><strong>?? = "si es null o undefined, usa esto"</strong></p>
+      <p>Proporciona un valor por defecto.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣ Optional Chaining (?.)</h3>
+
+    <div class="key-concept">
+      <h4>¿Qué hace?</h4>
+      <p><strong>Evita errores cuando intentas acceder a propiedades que podrían no existir.</strong></p>
+      <pre><code class="language-javascript">const user = null
+
+// Sin ?.:
+console.log(user.name)  // ❌ Error: Cannot read properties of null
+
+// Con ?.:
+console.log(user?.name) // ✅ undefined (sin error)</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Traducción mental</h4>
+      <p>?. = "si existe, accede a ello. Si no existe, devuelve undefined"</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>2️⃣ Nullish Coalescing (??)</h3>
+
+    <div class="key-concept">
+      <h4>¿Qué hace?</h4>
+      <p><strong>Proporciona un valor por defecto cuando algo es null o undefined.</strong></p>
+      <pre><code class="language-javascript">const name = null
+
+console.log(name ?? "Anonymous")  // "Anonymous"
+
+const age = 0
+console.log(age ?? 18)  // 0 (porque 0 no es null/undefined)</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Traducción mental</h4>
+      <p>?? = "si esto es null o undefined, usa el valor de la derecha"</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>📊 Comparación Directa</h3>
+
+    <div class="code-comparison">
+      <div class="before">
+        <h5>Optional Chaining (?.)</h5>
+        <pre><code class="language-javascript">const user = {
+  profile: {
+    name: "Miguel"
+  }
+}
+
+user?.profile?.name
+// → "Miguel"
+
+user?.profile?.city
+// → undefined (sin error)</code></pre>
+      </div>
+      <div class="after">
+        <h5>Nullish Coalescing (??)</h5>
+        <pre><code class="language-javascript">const username = null
+
+username ?? "Guest"
+// → "Guest"
+
+const price = 0
+
+price ?? 100
+// → 0</code></pre>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <h4>Punto clave</h4>
+      <p><strong>?.</strong> evita errores de acceso</p>
+      <p><strong>??</strong> proporciona un valor alternativo</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>🔥 Ejemplo Real: Usado Juntos</h3>
+
+    <div class="solution-box">
+      <h4>El caso más común</h4>
+      <pre><code class="language-javascript">const user = {
+  profile: {
+    name: "Roge"
+  }
+}
+
+const username = user?.profile?.name ?? "Anonymous"
+console.log(username)  // "Roge"</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Cómo JavaScript lo interpreta</h4>
+      <ol>
+        <li>Intenta acceder a user.profile.name</li>
+        <li>Si no existe, devuelve undefined (por el ?.)</li>
+        <li>Entonces ?? comprueba: ¿es undefined?</li>
+        <li>Si es undefined, usa "Anonymous"</li>
+      </ol>
+    </div>
+  </article>
+
+  <article>
+    <h3>⚠️ Cuando Falta Información</h3>
+
+    <div class="problem-box">
+      <h4>Ejemplo cuando user es null</h4>
+      <pre><code class="language-javascript">const user = null
+
+const username = user?.profile?.name ?? "Anonymous"
+console.log(username)  // "Anonymous"</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>¿Por qué funciona?</h4>
+      <pre><code class="language-javascript">user?.profile?.name    // → undefined
+undefined ?? "Anonymous" // → "Anonymous"</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>🚨 Confusión Común: ?? vs ||</h3>
+
+    <div class="warning-box">
+      <h4>No es lo mismo || que ??</h4>
+      <p><strong>||</strong> considera muchos valores como "falsy":</p>
+      <pre><code class="language-javascript">false
+0
+""
+null
+undefined</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Ejemplo con ||</h4>
+      <pre><code class="language-javascript">const price = 0
+
+console.log(price || 10)  // 10
+// ❌ Incorrecto: 0 es un valor válido</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Ejemplo con ??</h4>
+      <pre><code class="language-javascript">const price = 0
+
+console.log(price ?? 10)  // 0
+// ✅ Correcto: 0 no es null/undefined</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚡ Importante</h4>
+      <p><strong>??</strong> solo revisa null y undefined</p>
+      <p><strong>||</strong> revisa cualquier valor falsy</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>💡 Ejemplo Práctico: API Response</h3>
+
+    <div class="solution-box">
+      <h4>Datos de una API que podrían estar incompletos</h4>
+      <pre><code class="language-javascript">const response = {
+  data: {
+    user: {
+      name: "Miguel",
+      profile: {
+        city: "Madrid"
+      }
+    }
+  }
+}
+
+const city = response?.data?.user?.profile?.city ?? "Unknown city"
+console.log(city)  // "Madrid"</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Si faltan datos</h4>
+      <pre><code class="language-javascript">const response = {
+  data: null
+}
+
+const city = response?.data?.user?.profile?.city ?? "Unknown city"
+console.log(city)  // "Unknown city"</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>🎯 Tabla de Decisión Rápida</h3>
+
+    <div class="solution-box">
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <tr style="background-color: #f3f4f6;">
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Situación</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Usa</th>
+          <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Ejemplo</th>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ddd; padding: 10px;">Acceder a propiedad que podría no existir</td>
+          <td style="border: 1px solid #ddd; padding: 10px;"><strong>?.</strong></td>
+          <td style="border: 1px solid #ddd; padding: 10px;"><code>user?.name</code></td>
+        </tr>
+        <tr style="background-color: #f9fafb;">
+          <td style="border: 1px solid #ddd; padding: 10px;">Dar valor por defecto</td>
+          <td style="border: 1px solid #ddd; padding: 10px;"><strong>??</strong></td>
+          <td style="border: 1px solid #ddd; padding: 10px;"><code>name ?? "Guest"</code></td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ddd; padding: 10px;">Acceder seguro + valor por defecto</td>
+          <td style="border: 1px solid #ddd; padding: 10px;"><strong>?. y ??</strong></td>
+          <td style="border: 1px solid #ddd; padding: 10px;"><code>user?.name ?? "Guest"</code></td>
+        </tr>
+      </table>
+    </div>
+  </article>
+
+  <article>
+    <h3>🔥 Muy Común en React</h3>
+
+    <div class="key-concept">
+      <h4>Ejemplo típico en componentes</h4>
+      <pre><code class="language-javascript">// En props que podrían no venir
+const username = props?.user?.name ?? "Anonymous"
+
+// En datos de API
+const avatar = data?.user?.profile?.avatar ?? defaultAvatar
+
+// En objetos opcionales
+const city = user?.address?.city ?? "Unknown"</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <p>Esta combinación es <strong>extremadamente común</strong> en aplicaciones modernas.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>📝 Regla Mental Definitiva</h3>
+
+    <div class="warning-box">
+      <h4>Memoriza esto:</h4>
+      <p><strong>?.</strong> = evita errores (acceso seguro)</p>
+      <p><strong>??</strong> = valor alternativo (por defecto)</p>
+      <p><strong>?. y ??</strong> = acceso seguro + valor por defecto</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Ejemplo completo</h4>
+      <pre><code class="language-javascript">const city = user?.address?.city ?? "Unknown city"
+
+// Traducción:
+// "Si existe user.address.city úsalo,
+//  si no existe usa 'Unknown city'"</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>✅ Conclusión</h3>
+
+    <div class="solution-box">
+      <h4>Dos operadores, dos propósitos</h4>
+      <ul>
+        <li><strong>?.</strong> → Evita que la aplicación se rompa</li>
+        <li><strong>??</strong> → Proporciona un fallback seguro</li>
+      </ul>
+      <p><strong>Juntos son una combinación poderosa para escribir código robusto.</strong></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>💡 Consejo profesional</h4>
+      <p>Esta combinación es uno de los patrones más importantes en JavaScript moderno y React.</p>
+      <p>Verás esto constantemente en código profesional:</p>
+      <pre><code class="language-javascript">data?.user?.profile?.avatar ?? defaultAvatar</code></pre>
+    </div>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Operators/Optional_chaining" target="_blank">MDN: Optional Chaining</a>
+    <a href="https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing" target="_blank">MDN: Nullish Coalescing</a>
+    <a href="https://www.jscamp.dev/javascript/tipos-datos-variables" target="_blank">Tipos de Datos y Variables</a>
+  </div>
+</section>
