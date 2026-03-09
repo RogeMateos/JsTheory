@@ -1,0 +1,263 @@
+<section class="box">
+  <h2>Optional Chaining (?.)</h2>
+  <p class="subtitle">Safely access properties that might not exist</p>
+
+  <article>
+    <h3>🎯 Simple Definition for Interviews</h3>
+
+    <div class="solution-box">
+      <h4>Optional Chaining (?.)</h4>
+      <p><strong>The ?. operator means: "Only access this if it exists"</strong></p>
+      <p>Prevents errors when trying to access properties of null or undefined.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>❌ The Problem It Solves</h3>
+
+    <div class="problem-box">
+      <h4>When the element doesn't exist</h4>
+      <p>Imagine you're searching for a button in the DOM:</p>
+      <pre><code class="language-javascript">const button = document.querySelector('#important-button')
+button.addEventListener('click', () => {
+  console.log('Click')
+})</code></pre>
+      <p>If that button doesn't exist in the HTML:</p>
+      <pre><code class="language-javascript">button = null
+
+// JavaScript tries to execute:
+null.addEventListener()
+
+// ❌ Error:
+// Uncaught TypeError: Cannot read properties of null</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>The application breaks 💥</h4>
+      <p>If you try to access a property of null or undefined, JavaScript throws an error and the code stops.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>📖 Classic Solution (Before ES2020)</h3>
+
+    <div class="warning-box">
+      <h4>Check with if</h4>
+      <p>You had to validate first if it exists:</p>
+      <pre><code class="language-javascript">const button = document.querySelector('#important-button')
+
+if (button) {
+  button.addEventListener('click', () => {
+    console.log('Click')
+  })
+}</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>What does it mean?</h4>
+      <ul>
+        <li>If button exists → execute the code</li>
+        <li>If button is null → do nothing</li>
+      </ul>
+      <p><strong>It works, but generates a lot of repeated code.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>✅ The Modern Solution: Optional Chaining</h3>
+
+    <div class="solution-box">
+      <h4>The ?. operator</h4>
+      <p>Simply add <strong>?.</strong> before accessing the property:</p>
+      <pre><code class="language-javascript">const button = document.querySelector('#important-button')
+
+button?.addEventListener('click', () => {
+  console.log('Click')
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>What does it do?</h4>
+      <ul>
+        <li>If button exists → executes addEventListener</li>
+        <li>If button is null → does nothing and no error</li>
+      </ul>
+      <p><strong>✨ Same result, much less code.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>📊 Comparison: Without vs With Optional Chaining</h3>
+
+    <div class="code-comparison">
+      <div class="before">
+        <h5>❌ Without Optional Chaining</h5>
+        <pre><code class="language-javascript">const button = document.querySelector('#btn')
+
+if (button) {
+  button.addEventListener('click', handler)
+}</code></pre>
+      </div>
+      <div class="after">
+        <h5>✅ With Optional Chaining</h5>
+        <pre><code class="language-javascript">const button = document.querySelector('#btn')
+
+button?.addEventListener('click', handler)</code></pre>
+      </div>
+    </div>
+
+    <div class="solution-box">
+      <p><strong>Same result, fewer lines, more readable.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>🔍 Also Works with Properties</h3>
+
+    <div class="key-concept">
+      <h4>Safely access object properties</h4>
+      <pre><code class="language-javascript">const button = document.querySelector('#important-button')
+
+console.log(button?.textContent)  // Button text
+console.log(button?.id)           // Button ID
+console.log(button?.disabled)     // If it's disabled</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>If the button doesn't exist</h4>
+      <p>Returns <code>undefined</code> without error.</p>
+      <p><strong>The application does NOT break.</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>⛓️ Chaining (Very Powerful)</h3>
+
+    <div class="key-concept">
+      <h4>You can use ?. multiple times</h4>
+      <pre><code class="language-javascript">const container = document.querySelector('#container')
+
+const width = container?.firstChild?.getBoundingClientRect()?.width</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>What does it mean?</h4>
+      <ol>
+        <li>If container exists</li>
+        <li>And firstChild exists</li>
+        <li>And getBoundingClientRect() exists</li>
+        <li>→ return width</li>
+      </ol>
+      <p>If something doesn't exist → returns <code>undefined</code> without errors.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>💡 Practical Example: API Response</h3>
+
+    <div class="key-concept">
+      <h4>API data that might not exist</h4>
+      <pre><code class="language-javascript">const response = {
+  data: {
+    user: {
+      name: 'Miguel',
+      profile: {
+        city: 'Madrid'
+      }
+    }
+  }
+}
+
+// Without optional chaining (dangerous):
+console.log(response.data.user.profile.city)  // ✅ 'Madrid'
+
+// If profile doesn't exist:
+console.log(response.data.user.profile.city)  // ❌ Error</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>With optional chaining (safe)</h4>
+      <pre><code class="language-javascript">// Safe even if some level doesn't exist:
+console.log(response.data?.user?.profile?.city)  // ✅ 'Madrid' or undefined</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>🎯 Simple Mental Rule</h3>
+
+    <div class="warning-box">
+      <h4>?. = "only if it exists"</h4>
+      <p><strong>When you see ?., think: "Only access if this exists"</strong></p>
+      <pre><code class="language-javascript">user?.address?.city
+
+// Means:
+"Give me the city only if user and address exist"</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>🔥 Where You'll See It (Very Common)</h3>
+
+    <div class="key-concept">
+      <h4>Places where optional chaining appears:</h4>
+      <ul>
+        <li><strong>DOM:</strong> Selecting elements that might not exist</li>
+        <li><strong>APIs:</strong> Data that might be incomplete</li>
+        <li><strong>React:</strong> Props that might be undefined</li>
+        <li><strong>Objects:</strong> Optional properties</li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>Typical example in React:</h4>
+      <pre><code class="language-javascript">// Get user name from props:
+console.log(props?.user?.profile?.name)</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>⚡ Optional Chaining with Arrays</h3>
+
+    <div class="key-concept">
+      <h4>Also works with indexes</h4>
+      <pre><code class="language-javascript">const items = [
+  { name: 'Item 1' },
+  { name: 'Item 2' }
+]
+
+// Safe:
+console.log(items?.[0]?.name)   // 'Item 1'
+console.log(items?.[5]?.name)   // undefined (no error)</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <p>If <code>items</code> doesn't exist or doesn't have that index → <code>undefined</code> without error.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>✅ Conclusion</h3>
+
+    <div class="solution-box">
+      <h4>?. prevents errors when something might be null or undefined</h4>
+      <p><strong>It allows you to write code that is:</strong></p>
+      <ul>
+        <li>✅ Safer (no unexpected errors)</li>
+        <li>✅ Shorter (less if/else)</li>
+        <li>✅ More readable (clear intent)</li>
+      </ul>
+    </div>
+
+    <div class="key-concept">
+      <h4>📝 Visual summary</h4>
+      <pre><code>Without ?. :  if (obj) { ... }
+With ?. :  obj?.property</code></pre>
+    </div>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining" target="_blank">MDN: Optional Chaining</a>
+    <a href="https://www.jscamp.dev/javascript/tipos-datos-variables" target="_blank">Data Types and Variables</a>
+  </div>
+</section>
