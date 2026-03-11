@@ -1,0 +1,426 @@
+<section class="box">
+  <h2>data-* Attributes in HTML and JavaScript</h2>
+  <p class="subtitle">Store custom information in HTML elements that JavaScript can easily read</p>
+
+  <article>
+    <h3>🎯 Simple Definition for Interviews</h3>
+
+    <div class="solution-box">
+      <h4>What are data-* attributes?</h4>
+      <p><strong>data-* attributes allow you to store custom information within HTML that JavaScript can easily access.</strong></p>
+      <p>They don't display on the page, but JavaScript can access them using the <code>dataset</code> property.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>💡 Key Concept</h3>
+
+    <div class="key-concept">
+      <h4>Think of them as small hidden information labels in HTML</h4>
+      <p>HTML → stores data</p>
+      <p>JavaScript → reads it with <code>dataset</code></p>
+    </div>
+
+    <div class="solution-box">
+      <h4>They're commonly used for:</h4>
+      <ul>
+        <li><strong>Filters:</strong> Store categories to filter elements</li>
+        <li><strong>Modals:</strong> Store information about which modal to open</li>
+        <li><strong>UI Components:</strong> Store component states or IDs</li>
+        <li><strong>Dynamic Lists:</strong> Store user IDs, product IDs, etc.</li>
+        <li><strong>Frameworks:</strong> React, Vue, Angular use them internally</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣ What are data-* Attributes</h3>
+
+    <div class="key-concept">
+      <h4>Syntax in HTML</h4>
+      <p>data-* attributes have this structure:</p>
+      <pre><code class="language-markup">&lt;div data-name="Miguel" data-age="25"&gt;&lt;/div&gt;</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Here the div stores two pieces of data:</h4>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <tr style="border-bottom: 1px solid #ccc;">
+          <th style="text-align: left; padding: 10px;">Attribute</th>
+          <th style="text-align: left; padding: 10px;">Value</th>
+        </tr>
+        <tr style="border-bottom: 1px solid #ccc;">
+          <td style="padding: 10px;">data-name</td>
+          <td style="padding: 10px;">Miguel</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px;">data-age</td>
+          <td style="padding: 10px;">25</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="key-concept">
+      <h4>Important rules</h4>
+      <ul>
+        <li>Always start with <strong>data-</strong></li>
+        <li>After that, you can use any name (kebab-case)</li>
+        <li>Values are always strings in HTML</li>
+        <li>They don't display visually on the page</li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>2️⃣ How to Read data-* in JavaScript</h3>
+
+    <div class="solution-box">
+      <h4>Using the <code>dataset</code> property (modern way)</h4>
+      <p>JavaScript has a special property called <code>dataset</code> that automatically converts data-* attributes into properties.</p>
+      <pre><code class="language-javascript">const div = document.querySelector('div')
+
+console.log(div.dataset.name)  // "Miguel"
+console.log(div.dataset.age)   // "25"</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>What happens internally</h4>
+      <p><strong>HTML:</strong> <code>data-name="Miguel"</code></p>
+      <p><strong>JavaScript:</strong> <code>element.dataset.name</code></p>
+      <p>⚠️ Notice that the <code>data-</code> prefix is removed</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>3️⃣ Alternative: getAttribute</h3>
+
+    <div class="key-concept">
+      <h4>We can also read attributes using getAttribute</h4>
+      <p>This method works for any attribute (not just data-*):</p>
+      <pre><code class="language-javascript">const div = document.querySelector('div')
+
+console.log(div.getAttribute('data-name'))  // "Miguel"
+console.log(div.getAttribute('data-age'))   // "25"</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Method comparison</h4>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <tr style="border-bottom: 1px solid #ccc;">
+          <th style="text-align: left; padding: 10px;">Method</th>
+          <th style="text-align: left; padding: 10px;">How it works</th>
+        </tr>
+        <tr style="border-bottom: 1px solid #ccc;">
+          <td style="padding: 10px;"><strong>dataset</strong></td>
+          <td style="padding: 10px;">Modern and more convenient way</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px;"><strong>getAttribute</strong></td>
+          <td style="padding: 10px;">Generic way for any attribute</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="solution-box">
+      <p><strong>In modern JavaScript, we typically use: <code>dataset</code></strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>4️⃣ Real Example: Filtering a Job Listings</h3>
+
+    <div class="key-concept">
+      <h4>Practical use case</h4>
+      <p>Imagine a website with job offers where we want to filter by work mode (remote, in-office, by city).</p>
+      <p>We store this information in <code>data-modality</code>.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>5️⃣ HTML of Job Listings</h3>
+
+    <div class="solution-box">
+      <h4>HTML structure</h4>
+      <pre><code class="language-markup">&lt;div class="jobs-listings"&gt;
+  &lt;article data-technology="react" data-modality="remote" class="job-listing-card"&gt;
+    &lt;h4&gt;React Developer&lt;/h4&gt;
+    &lt;p&gt;Remote work&lt;/p&gt;
+  &lt;/article&gt;
+
+  &lt;article data-modality="cdmx" class="job-listing-card"&gt;
+    &lt;h4&gt;Frontend Developer&lt;/h4&gt;
+    &lt;p&gt;In-office in Mexico City&lt;/p&gt;
+  &lt;/article&gt;
+
+  &lt;article data-modality="guadalajara" class="job-listing-card"&gt;
+    &lt;h4&gt;Full Stack Developer&lt;/h4&gt;
+    &lt;p&gt;In-office in Guadalajara&lt;/p&gt;
+  &lt;/article&gt;
+
+  &lt;article data-modality="remote" class="job-listing-card"&gt;
+    &lt;h4&gt;Node.js Developer&lt;/h4&gt;
+    &lt;p&gt;Remote work&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/div&gt;</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Each job offer stores its modality in:</h4>
+      <p><code>data-modality</code></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>6️⃣ Select for Filtering</h3>
+
+    <div class="solution-box">
+      <h4>Select element with options</h4>
+      <pre><code class="language-markup">&lt;select id="filter-modality"&gt;
+  &lt;option value=""&gt;All&lt;/option&gt;
+  &lt;option value="remote"&gt;Remote&lt;/option&gt;
+  &lt;option value="cdmx"&gt;Mexico City&lt;/option&gt;
+  &lt;option value="guadalajara"&gt;Guadalajara&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>7️⃣ JavaScript to Filter Jobs</h3>
+
+    <div class="solution-box">
+      <h4>Filtering code</h4>
+      <pre><code class="language-javascript">const filter = document.querySelector('#filter-modality')
+const jobs = document.querySelectorAll('.job-listing-card')
+
+filter.addEventListener('change', function () {
+  const selectedValue = filter.value
+
+  jobs.forEach((job) => {
+    const modality = job.dataset.modality
+
+    if (selectedValue === '' || selectedValue === modality) {
+      job.style.display = 'flex'
+    } else {
+      job.style.display = 'none'
+    }
+  })
+})</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>8️⃣ How the Code Works</h3>
+
+    <div class="key-concept">
+      <h4>Step by step</h4>
+      <ol>
+        <li><strong>Listen for select change</strong>
+          <p><code>filter.addEventListener('change')</code> - When the user changes the filter</p>
+        </li>
+        <li><strong>Get the selected value</strong>
+          <p><code>const selectedValue = filter.value</code> - For example: "remote"</p>
+        </li>
+        <li><strong>Loop through all jobs</strong>
+          <p><code>jobs.forEach(job => {})</code></p>
+        </li>
+        <li><strong>Read the data-modality attribute</strong>
+          <p><code>const modality = job.dataset.modality</code> - For example: "remote"</p>
+        </li>
+        <li><strong>Compare values</strong>
+          <p><code>selectedValue === modality</code> - Do they match?</p>
+        </li>
+        <li><strong>Show / hide</strong>
+          <p>Show: <code>job.style.display = 'flex'</code></p>
+          <p>Hide: <code>job.style.display = 'none'</code></p>
+        </li>
+      </ol>
+    </div>
+  </article>
+
+  <article>
+    <h3>9️⃣ Why We Use selectedValue === ''</h3>
+
+    <div class="solution-box">
+      <h4>The special case: "All"</h4>
+      <p>When the user selects the "All" option, the select's value is an empty string: <code>''</code></p>
+      <p>Then we show all the jobs.</p>
+      <pre><code class="language-javascript">if (selectedValue === '' || selectedValue === modality) {
+  // If empty OR matches → show
+}</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>🔟 Mental Example (Very Important)</h3>
+
+    <div class="key-concept">
+      <h4>Imagine the user selects: "remote"</h4>
+      <p>Then the code does this:</p>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <tr style="border-bottom: 1px solid #ccc;">
+          <th style="text-align: left; padding: 10px;">Job</th>
+          <th style="text-align: left; padding: 10px;">data-modality</th>
+          <th style="text-align: left; padding: 10px;">Show?</th>
+        </tr>
+        <tr style="border-bottom: 1px solid #ccc;">
+          <td style="padding: 10px;">job1</td>
+          <td style="padding: 10px;">remote</td>
+          <td style="padding: 10px;">✅</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #ccc;">
+          <td style="padding: 10px;">job2</td>
+          <td style="padding: 10px;">cdmx</td>
+          <td style="padding: 10px;">❌</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #ccc;">
+          <td style="padding: 10px;">job3</td>
+          <td style="padding: 10px;">guadalajara</td>
+          <td style="padding: 10px;">❌</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px;">job4</td>
+          <td style="padding: 10px;">remote</td>
+          <td style="padding: 10px;">✅</td>
+        </tr>
+      </table>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣1️⃣ When to Use data-* (Very Common in Front-end)</h3>
+
+    <div class="solution-box">
+      <h4>They're used extensively in:</h4>
+      <ul>
+        <li><strong>UI Components:</strong> <code>data-id</code>, <code>data-user</code>, <code>data-state</code></li>
+        <li><strong>Tracking:</strong> <code>data-analytics</code>, <code>data-event</code></li>
+        <li><strong>Filters:</strong> <code>data-category</code>, <code>data-modality</code></li>
+        <li><strong>React / Frameworks:</strong> Many libraries use them internally</li>
+      </ul>
+    </div>
+
+    <div class="key-concept">
+      <h4>Example in a shopping cart</h4>
+      <pre><code class="language-markup">&lt;button data-product-id="123" data-price="29.99" class="add-to-cart"&gt;
+  Add to Cart
+&lt;/button&gt;</code></pre>
+      <pre><code class="language-javascript">document.querySelector('.add-to-cart').addEventListener('click', (e) => {
+  const productId = e.target.dataset.productId
+  const price = e.target.dataset.price
+  // Add to cart...
+})</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣2️⃣ Easy Mental Rule</h3>
+
+    <div class="warning-box">
+      <h4>Think of it this way:</h4>
+      <p><strong>HTML stores data → JavaScript reads it</strong></p>
+      <p style="text-align: center; font-size: 1.2em; margin-top: 10px;">
+        HTML<br/>
+        <code>data-modality="remote"</code><br/>
+        ↓<br/>
+        JS<br/>
+        <code>element.dataset.modality</code>
+      </p>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣3️⃣ Quick Exercise (Very Good for Learning)</h3>
+
+    <div class="solution-box">
+      <h4>Create buttons that change a div's color</h4>
+      <h5>HTML:</h5>
+      <pre><code class="language-markup">&lt;button data-color="red"&gt;Red&lt;/button&gt;
+&lt;button data-color="blue"&gt;Blue&lt;/button&gt;
+&lt;button data-color="green"&gt;Green&lt;/button&gt;
+
+&lt;div id="box" style="width: 100px; height: 100px; background: gray;"&gt;&lt;/div&gt;</code></pre>
+      <h5>JavaScript:</h5>
+      <pre><code class="language-javascript">const buttons = document.querySelectorAll('button')
+const box = document.querySelector('#box')
+
+buttons.forEach(button => {
+  button.addEventListener('click', () => {
+    const color = button.dataset.color
+    box.style.backgroundColor = color
+  })
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>How does it work?</h4>
+      <ol>
+        <li>Each button has a different <code>data-color</code></li>
+        <li>When you click, the <code>dataset.color</code> is read</li>
+        <li>The color is applied to the div</li>
+      </ol>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣4️⃣ data-* with Complex Attributes</h3>
+
+    <div class="key-concept">
+      <h4>You can store multiple pieces of data in one element</h4>
+      <pre><code class="language-markup">&lt;div
+  data-user-id="42"
+  data-user-name="Juan"
+  data-user-role="admin"
+  data-user-status="active"
+  class="user-card"
+&gt;
+  User Profile
+&lt;/div&gt;</code></pre>
+      <pre><code class="language-javascript">const card = document.querySelector('.user-card')
+
+console.log(card.dataset.userId)     // "42"
+console.log(card.dataset.userName)   // "Juan"
+console.log(card.dataset.userRole)   // "admin"
+console.log(card.dataset.userStatus) // "active"</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>⚠️ Important: Names in camelCase</h4>
+      <p>In HTML you use: <code>data-user-id</code></p>
+      <p>In JavaScript it becomes: <code>dataset.userId</code> (camelCase)</p>
+      <p>Hyphens are converted to uppercase letters.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣5️⃣ Conclusion</h3>
+
+    <div class="solution-box">
+      <h4>✅ data-* attributes are perfect for:</h4>
+      <ul>
+        <li>✅ Storing information in HTML elements</li>
+        <li>✅ JavaScript easily accessing that information</li>
+        <li>✅ Creating filters, modals, dynamic components</li>
+        <li>✅ Cleaner and more maintainable code</li>
+      </ul>
+    </div>
+
+    <div class="key-concept">
+      <h4>📝 Visual Summary</h4>
+      <pre><code>HTML:  &lt;div data-id="123"&gt;&lt;/div&gt;
+JS:    element.dataset.id  // "123"</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>💡 Remember</h4>
+      <p><strong>data-* is the standard way to store custom data in HTML.</strong></p>
+      <p>You'll see it in almost every professional front-end project.</p>
+    </div>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes" target="_blank">MDN: Using data attributes</a>
+    <a href="https://www.w3.org/TR/html5/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes" target="_blank">W3C: Data Attributes Spec</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset" target="_blank">MDN: HTMLElement.dataset</a>
+  </div>
+</section>
