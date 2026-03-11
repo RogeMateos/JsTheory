@@ -1,0 +1,495 @@
+<section class="box">
+  <h2>Applying CSS Classes Dynamically with JavaScript</h2>
+  <p class="subtitle">Change element appearance by manipulating classes instead of inline styles</p>
+
+  <article>
+    <h3>🎯 Simple Definition for Interviews</h3>
+
+    <div class="solution-box">
+      <h4>What's the main idea?</h4>
+      <p><strong>Use JavaScript to add or remove CSS classes instead of modifying styles directly.</strong></p>
+      <p>This way, CSS handles the "how it looks" and JavaScript handles the "when to change".</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>💡 Key Concept: Separation of Concerns</h3>
+
+    <div class="key-concept">
+      <h4>Don't do this ❌</h4>
+      <pre><code class="language-javascript">job.style.display = 'none'
+job.style.display = 'flex'</code></pre>
+      <p>Here you're mixing CSS and JavaScript logic. It's hard to maintain.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Do this instead ✅</h4>
+      <pre><code class="language-javascript">job.classList.add('is-hidden')</code></pre>
+      <p>JavaScript decides <strong>when</strong> to change, CSS defines <strong>how</strong> it looks.</p>
+    </div>
+
+    <div class="key-concept">
+      <h4>The mental rule</h4>
+      <p>CSS = appearance</p>
+      <p>JavaScript = behavior</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣ Why You Shouldn't Use .style Directly</h3>
+
+    <div class="problem-box">
+      <h4>Non-recommended example</h4>
+      <pre><code class="language-javascript">job.style.display = 'none'  // hide
+job.style.display = 'flex'  // show</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Problems with this approach</h4>
+      <ul>
+        <li>Mixes concerns (logic and presentation)</li>
+        <li>Less maintainable (changing CSS means changing JS)</li>
+        <li>Harder to scale to large projects</li>
+        <li>More repetitive</li>
+        <li>Less readable</li>
+      </ul>
+    </div>
+
+    <div class="solution-box">
+      <h4>Better approach</h4>
+      <p>Define a class in CSS:</p>
+      <pre><code class="language-css">.is-hidden {
+  display: none;
+}</code></pre>
+      <p>Then add or remove that class from JavaScript.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>2️⃣ Defining a CSS Class to Hide Elements</h3>
+
+    <div class="solution-box">
+      <h4>Create a reusable class</h4>
+      <pre><code class="language-css">.is-hidden {
+  display: none;
+}</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>What do we gain?</h4>
+      <p>Now any element with that class will be hidden:</p>
+      <pre><code class="language-markup">&lt;div class="job is-hidden"&gt;Hidden offer&lt;/div&gt;</code></pre>
+      <p>Remove the class and the element shows again.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>3️⃣ Using classList</h3>
+
+    <div class="solution-box">
+      <h4>The classList property</h4>
+      <p>classList lets us manipulate an element's classes easily.</p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Most important methods</h4>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <tr style="border-bottom: 1px solid #ccc;">
+          <th style="text-align: left; padding: 10px;">Method</th>
+          <th style="text-align: left; padding: 10px;">What it does</th>
+        </tr>
+        <tr style="border-bottom: 1px solid #ccc;">
+          <td style="padding: 10px;"><code>add()</code></td>
+          <td style="padding: 10px;">Adds a class</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #ccc;">
+          <td style="padding: 10px;"><code>remove()</code></td>
+          <td style="padding: 10px;">Removes a class</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #ccc;">
+          <td style="padding: 10px;"><code>toggle()</code></td>
+          <td style="padding: 10px;">Adds or removes based on existence</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #ccc;">
+          <td style="padding: 10px;"><code>contains()</code></td>
+          <td style="padding: 10px;">Checks if it exists</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px;"><code>replace()</code></td>
+          <td style="padding: 10px;">Replaces one class with another</td>
+        </tr>
+      </table>
+    </div>
+  </article>
+
+  <article>
+    <h3>4️⃣ Real Example: Filtering Job Listings</h3>
+
+    <div class="key-concept">
+      <h4>The scenario</h4>
+      <p>You have several job offers, each with a data-modality attribute:</p>
+      <pre><code class="language-markup">&lt;div class="job" data-modality="remote"&gt;Frontend Developer&lt;/div&gt;
+&lt;div class="job" data-modality="hybrid"&gt;React Developer&lt;/div&gt;
+&lt;div class="job" data-modality="in-office"&gt;UI Developer&lt;/div&gt;</code></pre>
+      <p>The user selects a filter:</p>
+      <pre><code class="language-javascript">const selectedValue = 'remote'</code></pre>
+      <p>We want to show only the offers that match the selected modality.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>5️⃣ Solution with add() and remove()</h3>
+
+    <div class="solution-box">
+      <h4>Complete code</h4>
+      <pre><code class="language-javascript">jobs.forEach((job) => {
+  const modality = job.getAttribute('data-modality')
+  const isShown = selectedValue === '' || selectedValue === modality
+
+  if (isShown) {
+    job.classList.remove('is-hidden')
+  } else {
+    job.classList.add('is-hidden')
+  }
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Step-by-step explanation</h4>
+      <ol>
+        <li><strong>Loop through each offer</strong>
+          <p><code>jobs.forEach((job) => {})</code> - Iterate over each element</p>
+        </li>
+        <li><strong>Read its data-modality</strong>
+          <p><code>const modality = job.getAttribute('data-modality')</code> - Returns "remote", "hybrid", "in-office"</p>
+        </li>
+        <li><strong>Calculate if it should be shown</strong>
+          <p><code>const isShown = selectedValue === '' || selectedValue === modality</code></p>
+          <p>If no filter → show all</p>
+          <p>If matches → show</p>
+          <p>If doesn't match → hide</p>
+        </li>
+        <li><strong>Add or remove the class</strong>
+          <p>If should show → <code>classList.remove('is-hidden')</code></p>
+          <p>If should hide → <code>classList.add('is-hidden')</code></p>
+        </li>
+      </ol>
+    </div>
+  </article>
+
+  <article>
+    <h3>6️⃣ More Elegant Solution with toggle()</h3>
+
+    <div class="solution-box">
+      <h4>Same logic, more compact</h4>
+      <pre><code class="language-javascript">jobs.forEach((job) => {
+  const modality = job.getAttribute('data-modality')
+  const isShown = selectedValue === '' || selectedValue === modality
+
+  job.classList.toggle('is-hidden', !isShown)
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Very important: What does toggle() do with a second parameter?</h4>
+      <pre><code class="language-javascript">job.classList.toggle('is-hidden', !isShown)</code></pre>
+      <p><strong>If the second parameter is true → adds the class</strong></p>
+      <p><strong>If the second parameter is false → removes the class</strong></p>
+    </div>
+
+    <div class="warning-box">
+      <h4>Why do we use !isShown?</h4>
+      <p><code>isShown</code> = "Should it be shown?"</p>
+      <p><code>is-hidden</code> = "Should it be hidden?"</p>
+      <p>One means show and the other hide, they're opposite. That's why we negate with <code>!</code></p>
+    </div>
+
+    <div class="key-concept">
+      <h4>Mental translation</h4>
+      <p><strong>If should be shown:</strong></p>
+      <p>isShown = true</p>
+      <p>!isShown = false</p>
+      <p><code>job.classList.toggle('is-hidden', false)</code> → <strong>removes is-hidden</strong></p>
+      <br/>
+      <p><strong>If should not be shown:</strong></p>
+      <p>isShown = false</p>
+      <p>!isShown = true</p>
+      <p><code>job.classList.toggle('is-hidden', true)</code> → <strong>adds is-hidden</strong></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>7️⃣ Advantages of Using Classes Instead of style</h3>
+
+    <div class="solution-box">
+      <h4>1. Separation of concerns</h4>
+      <p>CSS decides <strong>how</strong> something looks</p>
+      <p>JavaScript decides <strong>when</strong> to change it</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>2. Easier to maintain</h4>
+      <p>If tomorrow you want to change how elements are hidden:</p>
+      <pre><code class="language-css">.is-hidden {
+  visibility: hidden;
+  opacity: 0;
+}</code></pre>
+      <p>You only touch CSS. No need to modify JavaScript.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>3. Cleaner code</h4>
+      <p><strong>With classes:</strong> <code>job.classList.add('is-hidden')</code></p>
+      <p><strong>With styles:</strong> <code>job.style.display = 'none'</code></p>
+      <p>The first expresses intent more clearly.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>4. Reusability</h4>
+      <p>The <code>.is-hidden</code> class can be used anywhere in the project.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>8️⃣ Other Useful classList Methods</h3>
+
+    <div class="solution-box">
+      <h4>contains() - Check if element has a class</h4>
+      <pre><code class="language-javascript">if (job.classList.contains('is-hidden')) {
+  console.log('The element is hidden')
+}</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>replace() - Replace one class with another</h4>
+      <pre><code class="language-javascript">job.classList.replace('is-hidden', 'is-visible')</code></pre>
+      <p>Useful when only one of the two should exist.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Add multiple classes at once</h4>
+      <pre><code class="language-javascript">job.classList.add('featured', 'highlighted', 'premium')</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>Remove multiple classes at once</h4>
+      <pre><code class="language-javascript">job.classList.remove('featured', 'highlighted', 'premium')</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>9️⃣ Complete and Realistic Example</h3>
+
+    <div class="solution-box">
+      <h4>HTML</h4>
+      <pre><code class="language-markup">&lt;select id="filter"&gt;
+  &lt;option value=""&gt;All&lt;/option&gt;
+  &lt;option value="remote"&gt;Remote&lt;/option&gt;
+  &lt;option value="hybrid"&gt;Hybrid&lt;/option&gt;
+  &lt;option value="in-office"&gt;In-Office&lt;/option&gt;
+&lt;/select&gt;
+
+&lt;div class="job-list"&gt;
+  &lt;div class="job" data-modality="remote"&gt;Frontend Developer&lt;/div&gt;
+  &lt;div class="job" data-modality="hybrid"&gt;React Developer&lt;/div&gt;
+  &lt;div class="job" data-modality="in-office"&gt;UI Developer&lt;/div&gt;
+  &lt;div class="job" data-modality="remote"&gt;JavaScript Engineer&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+      <h4>CSS</h4>
+      <pre><code class="language-css">.is-hidden {
+  display: none;
+}</code></pre>
+
+      <h4>JavaScript</h4>
+      <pre><code class="language-javascript">const filter = document.querySelector('#filter')
+const jobs = document.querySelectorAll('.job')
+
+filter.addEventListener('change', () => {
+  const selectedValue = filter.value
+
+  jobs.forEach((job) => {
+    const modality = job.getAttribute('data-modality')
+    const isShown = selectedValue === '' || selectedValue === modality
+
+    job.classList.toggle('is-hidden', !isShown)
+  })
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Complete flow</h4>
+      <ol>
+        <li>User changes the select</li>
+        <li>We read the selected value</li>
+        <li>We loop through all offers</li>
+        <li>We check the data-modality of each one</li>
+        <li>We calculate if it should be shown</li>
+        <li>We add or remove .is-hidden</li>
+      </ol>
+    </div>
+  </article>
+
+  <article>
+    <h3>🔟 Accessibility: Important Detail</h3>
+
+    <div class="key-concept">
+      <h4>When you hide with display: none</h4>
+      <p>The element:</p>
+      <ul>
+        <li>Disappears visually ✅</li>
+        <li>Is hidden from screen readers ✅</li>
+      </ul>
+      <p>You usually don't need to add <code>aria-hidden="true"</code> because <code>display: none</code> already does it.</p>
+    </div>
+
+    <div class="warning-box">
+      <h4>But there are exceptions</h4>
+      <p>When you hide with techniques like:</p>
+      <ul>
+        <li><code>opacity: 0</code></li>
+        <li><code>visibility: hidden</code></li>
+        <li>Moving off-screen</li>
+      </ul>
+      <p>Then you should pay more attention to accessibility and use <code>aria-hidden</code>.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Hide with explicit accessibility</h4>
+      <pre><code class="language-javascript">job.classList.add('is-hidden')
+job.setAttribute('aria-hidden', 'true')</code></pre>
+      <h4>Show again</h4>
+      <pre><code class="language-javascript">job.classList.remove('is-hidden')
+job.removeAttribute('aria-hidden')</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣1️⃣ Important Note: Optimization</h3>
+
+    <div class="key-concept">
+      <h4>What we're doing now</h4>
+      <p>We're hiding elements that stay in the DOM. This works well for small interfaces.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Future improvements</h4>
+      <p><strong>Option 1: Filter in JavaScript properly</strong></p>
+      <p>Instead of rendering everything and hiding, build only the elements that should appear.</p>
+      <p><strong>Option 2: Filter from the backend</strong></p>
+      <p>The server returns only the results needed.</p>
+      <p>This saves: memory, processing, unnecessary renders, bandwidth.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣2️⃣ Quick Summary</h3>
+
+    <div class="warning-box">
+      <h4>❌ Don't do this:</h4>
+      <pre><code class="language-javascript">job.style.display = 'none'</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Do this instead:</h4>
+      <pre><code class="language-javascript">job.classList.add('is-hidden')</code></pre>
+      <p>And define the style in CSS:</p>
+      <pre><code class="language-css">.is-hidden {
+  display: none;
+}</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Mental rule</h4>
+      <p><strong>CSS = appearance</strong></p>
+      <p><strong>JavaScript = behavior</strong></p>
+      <p><strong>Cleanest method:</strong> <code>job.classList.toggle('is-hidden', !isShown)</code></p>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣3️⃣ Mini Exercise to Practice</h3>
+
+    <div class="solution-box">
+      <h4>The challenge</h4>
+      <p>You have a list of products with <code>data-category</code>.</p>
+      <p>Create a filter to show only products from the selected category.</p>
+
+      <h5>HTML example:</h5>
+      <pre><code class="language-markup">&lt;select id="category-filter"&gt;
+  &lt;option value=""&gt;All&lt;/option&gt;
+  &lt;option value="clothing"&gt;Clothing&lt;/option&gt;
+  &lt;option value="tech"&gt;Technology&lt;/option&gt;
+&lt;/select&gt;
+
+&lt;div class="product" data-category="clothing"&gt;T-Shirt&lt;/div&gt;
+&lt;div class="product" data-category="tech"&gt;Laptop&lt;/div&gt;
+&lt;div class="product" data-category="clothing"&gt;Pants&lt;/div&gt;</code></pre>
+
+      <h4>Objective</h4>
+      <p>Use:</p>
+      <ul>
+        <li><code>querySelector</code></li>
+        <li><code>querySelectorAll</code></li>
+        <li><code>addEventListener</code></li>
+        <li><code>getAttribute</code></li>
+        <li><code>classList.toggle</code></li>
+      </ul>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣4️⃣ Pro Version of the Concept</h3>
+
+    <div class="key-concept">
+      <h4>UI States, not styles</h4>
+      <p>When you use classList, you're not changing the design directly.</p>
+      <p>You're saying: "This element is now in the is-hidden state".</p>
+      <p>That's more professional because you work with <strong>UI states</strong>, not loose styles.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Common state classes in real projects:</h4>
+      <ul>
+        <li><code>is-hidden</code> - Hidden element</li>
+        <li><code>is-active</code> - Active element (selected)</li>
+        <li><code>is-open</code> - Modal or menu open</li>
+        <li><code>is-disabled</code> - Disabled element</li>
+        <li><code>is-selected</code> - Selected element</li>
+        <li><code>is-loading</code> - Loading data</li>
+        <li><code>is-error</code> - Error state</li>
+      </ul>
+    </div>
+
+    <div class="key-concept">
+      <h4>The professional pattern</h4>
+      <p>JavaScript changes the state with <code>classList</code>.</p>
+      <p>CSS defines how that state looks.</p>
+      <p>HTML just marks the structure.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣5️⃣ Final Phrase to Remember</h3>
+
+    <div class="warning-box">
+      <h4>💡 Always remember</h4>
+      <p><strong>"Don't change styles from JavaScript if you can change states with classes."</strong></p>
+      <p>This makes your code:</p>
+      <ul>
+        <li>More readable</li>
+        <li>More maintainable</li>
+        <li>More scalable</li>
+        <li>More professional</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/classList" target="_blank">MDN: classList</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/display" target="_blank">MDN: CSS display</a>
+    <a href="https://www.w3.org/WAI/ARIA/apg/" target="_blank">ARIA Authoring Practices Guide</a>
+    <a href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/69b15f9a-2d94-8395-abce-83726c3a6e3e" target="_blank">ChatGPT JavaScript Assistant</a>
+  </div>
+</section>
