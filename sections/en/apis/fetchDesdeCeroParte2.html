@@ -1,0 +1,500 @@
+<section class="box">
+  <h2>Fetch from Scratch - Part 2</h2>
+  <p class="subtitle">Load data and render elements dynamically in the DOM</p>
+
+  <article>
+    <h3>🎯 What We'll Learn</h3>
+
+    <div class="solution-box">
+      <h4>In this part we'll see</h4>
+      <p>How to load data with fetch and display it dynamically on the page.</p>
+      <p>This is the pattern that <strong>React, Vue, Angular and Next.js</strong> use internally:</p>
+      <ol>
+        <li>Request data with fetch</li>
+        <li>Transform it</li>
+        <li>Render the UI dynamically</li>
+      </ol>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣ What is fetch? (Quick Review)</h3>
+
+    <div class="key-concept">
+      <h4>fetch() is a JavaScript function</h4>
+      <p>It allows you to request data from a server or file.</p>
+      <p>It works <strong>asynchronously</strong>, meaning the browser can keep running while data arrives.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Basic example</h4>
+      <pre><code class="language-javascript">fetch('./data.json')
+  .then((response) => response.json())
+  .then((jobs) => {
+    console.log('Jobs obtained:', jobs.length)
+  })</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>What happens here?</h4>
+      <ol>
+        <li><strong>fetch('./data.json')</strong> - Makes a request to the file</li>
+        <li><strong>response.json()</strong> - Converts the response into usable JSON in JavaScript</li>
+        <li><strong>jobs</strong> - Now we have an array of jobs</li>
+      </ol>
+    </div>
+  </article>
+
+  <article>
+    <h3>2️⃣ Example JSON File</h3>
+
+    <div class="solution-box">
+      <h4>Imagine our data.json file contains this:</h4>
+      <pre><code class="language-javascript">[
+  {
+    "titulo": "Frontend Developer",
+    "empresa": "Tech Corp",
+    "ubicacion": "Madrid",
+    "descripcion": "Work with React and JavaScript",
+    "data": {
+      "modalidad": "remote",
+      "nivel": "mid",
+      "technology": "react"
+    }
+  },
+  {
+    "titulo": "Backend Developer",
+    "empresa": "Data Systems",
+    "ubicacion": "Barcelona",
+    "descripcion": "Node.js and PostgreSQL",
+    "data": {
+      "modalidad": "hybrid",
+      "nivel": "senior",
+      "technology": "nodejs"
+    }
+  }
+]</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>When we load it with fetch</h4>
+      <p>We get an array of objects that we can loop through and manipulate.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>3️⃣ Select the Container</h3>
+
+    <div class="solution-box">
+      <h4>First, we select where the jobs will go</h4>
+      <pre><code class="language-javascript">const container = document.querySelector('.jobs-listings')</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>In the HTML we have:</h4>
+      <pre><code class="language-markup">&lt;div class="jobs-listings"&gt;
+  &lt;!-- Jobs will appear here dynamically --&gt;
+&lt;/div&gt;</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>4️⃣ Create HTML Elements Dynamically</h3>
+
+    <div class="solution-box">
+      <h4>Complete code</h4>
+      <pre><code class="language-javascript">const container = document.querySelector('.jobs-listings')
+
+fetch('./data.json')
+  .then((response) => response.json())
+  .then((jobs) => {
+
+    jobs.forEach((job) => {
+
+      const article = document.createElement('article')
+
+      article.className = 'job-listing-card'
+
+      article.dataset.modalidad = job.data.modalidad
+      article.dataset.nivel = job.data.nivel
+      article.dataset.technology = job.data.technology
+
+      article.innerHTML = `
+        &lt;div&gt;
+          &lt;h3&gt;${job.titulo}&lt;/h3&gt;
+          &lt;small&gt;${job.empresa} | ${job.ubicacion}&lt;/small&gt;
+          &lt;p&gt;${job.descripcion}&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;button class="button-apply-job"&gt;Apply&lt;/button&gt;
+      `
+
+      container.appendChild(article)
+    })
+
+  })</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>5️⃣ Step by Step: What Does This Code Do?</h3>
+
+    <div class="solution-box">
+      <h4>1️⃣ Loop through all jobs</h4>
+      <pre><code class="language-javascript">jobs.forEach((job) => {})</code></pre>
+      <p>Each <code>job</code> is an object from the JSON.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>2️⃣ Create an HTML element</h4>
+      <pre><code class="language-javascript">const article = document.createElement('article')</code></pre>
+      <p>This dynamically creates: <code>&lt;article&gt;&lt;/article&gt;</code></p>
+    </div>
+
+    <div class="solution-box">
+      <h4>3️⃣ Add a CSS class</h4>
+      <pre><code class="language-javascript">article.className = 'job-listing-card'</code></pre>
+      <p>In HTML it looks like: <code>&lt;article class="job-listing-card"&gt;&lt;/article&gt;</code></p>
+      <p>This allows us to apply CSS styles.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>4️⃣ Add data-* attributes</h4>
+      <pre><code class="language-javascript">article.dataset.modalidad = job.data.modalidad
+article.dataset.nivel = job.data.nivel
+article.dataset.technology = job.data.technology</code></pre>
+      <p>This generates in the HTML:</p>
+      <pre><code class="language-markup">&lt;article data-modalidad="remote" data-nivel="mid" data-technology="react"&gt;</code></pre>
+      <p>These attributes are very useful for <strong>filters</strong>.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>5️⃣ Insert HTML content</h4>
+      <pre><code class="language-javascript">article.innerHTML = `
+  &lt;h3&gt;${job.titulo}&lt;/h3&gt;
+  &lt;p&gt;${job.descripcion}&lt;/p&gt;
+`</code></pre>
+      <p><code>innerHTML</code> allows us to insert HTML inside the element using template strings.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>6️⃣ Add the element to the DOM</h4>
+      <pre><code class="language-javascript">container.appendChild(article)</code></pre>
+      <p>This makes the element appear on the page.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>6️⃣ Improve Experience: Loading State</h3>
+
+    <div class="solution-box">
+      <h4>HTML - Show a message while loading data</h4>
+      <pre><code class="language-markup">&lt;p id="jobs-loading"&gt;Loading jobs...&lt;/p&gt;
+&lt;div class="jobs-listings"&gt;&lt;/div&gt;</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>JavaScript - Select and hide the element after loading</h4>
+      <pre><code class="language-javascript">const loading = document.querySelector('#jobs-loading')
+
+fetch('./data.json')
+  .then((response) => response.json())
+  .then((jobs) => {
+    // When data finishes loading, remove the message
+    if (loading) loading.remove()
+
+    // Rest of the code...
+  })</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>What happens?</h4>
+      <ol>
+        <li>At first: "Loading jobs..." is shown</li>
+        <li>When data arrives, <code>loading.remove()</code> deletes it</li>
+        <li>Jobs appear in the container</li>
+      </ol>
+    </div>
+  </article>
+
+  <article>
+    <h3>7️⃣ Handle Errors</h3>
+
+    <div class="solution-box">
+      <h4>If something goes wrong, show a message</h4>
+      <pre><code class="language-javascript">fetch('./data.json')
+  .then((response) => response.json())
+  .then((jobs) => {
+    if (loading) loading.remove()
+    // Show jobs...
+  })
+  .catch((error) => {
+    // If it fails, change the message
+    if (loading) {
+      loading.textContent = 'Could not load jobs'
+    }
+    console.error(error)
+  })</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Possible errors</h4>
+      <ul>
+        <li>File not found (404)</li>
+        <li>Network error</li>
+        <li>Invalid JSON</li>
+        <li>Server not responding</li>
+      </ul>
+      <p>With <code>.catch()</code> we capture them all.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>8️⃣ Special Case: No Jobs Available</h3>
+
+    <div class="solution-box">
+      <h4>Check if the array is empty</h4>
+      <pre><code class="language-javascript">fetch('./data.json')
+  .then((response) => response.json())
+  .then((jobs) => {
+
+    if (loading) loading.remove()
+
+    // If there are no jobs
+    if (jobs.length === 0) {
+      container.innerHTML = '&lt;p&gt;No jobs available right now.&lt;/p&gt;'
+      return
+    }
+
+    // If there are jobs, show them
+    jobs.forEach((job) => {
+      // ... create elements ...
+    })
+
+  })</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>Why is this important?</h4>
+      <p>It improves user experience. We don't want them to see an empty page without knowing what's happening.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>9️⃣ Complete Program Flow</h3>
+
+    <div class="key-concept">
+      <h4>The process step by step</h4>
+      <pre><code>
+fetch data (./data.json)
+      ↓
+convert to JSON (.json())
+      ↓
+loop through array (.forEach())
+      ↓
+create HTML elements (createElement)
+      ↓
+insert them in the DOM (appendChild)
+      ↓
+Page updated
+      </code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>This is what React, Vue, Angular do internally</h4>
+      <p>The only difference is that these frameworks optimize the process.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>🔟 Final Simplified Code</h3>
+
+    <div class="solution-box">
+      <h4>Clean and functional version</h4>
+      <pre><code class="language-javascript">const container = document.querySelector('.jobs-listings')
+const loading = document.querySelector('#jobs-loading')
+
+fetch('./data.json')
+  .then((response) => response.json())
+  .then((jobs) => {
+
+    // Remove the loading message
+    if (loading) loading.remove()
+
+    // Check if there are jobs
+    if (jobs.length === 0) {
+      container.innerHTML = '&lt;p&gt;No jobs available&lt;/p&gt;'
+      return
+    }
+
+    // Loop and create elements
+    jobs.forEach((job) => {
+      const article = document.createElement('article')
+      article.className = 'job-listing-card'
+
+      article.innerHTML = `
+        &lt;h3&gt;${job.titulo}&lt;/h3&gt;
+        &lt;small&gt;${job.empresa} | ${job.ubicacion}&lt;/small&gt;
+        &lt;p&gt;${job.descripcion}&lt;/p&gt;
+      `
+
+      container.appendChild(article)
+    })
+
+  })
+  .catch((error) => {
+    console.error('Error loading jobs:', error)
+  })</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣1️⃣ Key Points to Remember</h3>
+
+    <div class="solution-box">
+      <h4>✅ fetch allows loading data from APIs or JSON files</h4>
+      <p>Works with local and remote URLs.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ response.json() converts the response to JavaScript</h4>
+      <p>Transforms JSON into objects and arrays we can use.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ JSON data arrives as arrays of objects</h4>
+      <p>You'll almost always need to loop with .forEach()</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ We can create HTML elements dynamically</h4>
+      <p><code>createElement()</code> creates elements, <code>innerHTML</code> adds content.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ appendChild adds elements to the DOM</h4>
+      <p>Makes the created elements appear on the page.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ It's good practice to handle loading and errors</h4>
+      <p>Greatly improves user experience.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣2️⃣ Important Concept: The Foundation of Modern Apps</h3>
+
+    <div class="warning-box">
+      <h4>💡 This is what React, Vue, Angular, Next.js do</h4>
+      <p>Internally, all modern applications do exactly this:</p>
+      <ol>
+        <li><strong>Request data</strong> with fetch or axios</li>
+        <li><strong>Transform it</strong> (optional)</li>
+        <li><strong>Render the UI</strong> dynamically</li>
+      </ol>
+    </div>
+
+    <div class="key-concept">
+      <h4>The difference</h4>
+      <p>Frameworks optimize the process and provide tools to make it easier.</p>
+      <p>But the fundamental concept is the same as what you just learned.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>Comparison table</h4>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <tr style="border-bottom: 1px solid #ccc;">
+          <th style="text-align: left; padding: 10px;">What we did</th>
+          <th style="text-align: left; padding: 10px;">What React does</th>
+        </tr>
+        <tr style="border-bottom: 1px solid #ccc;">
+          <td style="padding: 10px;">fetch() + .json()</td>
+          <td style="padding: 10px;">useEffect + fetch (hook)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #ccc;">
+          <td style="padding: 10px;">.forEach() + createElement()</td>
+          <td style="padding: 10px;">.map() + JSX</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px;">appendChild()</td>
+          <td style="padding: 10px;">Automatic rendering</td>
+        </tr>
+      </table>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣3️⃣ Complete Example with data-* Attributes</h3>
+
+    <div class="solution-box">
+      <h4>If you want to add filters (like in the previous tutorial)</h4>
+      <pre><code class="language-javascript">jobs.forEach((job) => {
+  const article = document.createElement('article')
+  article.className = 'job-listing-card'
+
+  // Add data-* attributes for filters
+  article.dataset.modalidad = job.data.modalidad
+  article.dataset.nivel = job.data.nivel
+  article.dataset.technology = job.data.technology
+
+  article.innerHTML = `
+    &lt;h3&gt;${job.titulo}&lt;/h3&gt;
+    &lt;p&gt;${job.descripcion}&lt;/p&gt;
+  `
+
+  container.appendChild(article)
+})</code></pre>
+      <p>Then you can use JavaScript (like you learned in the previous tutorial) to filter by these attributes.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣4️⃣ Visual Summary: From Data to UI</h3>
+
+    <div class="key-concept">
+      <h4>The complete cycle</h4>
+      <pre><code>
+JSON (data.json)
+  ↓
+fetch('./data.json')
+  ↓
+response.json() → Array of objects
+  ↓
+.forEach() → Loop through each object
+  ↓
+createElement('article') → Create empty element
+  ↓
+innerHTML → Fill with content (interpolation)
+  ↓
+appendChild() → Insert it in the DOM
+  ↓
+Page updated with data
+      </code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>1️⃣5️⃣ Next Steps</h3>
+
+    <div class="solution-box">
+      <h4>Now that you know how to load and render data</h4>
+      <p>Next topics:</p>
+      <ul>
+        <li><strong>fetch POST:</strong> Send data to the server (create jobs)</li>
+        <li><strong>HTTP Methods:</strong> GET, POST, PUT, DELETE</li>
+        <li><strong>Advanced filters:</strong> Filter data with classList</li>
+        <li><strong>Event delegation:</strong> Handle clicks on dynamic elements</li>
+        <li><strong>async/await:</strong> Cleaner and more readable code</li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- Block of links -->
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement" target="_blank">MDN: createElement</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML" target="_blank">MDN: innerHTML</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild" target="_blank">MDN: appendChild</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank">MDN: Fetch API</a>
+    <a href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/69b15f9a-2d94-8395-abce-83726c3a6e3e" target="_blank">ChatGPT JavaScript Assistant</a>
+  </div>
+</section>
