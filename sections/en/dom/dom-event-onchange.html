@@ -1,0 +1,100 @@
+<section class="box">
+  <h2>Handling the change Event in JavaScript</h2>
+  <p class="subtitle">Listening for changes in form elements with addEventListener</p>
+
+  <article>
+    <h3>🔄 What is the change event?</h3>
+
+    <div class="key-concept">
+      <h4>Context</h4>
+      <p>In the previous lesson, we saw how to listen for the <code>click</code> event to detect when a user clicks a button. Now we're going to listen for the <code>change</code> event to see when the user changes the value of a <code>&lt;select&gt;</code>.</p>
+    </div>
+
+    <div class="solution-box">
+      <h4>💡 When does it fire?</h4>
+      <p>The <code>change</code> event fires when the user <strong>changes the selected value</strong> of a form element like a <code>&lt;select&gt;</code>, <code>&lt;input&gt;</code>, or <code>&lt;textarea&gt;</code>.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>📝 The base HTML</h3>
+
+    <div class="key-concept">
+      <h4>Form with select</h4>
+      <p>With HTML like this:</p>
+      <pre><code class="language-html">&lt;form class="search-filters"&gt;
+  &lt;label for="filter-location"&gt;Location&lt;/label&gt;
+  &lt;select id="filter-location"&gt;
+    &lt;option value=""&gt;All&lt;/option&gt;
+    &lt;option value="remote"&gt;Remote&lt;/option&gt;
+    &lt;option value="cdmx"&gt;Mexico City&lt;/option&gt;
+    &lt;option value="guadalajara"&gt;Guadalajara&lt;/option&gt;
+  &lt;/select&gt;
+&lt;/form&gt;</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>🎯 Listening for the change event</h3>
+
+    <div class="solution-box">
+      <h4>✅ Using addEventListener</h4>
+      <p>We can listen for the <code>change</code> event to see when the user changes the select value:</p>
+      <pre><code class="language-javascript">const filterLocation = document.getElementById('filter-location')
+
+filterLocation.addEventListener('change', function () {
+  console.log('Selected location:', filterLocation.value)
+})</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚠️ value vs visible text</h4>
+      <p>Keep in mind that the select's value is the <strong>value of the selected <code>option</code></strong>… <strong>not the option's display name!</strong></p>
+      <p>So if the user selects "Mexico City", the value of <code>filterLocation.value</code> will be <code>"cdmx"</code>.</p>
+      <p>Don't confuse the option's <code>value</code> with the text the user sees.</p>
+    </div>
+
+    <div class="key-concept">
+      <h4>🔍 Understanding the difference</h4>
+      <pre><code class="language-html">&lt;option value="cdmx"&gt;Mexico City&lt;/option&gt;
+&lt;!--          ^^^^    ^^^^^^^^^^^
+         value (JS)    visible text (user) --&gt;</code></pre>
+      <pre><code class="language-javascript">filterLocation.value        // "cdmx" ← this is what you get with .value
+filterLocation.selectedOptions[0].text  // "Mexico City" ← the visible text</code></pre>
+    </div>
+  </article>
+
+  <article>
+    <h3>♿ Accessibility note</h3>
+
+    <div class="solution-box">
+      <h4>🏷️ The label is mandatory</h4>
+      <p>As you can see in the example, the <code>&lt;select&gt;</code> has an associated <code>&lt;label&gt;</code> through the <code>for</code> attribute pointing to the select's <code>id</code>.</p>
+      <p>This is <strong>essential for accessibility</strong>, as it allows screen readers to correctly identify the field's purpose.</p>
+      <pre><code class="language-html">&lt;!-- ✅ Correct: label associated with the select --&gt;
+&lt;label for="filter-location"&gt;Location&lt;/label&gt;
+&lt;select id="filter-location"&gt;...&lt;/select&gt;
+
+&lt;!-- ❌ Incorrect: select without label --&gt;
+&lt;select id="filter-location"&gt;...&lt;/select&gt;</code></pre>
+      <p>In this course's examples we include labels when relevant to the context, but <strong>always make sure to use them in production</strong>.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>🚀 What's next?</h3>
+
+    <div class="key-concept">
+      <h4>Next step</h4>
+      <p>In the next lesson, we'll see how we can use the <code>change</code> event to <strong>filter the results of the job listing</strong>.</p>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event" target="_blank">MDN: change event</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select" target="_blank">MDN: &lt;select&gt; element</a>
+    <a href="https://www.jscamp.dev/javascript/manejar-evento-change-filtrar" target="_blank">JSCamp: Handle change event and filter</a>
+    <a href="https://chatgpt.com/g/g-p-696b8f71e7d081919915bce027a33183-javascript/c/69c32c4c-b4f0-8390-be60-6fd7036d16e8" target="_blank">ChatGPT JavaScript Assistant</a>
+    <a href="https://codesandbox.io/p/devbox/tlnrqj?file=%2Fsrc%2Fstyles.css%3A107%2C2" target="_blank">CodeSandbox: Practical example</a>
+  </div>
+</section>
