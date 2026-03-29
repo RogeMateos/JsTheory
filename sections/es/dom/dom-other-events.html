@@ -1,0 +1,178 @@
+<section class="box">
+  <h2>Más eventos en JavaScript</h2>
+  <p class="subtitle">input, blur, submit, preventDefault y keydown</p>
+
+  <article>
+    <h3>🔄 Introducción</h3>
+
+    <div class="key-concept">
+      <h4>Más allá de click y change</h4>
+      <p>Por ahora hemos visto los eventos <code>click</code> y <code>change</code> pero existen muchos más eventos que podemos usar para interactuar con el usuario. No vamos a poder verlos todos, pero vamos a ver algunos importantes y vamos a explicar el concepto de <code>preventDefault</code>.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>♿ Una nota sobre accesibilidad</h3>
+
+    <div class="solution-box">
+      <h4>🏷️ El label es esencial</h4>
+      <p>Por temas de accesibilidad, cada elemento <code>input</code> debería tener asociada una etiqueta <code>label</code> para que los lectores de pantalla y otras tecnologías asistivas puedan identificar correctamente el propósito del campo.</p>
+      <p>Este elemento es el más importante a la hora de crear formularios accesibles.</p>
+      <pre><code class="language-html">&lt;label for="input-nombre"&gt;Nombre&lt;/label&gt;
+&lt;input type="text" id="input-nombre" /&gt;</code></pre>
+      <p>O también podés anidar el input dentro del label:</p>
+      <pre><code class="language-html">&lt;label&gt;
+  Nombre
+  &lt;input type="text" id="input-nombre" /&gt;
+&lt;/label&gt;</code></pre>
+      <p>En los ejemplos de este curso obviamos las etiquetas label para mantener el código más simple y evitar repetición, pero <strong>en producción siempre deberías usarlas</strong>.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>⌨️ Evento input</h3>
+
+    <div class="key-concept">
+      <h4>¿Cuándo se dispara?</h4>
+      <p>El evento <code>input</code> se ejecuta cuando el usuario escribe en un input.</p>
+      <pre><code class="language-html">&lt;input type="text" id="input-nombre" /&gt;</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Ejemplo</h4>
+      <pre><code class="language-javascript">const inputNombre = document.getElementById('input-nombre')
+
+inputNombre.addEventListener('input', function () {
+  console.log('Escribiendo...')
+})</code></pre>
+    </div>
+
+    <div class="warning-box">
+      <h4>⚠️ Tené en cuenta</h4>
+      <p>Por "escribir" también se entiende que el usuario está <strong>borrando</strong> el texto. El evento <code>input</code> se dispara con cualquier cambio en el contenido del campo.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>👁️ Evento blur</h3>
+
+    <div class="key-concept">
+      <h4>¿Cuándo se dispara?</h4>
+      <p>El evento <code>blur</code> se ejecuta cuando el usuario <strong>pierde el foco</strong> del input. Es muy útil, por ejemplo, para validar que el usuario ha rellenado todos los campos del formulario antes de enviarlo.</p>
+      <pre><code class="language-html">&lt;input type="text" id="input-nombre" /&gt;</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Ejemplo</h4>
+      <pre><code class="language-javascript">const inputNombre = document.getElementById('input-nombre')
+
+inputNombre.addEventListener('blur', function () {
+  console.log('Perdió el foco')
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>🔄 El evento contrario: focus</h4>
+      <p>El evento contrario a <code>blur</code> es <code>focus</code>, que se ejecuta cuando el input <strong>recibe</strong> el foco del usuario.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>📤 Evento submit</h3>
+
+    <div class="key-concept">
+      <h4>¿Cuándo se dispara?</h4>
+      <p>El evento <code>submit</code> se ejecuta cuando el usuario envía el formulario.</p>
+      <pre><code class="language-html">&lt;form id="formulario"&gt;
+  &lt;input name="nombre" type="text" id="input-nombre" /&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Escuchando el submit</h4>
+      <pre><code class="language-javascript">const formulario = document.getElementById('formulario')
+
+formulario.addEventListener('submit', function (event) {
+  console.log('Formulario enviado')
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>🤔 ¿Cómo se hace submit de un formulario?</h4>
+      <p>Hay principalmente dos formas:</p>
+      <ul>
+        <li>Pulsando el botón de tipo <code>submit</code> que esté dentro del formulario.</li>
+        <li>Pulsando la tecla <strong>Enter</strong> mientras un input dentro del formulario tiene el foco.</li>
+      </ul>
+    </div>
+
+    <div class="problem-box">
+      <h4>❌ El problema: la página se recarga</h4>
+      <p>Si probás el código anterior, te vas a encontrar con que al hacer submit la página se recarga y añade en la URL el valor del input nombre.</p>
+      <p>Este es el <strong>comportamiento por defecto del navegador</strong> y, aunque en JavaScript hayamos escuchado el evento submit, el navegador sigue recargando la página.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>🛑 event.preventDefault()</h3>
+
+    <div class="solution-box">
+      <h4>✅ La solución</h4>
+      <p>Para evitar la recarga, podemos usar el método <code>preventDefault</code> del evento:</p>
+      <pre><code class="language-javascript">formulario.addEventListener('submit', function (event) {
+  event.preventDefault()
+  console.log('Formulario enviado')
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>💡 ¿Qué hace exactamente?</h4>
+      <p>Esto quiere decir que queremos <strong>prevenir el comportamiento por defecto</strong> del evento.</p>
+      <p>Esto no es único de los formularios. Por ejemplo, los enlaces por defecto al hacer click sobre ellos hacen que el navegador se dirija a la URL del enlace, pero también podemos prevenir ese comportamiento.</p>
+    </div>
+  </article>
+
+  <article>
+    <h3>🎹 Evento keydown</h3>
+
+    <div class="key-concept">
+      <h4>¿Cuándo se dispara?</h4>
+      <p>El evento <code>keydown</code> se ejecuta cuando el usuario presiona una tecla.</p>
+      <pre><code class="language-html">&lt;input type="text" id="input-nombre" /&gt;</code></pre>
+    </div>
+
+    <div class="solution-box">
+      <h4>✅ Ejemplo</h4>
+      <pre><code class="language-javascript">// Al escuchar directamente en el documento, podemos escuchar todas las teclas
+// que se pulsen independientemente de dónde esté el foco
+document.addEventListener('keydown', function (event) {
+  console.log('Tecla presionada:', event.key)
+})</code></pre>
+    </div>
+
+    <div class="key-concept">
+      <h4>🔄 El evento contrario: keyup</h4>
+      <p>El evento contrario a <code>keydown</code> es <code>keyup</code>, que se ejecuta cuando el usuario <strong>suelta</strong> una tecla.</p>
+    </div>
+
+    <div class="key-concept">
+      <h4>📋 Propiedades del evento de teclado</h4>
+      <p>El evento nos trae información importante sobre la tecla:</p>
+      <ul>
+        <li><code>event.key</code>: La tecla presionada.</li>
+        <li><code>event.code</code>: El código de la tecla.</li>
+        <li><code>event.shiftKey</code>: Si se está presionando la tecla <strong>Shift</strong>.</li>
+        <li><code>event.ctrlKey</code>: Si se está presionando la tecla <strong>Ctrl</strong>.</li>
+        <li><code>event.altKey</code>: Si se está presionando la tecla <strong>Alt</strong>.</li>
+        <li><code>event.metaKey</code>: Si se está presionando la tecla <strong>Meta</strong> (Cmd en Mac).</li>
+      </ul>
+    </div>
+  </article>
+
+  <div class="links">
+    <a href="https://developer.mozilla.org/es/docs/Web/API/HTMLElement/input_event" target="_blank">MDN: Evento input</a>
+    <a href="https://developer.mozilla.org/es/docs/Web/API/Event/preventDefault" target="_blank">MDN: preventDefault()</a>
+    <a href="https://developer.mozilla.org/es/docs/Web/API/Element/keydown_event" target="_blank">MDN: Evento keydown</a>
+  </div>
+</section>
